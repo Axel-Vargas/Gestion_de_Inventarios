@@ -1,0 +1,62 @@
+/* You can add global styles to this file, and also import other style files */
+$gutter: 1rem;
+@import "assets/layout/styles/layout/layout.scss";
+
+
+@import "primeng/resources/themes/tailwind-light/theme.css";
+@import "primeng/resources/primeng.min.css";
+@import "primeicons/primeicons.css";
+
+@import "../node_modules/primeflex/primeflex.scss";
+
+.rounded-icon-field .p-inputtext {
+    border-radius: 20px;
+    padding-left: 2.5rem; 
+}
+
+.floating-button {
+    position: fixed;
+    top: 9rem;
+    right: 4rem;
+    z-index: 99;
+}
+
+.tooltip {
+    background-color: transparent;
+    color: black;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 16px !important;
+    font-weight: lighter !important;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    margin-right: 10px;
+    cursor: default;
+}
+
+.tooltip.show {
+    opacity: 1;
+}
+
+
+
+/* Demos borrar 
+@import "assets/demo/styles/flags/flags.css";
+@import "assets/demo/styles/badges.scss";
+@import "assets/demo/styles/code.scss"; 
+
+*/
+
+/* 
+body{
+    font-family: var(--font-family);
+    margin: 0px;
+}
+
+
+Todos los botones tendrán un tamaño más pequeño
+.p-button {
+    font-size: 14px;
+    padding: 8px 16px;
+} 
+*/

@@ -1,0 +1,46 @@
+<div class="card-table mb-0">
+    <div class="flex flex-column mb-3">
+        <div>
+            <span class="flex mb-5">Areas</span>
+        </div>
+        <div class="flex justify-content-between flex-wrap">
+            <div class="floating-button flex align-items-center">
+                <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar area</span>
+                <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()" (mouseleave)="hideTooltip()"></button>
+            </div>
+            <p-iconField class="rounded-icon-field" iconPosition="left">
+                <p-inputIcon styleClass="pi pi-search" />
+                <input type="text" pInputText placeholder="Buscar" />
+            </p-iconField>
+        </div>
+    </div>
+    <p-table [value]="[{}]" [tableStyle]="{ 'min-width': '100%' }">
+        <ng-template pTemplate="header" [paginator]="true" [rows]="9" responsiveLayout="scroll">
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Piso</th>
+                <th>Bloque</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-rowData>
+            <tr>
+                <td style="width: 45%; min-width: 7rem;">A01</td>
+                <td style="width: 45%; min-width: 15rem;">Decanato</td>
+                <td style="width: 30%; min-width: 15rem;">Primer Piso</td>
+                <td style="width: 45%; min-width: 15rem;">Bloque 1</td>
+                <td style="width: 15%;">
+                    <button pButton pRipple type="button" icon="pi pi-pen-to-square"
+                        class="p-button p-component p-button-text p-button-icon-only"></button>
+                </td>
+                <td style="width: 15%;">
+                    <button pButton pRipple type="button" icon="pi pi-trash"
+                        class="p-button p-component p-button-text p-button-trash"></button>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</div>
+

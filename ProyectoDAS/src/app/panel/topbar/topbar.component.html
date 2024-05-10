@@ -1,0 +1,15 @@
+<div class="layout-topbar cla flex">
+    <a class="layout-topbar-logo">
+        <img src="assets/layout/images/logo.png" alt="Image">
+        <span class="logo pl-1">GESTIONTEC</span>
+        <button #menubutton class="p-link layout-menu-button layout-topbar-button ml-6" (click)="layoutService.onMenuToggle()">
+            <i class="pi pi-bars"></i>
+        </button>
+    </a>
+    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
+        <i class="pi pi-ellipsis-v"></i>
+    </button>
+    <div *ngIf="usuario" #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+        <p-menubar [model]="items" [style]="{ 'background-color': 'transparent', 'border': 'none','font-size': '18px','color':'white'}" [autoDisplay]="false" styleClass="custom-menubar"></p-menubar>
+    </div>
+</div>

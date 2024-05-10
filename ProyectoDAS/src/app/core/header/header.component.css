@@ -1,0 +1,7 @@
+:host ::ng-deep .p-toolbar{
+    background-color: var(--blue-900);
+}
+
+.titulo{
+    background-color: blueviolet;
+}
