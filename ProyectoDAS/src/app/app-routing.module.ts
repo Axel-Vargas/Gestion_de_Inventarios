@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PrincipalComponent } from './core/principal/principal.component';
 import { LayoutComponent } from './panel/layout/layout.component';
+import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
   {
@@ -11,7 +12,7 @@ const routes: Routes = [
     path:'panel', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/inicio/inicio.module').then(m => m.InicioModule) 
+        path: '', loadChildren: () => import('./componentes/inicio/inicio.module').then(m => m.InicioModule), canActivate: [AuthGuard]
 
       },
     ]
@@ -20,7 +21,7 @@ const routes: Routes = [
     path:'usuarios', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/usuarios/usuarios.module').then(m => m.UsuariosModule) 
+        path: '', loadChildren: () => import('./componentes/usuarios/usuarios.module').then(m => m.UsuariosModule), canActivate: [AuthGuard] 
 
       },
     ]
@@ -29,7 +30,7 @@ const routes: Routes = [
     path:'encargados', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/encargados/encargados.module').then(m => m.EncargadosModule)
+        path: '', loadChildren: () => import('./componentes/encargados/encargados.module').then(m => m.EncargadosModule), canActivate: [AuthGuard]
 
       },
     ]
@@ -38,7 +39,7 @@ const routes: Routes = [
     path:'tiposequipos', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/tiposequipos/tiposequipos.module').then(m => m.TiposequiposModule)
+        path: '', loadChildren: () => import('./componentes/tiposequipos/tiposequipos.module').then(m => m.TiposequiposModule), canActivate: [AuthGuard]
 
       },
     ]
@@ -47,7 +48,7 @@ const routes: Routes = [
     path:'tecnologicos', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/tecnologicos/tecnologicos.module').then(m => m.TecnologicosModule)
+        path: '', loadChildren: () => import('./componentes/tecnologicos/tecnologicos.module').then(m => m.TecnologicosModule), canActivate: [AuthGuard]
 
       },
     ]
@@ -56,7 +57,7 @@ const routes: Routes = [
     path:'mobiliarios', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/mobiliarios/mobiliarios.module').then(m => m.MobiliariosModule)
+        path: '', loadChildren: () => import('./componentes/mobiliarios/mobiliarios.module').then(m => m.MobiliariosModule), canActivate: [AuthGuard]
 
       },
     ]
@@ -65,7 +66,7 @@ const routes: Routes = [
     path:'elementos', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/elementos/elementos.module').then(m => m.ElementosModule)
+        path: '', loadChildren: () => import('./componentes/elementos/elementos.module').then(m => m.ElementosModule), canActivate: [AuthGuard]
 
       },
     ]
@@ -74,7 +75,7 @@ const routes: Routes = [
     path:'facultades', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/facultades/facultades.module').then(m => m.FacultadesModule)
+        path: '', loadChildren: () => import('./componentes/facultades/facultades.module').then(m => m.FacultadesModule), canActivate: [AuthGuard]
 
       },
     ]
@@ -83,7 +84,7 @@ const routes: Routes = [
     path:'bloques', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/bloques/bloques.module').then(m => m.BloquesModule)
+        path: '', loadChildren: () => import('./componentes/bloques/bloques.module').then(m => m.BloquesModule), canActivate: [AuthGuard]
 
       },
     ]
@@ -92,7 +93,7 @@ const routes: Routes = [
     path:'areas', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/areas/areas.module').then(m => m.AreasModule)
+        path: '', loadChildren: () => import('./componentes/areas/areas.module').then(m => m.AreasModule), canActivate: [AuthGuard]
 
       },
     ]
@@ -101,7 +102,7 @@ const routes: Routes = [
     path:'programas', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/programas/programas.module').then(m => m.ProgramasModule)
+        path: '', loadChildren: () => import('./componentes/programas/programas.module').then(m => m.ProgramasModule), canActivate: [AuthGuard]
 
       },
     ]
@@ -110,8 +111,7 @@ const routes: Routes = [
     path:'proveedores', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/proveedores/proveedores.module').then(m => m.ProveedoresModule)
-
+        path: '', loadChildren: () => import('./componentes/proveedores/proveedores.module').then(m => m.ProveedoresModule), canActivate: [AuthGuard]
       },
     ]
   },
@@ -119,7 +119,7 @@ const routes: Routes = [
     path:'historial', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/historial/historial.module').then(m => m.HistorialModule)
+        path: '', loadChildren: () => import('./componentes/historial/historial.module').then(m => m.HistorialModule), canActivate: [AuthGuard]
 
       },
     ]
@@ -128,7 +128,7 @@ const routes: Routes = [
     path:'reportes', component: LayoutComponent,
     children:[
       { 
-        path: '', loadChildren: () => import('./componentes/reportes/reportes.module').then(m => m.ReportesModule)
+        path: '', loadChildren: () => import('./componentes/reportes/reportes.module').then(m => m.ReportesModule), canActivate: [AuthGuard]
 
       },
     ]
