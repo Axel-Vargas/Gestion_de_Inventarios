@@ -20,7 +20,16 @@ export class LoginComponent {
   ngOnInit() { }
 
   login() {
+    this.usuarioService.autenticarUsuario(this.username, this.password).subscribe(
+      (response) => {
+        console.log('Usuario autenticado:', response);
+        this.limpiarFormulario();
         this.route.navigate(['/panel']);
+      },
+      (error) => {
+        this.mostrarMensaje('Credenciales incorrectas', false);
+      }
+    );
   }
 
   async mostrarMensaje(mensaje: string, exito: boolean) {
