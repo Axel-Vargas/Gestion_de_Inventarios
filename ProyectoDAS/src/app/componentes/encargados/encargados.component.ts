@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 })
 export class EncargadosComponent {
   tooltipVisible: boolean = false;
+  visible: boolean = false;
 
   showTooltip() {
       this.tooltipVisible = true;
@@ -15,4 +16,8 @@ export class EncargadosComponent {
   hideTooltip() {
       this.tooltipVisible = false;
   }
+
+  showDialog() {
+    this.visible = true;
+}
 }
