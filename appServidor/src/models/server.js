@@ -24,7 +24,11 @@ class Server {
 
     middlewares() {
         this.app.use(express.json());
-        this.app.use(cors());
+        this.app.use(cors({
+            origin: '*',
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        }));
     }
 
     conectarDB() {
