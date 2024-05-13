@@ -42,13 +42,21 @@ export class TecnologicosComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.tecnologicosService.getProductsWithOrdersSmall().then(data => this.tecnologicos = data);
+    this.cargarBienesTecnologicos()
+  }
+
+  cargarBienesTecnologicos(): void {
+    this.tecnologicosService.getBienesTecnologicos()
+      .subscribe(data => {
+        this.tecnologicos = data;
+        console.log(data)
+      });
   }
 
   openNew() {
     this.tecnologico = {};
-
     this.productDialog = true;
   }
+
 }
 

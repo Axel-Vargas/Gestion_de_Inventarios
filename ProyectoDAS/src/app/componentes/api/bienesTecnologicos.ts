@@ -1,4 +1,4 @@
-interface Repotenciacion {
+interface Repotenciado {
     label: string;
     value: string;
 }
@@ -7,12 +7,11 @@ export interface bienes_Tecnologicos {
     atributos?: string;
     marca?: string;
     modelo?: string;
-    numeroserie?: number;
+    num_serie?: string;
     fecha_adquisicion?: number;
-    repotenciacion?: Repotenciacion;
+    repotenciado?: Repotenciado;
     estado?: string;
-    ubicacion?: string;
-    codigouta?: string;
+    codigoUTA?: string;
     image?: string;
     localizacion?: number;
 

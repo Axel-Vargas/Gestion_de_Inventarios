@@ -1,9 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription, debounceTime } from 'rxjs';
-import { Product } from '../api/bienesTecnologicos';
-import { ProductService } from '../../core/service/product.service';
+
 import { LayoutService } from '../../panel/service/app.layout.service';
+import { BienestecnologicosService } from '../../services/bienestecnologicos.service';
+import { bienes_Tecnologicos } from '../api/bienesTecnologicos';
 
 @Component({
   selector: 'app-inicio',
@@ -14,7 +15,7 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   items!: MenuItem[];
 
-  products!: Product[];
+  tecnologicos!: bienes_Tecnologicos[];
 
   chartData: any;
 
@@ -22,7 +23,7 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   subscription!: Subscription;
 
-  constructor(private productService: ProductService, public layoutService: LayoutService) {
+  constructor(private productService: BienestecnologicosService, public layoutService: LayoutService) {
       this.subscription = this.layoutService.configUpdate$
       .pipe(debounceTime(25))
       .subscribe((config) => {
@@ -32,7 +33,7 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
       this.initChart();
-      this.productService.getProductsSmall().then(data => this.products = data);
+      //this.productService.getProductsSmall().then(data => this.products = data);
 
       this.items = [
           { label: 'Add New', icon: 'pi pi-fw pi-plus' },

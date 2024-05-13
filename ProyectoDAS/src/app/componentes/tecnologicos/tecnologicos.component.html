@@ -11,14 +11,13 @@
                         <th pSortableColumn="atributos">ATRIBUTOS <p-sortIcon field="atributos"></p-sortIcon></th>
                         <th pSortableColumn="marca">MARCA <p-sortIcon field="marca"></p-sortIcon></th>
                         <th pSortableColumn="modelo">MODELO <p-sortIcon field="modelo"></p-sortIcon></th>
-                        <th pSortableColumn="numeroserie">N. SERIE <p-sortIcon field="numeroserie"></p-sortIcon></th>
-                        <th pSortableColumn="fecha_adquisicion">FEC ADQUISICION <p-sortIcon
-                                field="fecha_adquisicion"></p-sortIcon></th>
+                        <th pSortableColumn="num_serie">N. SERIE <p-sortIcon field="num_serie"></p-sortIcon></th>
+                        <th pSortableColumn="fecha_adquisicion">FEC ADQUISICION <p-sortIcon field="fecha_adquisicion"></p-sortIcon></th>
                         <th pSortableColumn="estado">ESTADO <p-sortIcon field="estado"></p-sortIcon></th>
-                        <th pSortableColumn="codigouta">CODIGO UTA <p-sortIcon field="codigouta"></p-sortIcon></th>
+                        <th pSortableColumn="codigoUTA">CODIGO UTA <p-sortIcon field="codigoUTA"></p-sortIcon></th>
                         <th pSortableColumn="localizacion">LOCALIZACION <p-sortIcon field="localizacion"></p-sortIcon></th>
                         <th pSortableColumn="ubicacion">UBICACION <p-sortIcon field="ubicacion"></p-sortIcon></th>
-                        <th pSortableColumn="repotenciacion">Repotenciado <p-sortIcon field="repotenciacion"></p-sortIcon>
+                        <th pSortableColumn="repotenciado">Repotenciado <p-sortIcon field="repotenciado"></p-sortIcon>
                         </th>
                     </tr>
                 </ng-template>
@@ -35,14 +34,14 @@
                         <td>{{product.atributos}}</td>
                         <td>{{product.marca}}</td>
                         <td>{{product.modelo}}</td>
-                        <td>{{product.numeroserie}}</td>
+                        <td>{{product.num_serie}}</td>
                         <td>{{product.fecha_adquisicion}}</td>
                         <td>{{product.estado}}</td>
-                        <td>{{product.codigouta}}</td>
+                        <td>{{product.codigoUTA}}</td>
                         <td>{{product.localizacion}}</td>
                         <td>{{product.ubicacion}}</td>
                         <td><span
-                                [class]="'product-badge status-' + product.repotenciacion.toLowerCase()">{{product.repotenciacion}}</span>
+                                [class]="'product-badge status-' + product.repotenciado.toLowerCase()">{{product.repotenciado}}</span>
                         </td>
                         <td><p-button type="button" icon="pi pi-pen-to-square"></p-button></td>
                         <td><p-button type="button" icon="pi pi-trash"></p-button></td>
