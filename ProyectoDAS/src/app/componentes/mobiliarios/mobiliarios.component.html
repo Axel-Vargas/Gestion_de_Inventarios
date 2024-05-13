@@ -108,30 +108,45 @@
         </div>
 
         <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="fecha" class="font-semibold w-6rem">Fecha_de_Adquisición</label>
+            <input pInputText id="fecha" class="flex-auto" autocomplete="off" />
+        </div>
+
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
             <label for="estado" class="font-semibold w-6rem">Estado</label>
             <input pInputText id="estado" class="flex-auto" autocomplete="off" />
         </div>
         <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="ubicacion" class="font-semibold w-6rem">Ubicación</label>
+            <label for="ubicacion" class="font-semibold w-6rem">Localización</label>
             <input pInputText id="ubicacion" class="flex-auto" autocomplete="off" />
         </div>
         <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="localizacion" class="font-semibold w-6rem">Localización</label>
+            <label for="localizacion" class="font-semibold w-6rem">Codigo_Uta</label>
             <input pInputText id="localizacion" class="flex-auto" autocomplete="off" />
         </div>
 
+    
         <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="fecha" class="font-semibold w-6rem">Fecha_de_Adquisición</label>
-            <input pInputText id="fecha" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="encargado" class="font-semibold w-6rem">Encargado</label>
+            <label for="encargado" class="font-semibold w-6rem">Valor_Contable</label>
             <input pInputText id="encargado" class="flex-auto" autocomplete="off" />
         </div>
 
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="material" class="font-semibold w-6rem">Material</label>
-            <input pInputText id="material" class="flex-auto" autocomplete="off" />
+        <div class="flex align-items-left gap-3 mb-3 flex-column">
+            <label for="encargado" class="font-semibold w-6rem">Encargado</label>
+            <select id="encargado" class="flex-auto" required>
+                <option value="" disabled selected>Seleccione un encargado</option>
+                <option value="Angel Caiza">Angel Caiza</option>
+                <option value="Juan Perez">Juan Perez</option>
+            </select>
+        </div>
+
+        <div class="flex align-items-left gap-3 mb-3 flex-column">
+            <label for="encargado" class="font-semibold w-6rem">Area</label>
+            <select id="encargado" class="flex-auto" required>
+                <option value="" disabled selected>Seleccione un Area</option>
+                <option value="Angel Caiza">Area 1</option>
+                <option value="Juan Perez">Area 2</option>
+            </select>
         </div>
     </div>
     <div class="flex justify-content-end gap-2">

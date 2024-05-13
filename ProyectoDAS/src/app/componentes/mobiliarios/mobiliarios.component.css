@@ -1,3 +1,28 @@
+
+.font-semibold {
+    font-weight: 600;
+}
+.w-6rem {
+    width: 6rem;
+}
+select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #666;
+}
+/* Simular el placeholder en el select cuando está seleccionada la primera opción */
+select:required:invalid {
+    color: gray;
+}
+option[value=""][disabled] {
+    display: none;
+}
+option {
+    color: black;
+}
 span{
     font-size: 28px;
     color: rgb(105, 105, 105);
