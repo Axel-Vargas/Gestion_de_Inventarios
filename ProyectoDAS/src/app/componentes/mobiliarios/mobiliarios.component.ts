@@ -9,6 +9,7 @@ export class MobiliariosComponent {
   muebles: any[] | undefined;
   selectedCity: any;
   tooltipVisible: boolean = false;
+  visible: boolean = false;
 
   ngOnInit() {
     this.muebles = [
@@ -28,4 +29,8 @@ export class MobiliariosComponent {
   hideTooltip() {
       this.tooltipVisible = false;
   }
+  showDialog() {
+    this.visible = true;
+}
+
 }
