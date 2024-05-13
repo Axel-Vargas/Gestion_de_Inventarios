@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectItem } from 'primeng/api';
-import { BienestecnologicosService } from '../service/bienestecnologicos.service';
+import { BienestecnologicosService } from '../../services/bienestecnologicos.service';
 import { bienes_Tecnologicos } from '../api/bienesTecnologicos';
 
 @Component({
@@ -42,7 +42,7 @@ export class TecnologicosComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.tecnologicosService.getProductsWithOrdersSmall().then(data => this.tecnologicos = data);
+    //this.tecnologicosService.getProductsWithOrdersSmall().then(data => this.tecnologicos = data);
   }
 
   openNew() {
