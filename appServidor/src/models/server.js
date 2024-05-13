@@ -19,6 +19,7 @@ class Server {
     
     routes() {
         this.app.use('/api/usuarios', require('../routes/userRoutes.js'));
+        this.app.use('/api/bientecnologico', require('../routes/bienesTecnologicos.routes.js'));
     }
 
     middlewares() {
