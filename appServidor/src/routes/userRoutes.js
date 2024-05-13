@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { authenticateUser, addUser, getAllUsers } = require('../controllers/userController.js');
+const { authenticateUser, addUser, getAllUsers, editUser, desactivateUser, getUserByCedula } = require('../controllers/userController.js');
 
 router.get('/', getAllUsers);
+router.get('/cedula/:cedula', getUserByCedula); 
 router.post('/:auth', authenticateUser);
 router.post('/', addUser);
+router.put('/:id', editUser);
+router.put('/:id/desactivate', desactivateUser);
 
 module.exports = router;
