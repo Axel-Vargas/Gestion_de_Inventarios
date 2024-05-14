@@ -17,11 +17,12 @@ class Server {
     }
     
     routes() {
-       // this.app.use('/api/usuarios', require('../routes/userRoutes.js'));
         this.app.use('/api/mobiliarios', require('../routes/mobiliarioRoutes.js'));
-        this.app.use('/api/encargados', require('../routes/encargadosRoutes.js'));
         this.app.use('/api/areas', require('../routes/areasRoutes.js'));
-        
+        this.app.use('/api/roles', require('../routes/rolRoutes.js'));
+        this.app.use('/api/usuarios', require('../routes/userRoutes.js'));
+        this.app.use('/api/encargados', require('../routes/encargadoRoutes.js'));
+
     }
 
     middlewares() {

@@ -9,6 +9,12 @@ import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { FormsModule } from '@angular/forms';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 
 @NgModule({
@@ -23,7 +29,16 @@ import { InputTextModule } from 'primeng/inputtext';
     ButtonModule,
     IconFieldModule,
     InputIconModule,
-    InputTextModule
+    InputTextModule,
+    DialogModule,
+    DropdownModule,
+    ToastModule,
+    FormsModule,
+    ConfirmDialogModule
+  ],
+  providers:[
+    MessageService,
+    ConfirmationService
   ]
 })
 export class UsuariosModule { 
