@@ -3,6 +3,8 @@ import { MenuItem } from 'primeng/api';
 import { LayoutService } from '../service/app.layout.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+
 
 @Component({
   selector: 'app-topbar',
@@ -13,6 +15,52 @@ export class TopbarComponent {
   usuario: any;
   isAdmin: boolean = false;
   items!: MenuItem[];
+  displayQRScanner: boolean = false;
+
+  
+
+  showQRScanner(): void {
+    this.displayQRScanner = true;
+  }
+
+  getDialogStyle() {
+    if (window.matchMedia("(max-width: 768px)").matches) { 
+      return { 'width': '90%' };
+    } else { // Pantallas grandes
+      return { 'width': '40%' };
+    }
+  }
+
+  onCodeResult(result: string): void {
+    this.displayQRScanner = false;
+    console.log('QR Code Result:', result);
+    // Asegúrate de que el resultado es una URL válida antes de intentar redirigir
+    if (this.isValidUrl(result)) {
+      // Extraer el path de la URL y navegar
+      let url = new URL(result);
+      this.route.navigateByUrl(url.pathname + url.search); // Incluye la búsqueda para mantener parámetros de query si existen
+    } else {
+      console.error('El resultado escaneado no es una URL válida:', result);
+    }
+  }
+  
+  isValidUrl(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  camerasFoundHandler(devices: MediaDeviceInfo[]): void { 
+    console.log(devices);
+  }
+
+  onModalHide(): void {
+    this.displayQRScanner = false; 
+  }
+
 
   ngOnInit() {
     this.usuario = this.authService.getUser();

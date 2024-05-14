@@ -3,3 +3,8 @@ span{
     color: rgb(105, 105, 105);
     font-weight: bold;
 }
+zxing-scanner {
+    width: 50%;
+    height: auto;
+  }
+  

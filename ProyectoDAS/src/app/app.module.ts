@@ -9,9 +9,12 @@ import { PanelModule } from './panel/panel.module';
 import { HttpClientModule } from '@angular/common/http';
 
 
+
+
 @NgModule({
   declarations: [
     AppComponent,
+
   ],
   imports: [
     BrowserModule,
