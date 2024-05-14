@@ -54,7 +54,7 @@ export class TopbarComponent {
         }
       }
 
-    camerasFoundHandler(devices: MediaDeviceInfo[]): void { 
+  camerasFoundHandler(devices: MediaDeviceInfo[]): void { 
           console.log(devices);
         }
         onModalHide(): void {

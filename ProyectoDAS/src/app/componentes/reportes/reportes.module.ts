@@ -13,7 +13,7 @@ import { QRCodeModule } from 'angularx-qrcode';
   imports: [
     CommonModule,
     ReportesRoutingModule,
-    QRCodeModule
+    
   ]
 })
 export class ReportesModule { }
