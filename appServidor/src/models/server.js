@@ -1,6 +1,7 @@
 const express = require('express');
 const connection = require('../db/connection');
 const cors = require('cors');
+const path = require('path');
 
 class Server {
     constructor() {
@@ -20,6 +21,11 @@ class Server {
     routes() {
         this.app.use('/api/usuarios', require('../routes/userRoutes.js'));
         this.app.use('/api/bientecnologico', require('../routes/bienesTecnologicos.routes.js'));
+        this.app.use('/api/componentes', require('../routes/componentes.routes.js'));
+    
+         // Configuración para servir archivos estáticos
+         this.app.use('/public', express.static(path.join(__dirname, '..', 'controllers', 'public')));
+
     }
 
     middlewares() {
