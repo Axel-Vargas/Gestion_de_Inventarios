@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { MobiliariosService } from '../../services/mobiliarios.service';
 
 @Component({
   selector: 'app-mobiliarios',
@@ -6,21 +7,34 @@ import { Component } from '@angular/core';
   styleUrl: './mobiliarios.component.css'
 })
 export class MobiliariosComponent {
-  muebles: any[] | undefined;
+
+ mobiliarios: any = [];
+ muebles: any[] | undefined;
   selectedCity: any;
   tooltipVisible: boolean = false;
   visible: boolean = false;
-
+        constructor(private mobiliariosService:MobiliariosService) { 
+          this.listarMobiliario()
+        }
   ngOnInit() {
-    this.muebles = [
-      { name: 'Archivador', code: 'CO' },
-      { name: 'Sillas', code: 'CO' },
-      { name: 'Mesas de Computadora', code: 'CA' },
-      { name: 'Pizarrones', code: 'AI' },
-      { name: 'Bancas', code: 'IM' },
-      { name: 'Lockers', code: 'IM' },
-    ]
-  };
+    this.listarMobiliario();
+
+  }
+  listarMobiliario(): void {
+    this.mobiliariosService.obtenerMobiliarios().subscribe(
+      (response: any) => {
+        if (response && response.mobiliarios) {
+          this.mobiliarios = response.mobiliarios;
+        } else {
+          this.mobiliarios =[];
+        }
+       console.log(response)
+      }, 
+      (error) => {
+        console.error('Error al obtener mobiliarios:', error);
+      }
+    )
+  }
 
   showTooltip() {
       this.tooltipVisible = true;
@@ -31,6 +45,9 @@ export class MobiliariosComponent {
   }
   showDialog() {
     this.visible = true;
+    this.listarMobiliario()
 }
+
+
 
 }

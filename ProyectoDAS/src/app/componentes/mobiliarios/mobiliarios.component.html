@@ -1,155 +1,250 @@
 <div class="card-table mb-0">
-    <div class="flex flex-column mb-3">
-        <div>
-            <span class="flex mb-5">Bienes Mobiliarios</span>
-        </div>
-        <div class="flex justify-content-between flex-wrap">
-            <div class="floating-button flex align-items-center">
-                <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Bien</span>
-                <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()" (mouseleave)="hideTooltip()" (click)="showDialog()"></button>
-            </div>
-            <p-iconField class="rounded-icon-field" iconPosition="left">
-                <p-inputIcon styleClass="pi pi-search" />
-                <input type="text" pInputText placeholder="Buscar" />
-            </p-iconField>
-            <div>
-                Filtrar por:
-                <p-dropdown [options]="muebles" [(ngModel)]="selectedCity" optionLabel="name"
-                    placeholder="TODOS" />
-            </div>
-        </div>
+  <div class="flex flex-column mb-3">
+    <div>
+      <span class="flex mb-5">Bienes Mobiliarios</span>
     </div>
-    <p-table [value]="[{}]" [tableStyle]="{ 'min-width': '100%' }">
-        <ng-template pTemplate="header" [paginator]="true" [rows]="9" responsiveLayout="scroll">
-            <tr>
-                <th>Código</th>
-                <th>(BLD / BCA)</th>
-                <th>Nombre</th>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Num. Serie</th>
-                <th>Material</th>
-                <th>Color</th>
-                <th>Fecha de Adquisición</th>
-                <th>Estado</th>
-                <th>Localización</th>
-                <th>Codigo Uta</th>
-                <th>Valor Contable</th>
-                <th>Encargado</th>
-                <th>Area</th>
-                <th>Editar</th>
-                <th>Eliminar</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData>
-            <tr>
-                <td style="width: 30%; min-width: 7rem;">32390807</td>
-                <td style="width: 45%; min-width: 10rem;">BCA</td>
-                <td style="width: 45%; min-width: 7rem;">Archivador</td>
-                <td style="width: 30%; min-width: 10rem;">Vill. HNOS</td>
-                <td style="width: 35%; min-width: 9rem;">NA</td>
-                <td style="width: 30%; min-width: 7rem;">11251600005943</td>
-                <td style="width: 30%; min-width: 7rem;">Metal</td>
-                <td style="width: 35%; min-width: 7rem;">Gris</td>
-                <td style="width: 30%; min-width: 7rem;">03/05/2022</td>
-                <td style="width: 30%; min-width: 7rem;">Usada</td>
-                <td style="width: 30%; min-width: 7rem;">Secretaría</td>
-                <td style="width: 30%; min-width: 7rem;">2323</td>
-                <td style="width: 30%; min-width: 7rem;">12</td>
-                <td style="width: 30%; min-width: 7rem;">Virtor Hugo</td>
-                <td style="width: 30%; min-width: 7rem;">Area1</td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-pen-to-square"
-                        class="p-button p-component p-button-text p-button-icon-only"></button>
-                </td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-trash"
-                        class="p-button p-component p-button-text p-button-trash"></button>
-                </td>
-            </tr>
-        </ng-template>
+    <div class="flex justify-content-between flex-wrap">
+      <div class="floating-button flex align-items-center">
+        <span class="tooltip" [ngClass]="{ show: tooltipVisible }"
+          >Agregar Bien</span
+        >
+        <button
+          pButton
+          icon="pi pi-plus"
+          class="p-button-rounded p-2.5 text-l"
+          (mouseenter)="showTooltip()"
+          (mouseleave)="hideTooltip()"
+          (click)="showDialog()"
+        ></button>
+      </div>
+      <p-iconField class="rounded-icon-field" iconPosition="left">
+        <p-inputIcon styleClass="pi pi-search" />
+        <input type="text" pInputText placeholder="Buscar" />
+      </p-iconField>
+      <div>
+        Filtrar por:
+        <p-dropdown
+          [options]="muebles"
+          [(ngModel)]="selectedCity"
+          optionLabel="name"
+          placeholder="TODOS"
+        />
+      </div>
+    </div>
+  </div>
+  <div style="max-height: 21rem; overflow-y: auto">
+    <p-table [value]="mobiliarios" [tableStyle]="{ 'min-width': '100%' }">
+      <ng-template pTemplate="header" responsiveLayout="scroll">
+        <tr>
+          <th>Código</th>
+          <th>(BLD_/_BCA)</th>
+          <th>Nombre</th>
+          <th>Marca</th>
+          <th>Modelo</th>
+          <th>Num_Serie</th>
+          <th>Material</th>
+          <th>Color</th>
+          <th>Fecha_de_Adquisición</th>
+          <th>Estado</th>
+          <th>Localización</th>
+          <th>Codigo_Uta</th>
+          <th>Valor_Contable</th>
+          <th>Encargado</th>
+          <th>Area</th>
+          <th>Editar</th>
+          <th>Eliminar</th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-mobiliario>
+        <tr>
+          <td style="width: 30%; min-width: 7rem">
+            {{ mobiliario.id_bien_mob }}
+          </td>
+          <td style="width: 30%; min-width: 7rem">{{ mobiliario.bld_bca }}</td>
+          <td style="width: 30%; min-width: 7rem">{{ mobiliario.nombre }}</td>
+          <td style="width: 30%; min-width: 7rem">{{ mobiliario.marca }}</td>
+          <td style="width: 30%; min-width: 7rem">{{ mobiliario.modelo }}</td>
+          <td style="width: 30%; min-width: 7rem">
+            {{ mobiliario.num_serie }}
+          </td>
+          <td style="width: 30%; min-width: 7rem">{{ mobiliario.material }}</td>
+          <td style="width: 30%; min-width: 7rem">{{ mobiliario.color }}</td>
+          <td style="width: 30%; min-width: 7rem">
+            {{ mobiliario.fecha_adquisicion }}
+          </td>
+          <td style="width: 30%; min-width: 7rem">{{ mobiliario.estado }}</td>
+          <td style="width: 30%; min-width: 7rem">
+            {{ mobiliario.localizacion }}
+          </td>
+          <td style="width: 30%; min-width: 7rem">
+            {{ mobiliario.codigoUta }}
+          </td>
+          <td style="width: 30%; min-width: 7rem">
+            {{ mobiliario.valor_contable }}
+          </td>
+          <td style="width: 30%; min-width: 7rem">
+            {{ mobiliario.id_encargado_per }}
+          </td>
+          <td style="width: 30%; min-width: 7rem">
+            {{ mobiliario.id_area_per }}
+          </td>
+          <td style="width: 15%">
+            <button
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-pen-to-square"
+              class="p-button p-component p-button-text p-button-icon-only"
+            ></button>
+          </td>
+          <td style="width: 15%">
+            <button
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-trash"
+              class="p-button p-component p-button-text p-button-trash"
+            ></button>
+          </td>
+        </tr>
+      </ng-template>
     </p-table>
+  </div>
 </div>
 
-<p-dialog header="Agregar  Bienes Mobiliarios" [modal]="true" [(visible)]="visible" [style]="{ width: '37rem', height: '50rem'}">
-    <div class="flex flex-wrap gap-3 pt-4">
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="codigo" class="font-semibold w-6rem">Código</label>
-            <input pInputText id="codigo" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="bld" class="font-semibold w-6rem">(BLD / BCA)</label>
-            <input pInputText id="bld" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="nombre" class="font-semibold w-6rem">Nombre</label>
-            <input pInputText id="nombre" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="marca" class="font-semibold w-6rem">Marca</label>
-            <input pInputText id="marca" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="modelo" class="font-semibold w-6rem">Modelo</label>
-            <input pInputText id="modelo" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="num_serie" class="font-semibold w-6rem">Num. Serie</label>
-            <input pInputText id="num_serie" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="material" class="font-semibold w-6rem">Material</label>
-            <input pInputText id="material" class="flex-auto" autocomplete="off" />
-        </div>
-
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="color" class="font-semibold w-6rem">Color</label>
-            <input pInputText id="color" class="flex-auto" autocomplete="off" />
-        </div>
-
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="fecha" class="font-semibold w-6rem">Fecha_de_Adquisición</label>
-            <input pInputText id="fecha" class="flex-auto" autocomplete="off" />
-        </div>
-
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="estado" class="font-semibold w-6rem">Estado</label>
-            <input pInputText id="estado" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="ubicacion" class="font-semibold w-6rem">Localización</label>
-            <input pInputText id="ubicacion" class="flex-auto" autocomplete="off" />
-        </div>
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="localizacion" class="font-semibold w-6rem">Codigo_Uta</label>
-            <input pInputText id="localizacion" class="flex-auto" autocomplete="off" />
-        </div>
-
-    
-        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="encargado" class="font-semibold w-6rem">Valor_Contable</label>
-            <input pInputText id="encargado" class="flex-auto" autocomplete="off" />
-        </div>
-
-        <div class="flex align-items-left gap-3 mb-3 flex-column">
-            <label for="encargado" class="font-semibold w-6rem">Encargado</label>
-            <select id="encargado" class="flex-auto" required>
-                <option value="" disabled selected>Seleccione un encargado</option>
-                <option value="Angel Caiza">Angel Caiza</option>
-                <option value="Juan Perez">Juan Perez</option>
-            </select>
-        </div>
-
-        <div class="flex align-items-left gap-3 mb-3 flex-column">
-            <label for="encargado" class="font-semibold w-6rem">Area</label>
-            <select id="encargado" class="flex-auto" required>
-                <option value="" disabled selected>Seleccione un Area</option>
-                <option value="Angel Caiza">Area 1</option>
-                <option value="Juan Perez">Area 2</option>
-            </select>
-        </div>
+<p-dialog
+  header="Agregar  Bienes Mobiliarios"
+  [modal]="true"
+  [(visible)]="visible"
+  [style]="{ width: '37rem', height: '50rem ', colo: 'red' }"
+>
+  <div class="flex flex-wrap gap-3 pt-4">
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="codigo" class="font-semibold w-6rem">Código</label>
+      <input pInputText id="codigo" class="flex-auto" autocomplete="off" />
     </div>
-    <div class="flex justify-content-end gap-2">
-        <p-button label="Guardar" (click)="visible = false" [rounded]="true"></p-button>
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="bld" class="font-semibold w-6rem">(BLD / BCA)</label>
+      <input pInputText id="bld" class="flex-auto" autocomplete="off" />
     </div>
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="nombre" class="font-semibold w-6rem">Nombre</label>
+      <input pInputText id="nombre" class="flex-auto" autocomplete="off" />
+    </div>
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="marca" class="font-semibold w-6rem">Marca</label>
+      <input pInputText id="marca" class="flex-auto" autocomplete="off" />
+    </div>
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="modelo" class="font-semibold w-6rem">Modelo</label>
+      <input pInputText id="modelo" class="flex-auto" autocomplete="off" />
+    </div>
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="num_serie" class="font-semibold w-6rem">Num. Serie</label>
+      <input pInputText id="num_serie" class="flex-auto" autocomplete="off" />
+    </div>
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="material" class="font-semibold w-6rem">Material</label>
+      <input pInputText id="material" class="flex-auto" autocomplete="off" />
+    </div>
+
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="color" class="font-semibold w-6rem">Color</label>
+      <input pInputText id="color" class="flex-auto" autocomplete="off" />
+    </div>
+
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="fecha" class="font-semibold w-6rem"
+        >Fecha_de_Adquisición</label
+      >
+      <input pInputText id="fecha" class="flex-auto" autocomplete="off" />
+    </div>
+
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="estado" class="font-semibold w-6rem">Estado</label>
+      <input pInputText id="estado" class="flex-auto" autocomplete="off" />
+    </div>
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="ubicacion" class="font-semibold w-6rem">Localización</label>
+      <input pInputText id="ubicacion" class="flex-auto" autocomplete="off" />
+    </div>
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="localizacion" class="font-semibold w-6rem">Codigo_Uta</label>
+      <input
+        pInputText
+        id="localizacion"
+        class="flex-auto"
+        autocomplete="off"
+      />
+    </div>
+
+    <div
+      class="flex align-items-left gap-3 mb-3 flex-column"
+      style="max-width: 50%"
+    >
+      <label for="encargado" class="font-semibold w-6rem">Valor_Contable</label>
+      <input pInputText id="encargado" class="flex-auto" autocomplete="off" />
+    </div>
+
+    <div class="flex align-items-left gap-3 mb-3 flex-column">
+      <label for="encargado" class="font-semibold w-6rem">Encargado</label>
+      <select id="encargado" class="flex-auto" required>
+        <option value="" disabled selected>Seleccione un encargado</option>
+        <option value="Angel Caiza">Angel Caiza</option>
+        <option value="Juan Perez">Juan Perez</option>
+      </select>
+    </div>
+
+    <div class="flex align-items-left gap-3 mb-3 flex-column">
+      <label for="encargado" class="font-semibold w-6rem">Area</label>
+      <select id="encargado" class="flex-auto" required>
+        <option value="" disabled selected>Seleccione un Area</option>
+        <option value="Angel Caiza">Area 1</option>
+        <option value="Juan Perez">Area 2</option>
+      </select>
+    </div>
+  </div>
+  <div class="flex justify-content-end gap-2">
+    <p-button
+      label="Guardar"
+      (click)="visible = false"
+      [rounded]="true"
+    ></p-button>
+  </div>
 </p-dialog>
