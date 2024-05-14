@@ -19,7 +19,7 @@
       </div>
       <p-iconField class="rounded-icon-field" iconPosition="left">
         <p-inputIcon styleClass="pi pi-search" />
-        <input type="text" pInputText placeholder="Buscar" />
+        <input type="text" [(ngModel)]="nombreBuscado" (ngModelChange)="buscarMobiliario()" pInputText placeholder="Buscar" />
       </p-iconField>
       <div>
         Filtrar por:
