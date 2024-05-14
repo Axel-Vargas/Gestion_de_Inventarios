@@ -23,7 +23,14 @@ export class TopbarComponent {
     this.displayQRScanner = true;
   }
 
-  2
+  getDialogStyle() {
+        if (window.matchMedia("(max-width: 768px)").matches) { 
+          return { 'width': '90%' };
+        } else { // Pantallas grandes
+          return { 'width': '40%' };
+        }
+      }
+    
 
   3
   
