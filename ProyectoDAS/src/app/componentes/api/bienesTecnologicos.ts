@@ -1,8 +1,11 @@
+import { Componentes } from "./componentes";
+
 interface Repotenciado {
     label: string;
     value: string;
 }
 export interface bienes_Tecnologicos {
+    id_bien_tec?: number;
     nombre?: string;
     atributos?: string;
     marca?: string;
@@ -14,5 +17,5 @@ export interface bienes_Tecnologicos {
     codigoUTA?: string;
     image?: string;
     localizacion?: number;
-
+    componentes: Componentes[];
 }

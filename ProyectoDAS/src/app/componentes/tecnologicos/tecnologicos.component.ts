@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { SelectItem } from 'primeng/api';
 import { BienestecnologicosService } from '../../services/bienestecnologicos.service';
 import { bienes_Tecnologicos } from '../api/bienesTecnologicos';
+import { componentesService } from '../../services/componentes.service';
+import { catchError, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-tecnologicos',
@@ -12,7 +14,7 @@ export class TecnologicosComponent implements OnInit {
 
   productDialog!: boolean;
   tecnologicos!: bienes_Tecnologicos[];
-  tecnologico!: bienes_Tecnologicos;
+  //tecnologico!: bienes_Tecnologicos;
 
   cities: SelectItem[] = [];
   selectedDrop: SelectItem = { value: '' };
@@ -21,7 +23,9 @@ export class TecnologicosComponent implements OnInit {
   selectedDropb: SelectItem = { value: '' };
 
   loading = [false, false, false, false];
-  constructor(private tecnologicosService: BienestecnologicosService) {
+
+  constructor(private tecnologicosService: BienestecnologicosService, private componente_service: componentesService) {
+
     this.cities = [
       { label: 'Decanato', value: { id: 1, name: 'Decanato', code: 'NY' } },
       { label: 'Laboratorio CTT', value: { id: 2, name: 'Laboratorio CTT', code: 'RM' } },
@@ -46,15 +50,24 @@ export class TecnologicosComponent implements OnInit {
   }
 
   cargarBienesTecnologicos(): void {
-    this.tecnologicosService.getBienesTecnologicos()
-      .subscribe(data => {
-        this.tecnologicos = data;
-        console.log(data)
+    forkJoin({
+      bienesTecnologicos: this.tecnologicosService.getBienesTecnologicos(),
+      componentes: this.componente_service.getComponentes()
+    }).pipe(
+      catchError(error => {
+        console.error('Error al cargar datos', error);
+        return []; // o manejo de error adecuado
+      })
+    ).subscribe(({ bienesTecnologicos, componentes }) => {
+      bienesTecnologicos.forEach(t => {
+        t.componentes = componentes.filter(c => c.id_bien_per === t.id_bien_tec);
       });
+      this.tecnologicos = bienesTecnologicos;
+      console.log(this.tecnologicos);
+    });
   }
-
   openNew() {
-    this.tecnologico = {};
+    //this.tecnologico = {};
     this.productDialog = true;
   }
 

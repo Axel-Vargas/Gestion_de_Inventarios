@@ -1,8 +1,8 @@
-<div class="card-table mb-0">
+
     <div class="col-12">
         <div class="card">
             <p-toast></p-toast>
-            <p-table [value]="tecnologicos" dataKey="name" [tableStyle]="{'min-width': '60rem'}">
+            <p-table [value]="tecnologicos" dataKey="id_bien_tec" [tableStyle]="{'min-width': '60rem'}">
                 <ng-template pTemplate="header">
                     <tr>
                         <th style="width: 5rem"></th>
@@ -16,7 +16,7 @@
                         <th pSortableColumn="estado">ESTADO <p-sortIcon field="estado"></p-sortIcon></th>
                         <th pSortableColumn="codigoUTA">CODIGO UTA <p-sortIcon field="codigoUTA"></p-sortIcon></th>
                         <th pSortableColumn="localizacion">LOCALIZACION <p-sortIcon field="localizacion"></p-sortIcon></th>
-                        <th pSortableColumn="ubicacion">UBICACION <p-sortIcon field="ubicacion"></p-sortIcon></th>
+                        
                         <th pSortableColumn="repotenciado">Repotenciado <p-sortIcon field="repotenciado"></p-sortIcon>
                         </th>
                     </tr>
@@ -28,8 +28,8 @@
                                 class="p-button-text p-button-rounded p-button-plain"
                                 [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                         </td>
-                        <td>{{product.nombre}}</td>
-                        <td><img [src]="'assets/demo/images/product/' + product.image" [alt]="product.nombre" width="100"
+                        <td>{{product.nom_Bien}}</td>
+                        <td><img [src]="product.image" [alt]="product.nombre" width="100"
                                 class="shadow-4" /></td>
                         <td>{{product.atributos}}</td>
                         <td>{{product.marca}}</td>
@@ -39,7 +39,7 @@
                         <td>{{product.estado}}</td>
                         <td>{{product.codigoUTA}}</td>
                         <td>{{product.localizacion}}</td>
-                        <td>{{product.ubicacion}}</td>
+                        
                         <td><span
                                 [class]="'product-badge status-' + product.repotenciado.toLowerCase()">{{product.repotenciado}}</span>
                         </td>
@@ -51,7 +51,7 @@
                     <tr>
                         <td colspan="14">
                             <div class="p-3">
-                                <p-table [value]="product.componentes" dataKey="id">
+                                <p-table [value]="product.componentes" dataKey="id_bien_tec">
                                     <ng-template pTemplate="header">
                     <tr>
                         <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
@@ -65,13 +65,13 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-order>
                     <tr>
-                        <td>{{order.id}}</td>
+                        <td>{{order.id_componente}}</td>
                         <td>{{order.nombre}}</td>
                         <td>{{order.marca}}</td>
                         <td>{{order.modelo}}</td>
-                        <td>{{order.numeroserie}}
-                        <td>{{order.codigouta}}</td>
-                        <td><span [class]="'order-badge order-' + order.estado.toLowerCase()">{{order.estado}}</span></td>
+                        <td>{{order.num_serie}}
+                        <td>{{order.codigoUTA}}</td>
+                        
                         <td><p-button type="button" icon="pi pi-pen-to-square"></p-button></td>
                         <td><p-button type="button" icon="pi pi-trash"></p-button></td>
                     </tr>
@@ -89,4 +89,3 @@
         </p-table>
     </div>
     </div>
-</div>
