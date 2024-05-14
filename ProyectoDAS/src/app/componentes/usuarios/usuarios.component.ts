@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { UsuariosService } from '../../services/usuarios.service';
 import { RolesService } from '../../services/roles.service';
-import {  ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-usuarios',
@@ -13,6 +14,7 @@ export class UsuariosComponent {
   roles: any[] = [];
   selectedRole: any;
 
+  id = '';
   cedula = '';
   nombre = '';
   apellido = '';
@@ -21,13 +23,18 @@ export class UsuariosComponent {
   contrasena = '';
   selectedRol = '';
 
+  usuarioSeleccionado: any;
   cedulaBuscada: string = '';
   tooltipVisible: boolean = false;
   visible: boolean = false;
+  esEdicion: boolean = false;
 
-  constructor(private confirmationService: ConfirmationService, private usuariosService: UsuariosService, private rolService: RolesService, private messageService: MessageService) { }
+  constructor(private route: ActivatedRoute, private router: Router, private confirmationService: ConfirmationService, private usuariosService: UsuariosService, private rolService: RolesService, private messageService: MessageService) { }
 
   ngOnInit(): void {
+    this.route.queryParams.subscribe(params => {
+      this.id = params['id'];
+    });
     this.listarUsuarios();
   }
 
@@ -46,6 +53,25 @@ export class UsuariosComponent {
     );
   }
 
+  cargarUsuario(cedula: string): void {
+    this.usuariosService.obtenerUsuarioPorCedula(cedula).subscribe(
+      (response: any) => {
+        if (response && response.usuarios) {
+          this.usuarios = response.usuarios;
+        } else {
+          this.usuarios = [];
+        }
+      },
+      (error) => {
+        console.error('Usuario no encontrado:', error);
+      }
+    );
+  }
+
+  buscarUsuario() {
+    this.cargarUsuario(this.cedulaBuscada);
+  }
+
   listarRoles(): void {
     this.rolService.obtenerRoles().subscribe(
       (response: any) => {
@@ -59,18 +85,6 @@ export class UsuariosComponent {
         console.error('Error al obtener usuarios:', error);
       }
     );
-  }
-
-  buscarUsuario(): void {
-    this.usuariosService.obtenerUsuarioPorCedula(this.cedulaBuscada)
-      .subscribe(
-        (data) => {
-          this.usuarios = data;
-        },
-        (error) => {
-          console.error('Error al obtener usuario por cédula:', error);
-        }
-      );
   }
 
   eliminarUsuario(id: string) {
@@ -97,7 +111,26 @@ export class UsuariosComponent {
           this.listarUsuarios();
         },
         (error) => {
-          this.mostrarMensaje("Error al registrar el usuario", false);
+          this.mostrarMensaje("Correo ya existente", false);
+        }
+      )
+    };
+  }
+
+  editarUsuario() {
+    console.log(this.id);
+    if (!this.selectedRole || this.cedula == '' || this.nombre == '' || this.apellido == '' || this.telefono == '' || this.correo == '' || this.contrasena == '') {
+      this.mostrarMensaje("Complete todos los campos", false);
+    } else {
+      this.usuariosService.actualizarUsuario(this.id, this.cedula, this.nombre, this.apellido, this.telefono, this.correo, this.contrasena, this.selectedRole.Id_rol, "Activo").subscribe(
+        (response) => {
+          this.mostrarMensaje("Usuario actualizado con éxito", true);
+          this.limpiarFormulario();
+          this.visible = false;
+          this.listarUsuarios();
+        },
+        (error) => {
+          this.mostrarMensaje("Correo ya existente", false);
         }
       )
     };
@@ -111,11 +144,32 @@ export class UsuariosComponent {
     this.tooltipVisible = false;
   }
 
-  showDialog() {
+  showDialogAgregar() {
     this.visible = true;
     this.listarRoles();
   }
+/*
+  showDialogEditar(usuario: any) {
+    const userId = this.id;
 
+    // Modificar la URL para incluir el ID del usuario
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { id: userId },
+      queryParamsHandling: 'merge'
+    });
+    this.usuarioSeleccionado = usuario;
+    this.cedula = usuario.ced_usuario;
+    this.nombre = usuario.nom_usuario;
+    this.apellido = usuario.ape_usuario;
+    this.telefono = usuario.tel_usuario;
+    this.correo = usuario.correo;
+    this.contrasena = usuario.contrasena;
+    this.selectedRole = usuario.Id_rol;
+    this.visible = true;
+    this.listarRoles();
+  }
+*/
   async mostrarMensaje(mensaje: string, exito: boolean) {
     this.messageService.add(
       {
