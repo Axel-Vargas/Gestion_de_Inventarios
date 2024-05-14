@@ -18,9 +18,11 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserByCedula = async (req, res) => {
   try {
     const { cedula } = req.params;
+    const searchTerm = `%${cedula}%`;
 
-    const selectQuery = `SELECT * FROM usuarios WHERE ced_usuario = ?`;
-    connection.query(selectQuery, [cedula], (error, results) => {
+    const selectQuery = `SELECT * FROM usuarios WHERE ced_usuario LIKE ? AND estado = 'Activo'`;
+
+    connection.query(selectQuery, [searchTerm], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
       }
@@ -29,7 +31,7 @@ exports.getUserByCedula = async (req, res) => {
         return res.status(404).json({ mensaje: 'Usuario no encontrado' });
       }
 
-      res.status(200).json({ usuario: results[0] });
+      res.status(200).json({ usuarios: results });
     });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -94,9 +96,9 @@ exports.editUser = async (req, res) => {
 
 exports.desactivateUser = async (req, res) => {
   try {
+    const updateQuery = `UPDATE usuarios SET estado = 'Inactivo' WHERE Id_usuario = ?`;
     const { id } = req.body;
 
-    const updateQuery = `UPDATE usuarios SET estado = 'Inactivo' WHERE Id_usuario = ?`;
     connection.query(updateQuery, [id], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
