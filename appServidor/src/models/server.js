@@ -1,7 +1,6 @@
 const express = require('express');
 const connection = require('../db/connection');
 const cors = require('cors');
-
 class Server {
     constructor() {
         this.app = express();
@@ -18,7 +17,11 @@ class Server {
     }
     
     routes() {
-        this.app.use('/api/usuarios', require('../routes/userRoutes.js'));
+       // this.app.use('/api/usuarios', require('../routes/userRoutes.js'));
+        this.app.use('/api/mobiliarios', require('../routes/mobiliarioRoutes.js'));
+        this.app.use('/api/encargados', require('../routes/encargadosRoutes.js'));
+        this.app.use('/api/areas', require('../routes/areasRoutes.js'));
+        
     }
 
     middlewares() {
@@ -40,6 +43,9 @@ class Server {
             });
         });
     }
+  
+
+
 }
 
 module.exports = Server;
