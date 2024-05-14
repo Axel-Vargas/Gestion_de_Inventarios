@@ -1,8 +1,8 @@
 const connection = require('../db/connection');
 
-const getZonas = (req, res) => {
+const getComponentes = (req, res) => {
     try {
-        const sql = 'SELECT * FROM MAESTRO_ZONA';
+        const sql = 'SELECT * FROM Componentes';
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -12,96 +12,96 @@ const getZonas = (req, res) => {
             }
         });
     } catch (error) {
-        console.error('Error en la función getZonas:', error);
+        console.error('Error en la función getComponentes:', error);
         res.status(500).json({ error: 'Error en el servidor' });
     }
 };
 
-const createZona = (req, res) => {
-    const { ZONA_NOMBRE, IP_ZONA, MASCARA_SUBRED, PASARELA, ESTADO } = req.body;
+const createComponente = (req, res) => {
+    const { nombre, marca, modelo, num_serie, codigoUTA, id_bien_per, id_proveedor_per } = req.body;
     try {
-        const sql = 'INSERT INTO MAESTRO_ZONA (ZONA_NOMBRE, IP_ZONA, MASCARA_SUBRED, PASARELA, ESTADO) VALUES (?, ?, ?, ?, ?)';
-        connection.query(sql, [ZONA_NOMBRE, IP_ZONA, MASCARA_SUBRED, PASARELA, ESTADO], (err, data) => {
+        const sql = 'INSERT INTO Componentes (nombre, marca, modelo, num_serie, codigoUTA, id_bien_per, id_proveedor_per) VALUES (?, ?, ?, ?, ?, ?, ?)';
+        connection.query(sql, [nombre, marca, modelo, num_serie, codigoUTA, id_bien_per, id_proveedor_per], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                res.status(201).json({ message: 'Zona creada exitosamente' });
+                res.json({ message: 'Componente creado exitosamente', id: data.insertId });
             }
         });
     } catch (error) {
-        console.error('Error en la función createZona:', error);
+        console.error('Error en la función createComponente:', error);
         res.status(500).json({ error: 'Error en el servidor' });
     }
 };
 
-const getZonaById = (req, res) => {
+const getComponenteById = (req, res) => {
     const { id } = req.params;
     try {
-        const sql = 'SELECT * FROM MAESTRO_ZONA WHERE ID_ZONA = ?';
+        const sql = 'SELECT * FROM Componentes WHERE id_componente = ?';
         connection.query(sql, [id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
                 if (data.length === 0) {
-                    res.status(404).json({ error: 'Zona no encontrada' });
+                    res.status(404).json({ error: 'Componente no encontrado' });
                 } else {
                     res.json(data[0]);
                 }
             }
         });
     } catch (error) {
-        console.error('Error en la función getZonaById:', error);
+        console.error('Error en la función getComponenteById:', error);
         res.status(500).json({ error: 'Error en el servidor' });
     }
 };
 
-const updateZona = (req, res) => {
+const updateComponente = (req, res) => {
     const { id } = req.params;
-    const { ZONA_NOMBRE, IP_ZONA, MASCARA_SUBRED, PASARELA, ESTADO } = req.body;
+    const { nombre, marca, modelo, num_serie, codigoUTA, id_bien_per, id_proveedor_per } = req.body;
     try {
-        const sql = 'UPDATE MAESTRO_ZONA SET ZONA_NOMBRE = ?, IP_ZONA = ?, MASCARA_SUBRED = ?, PASARELA = ?, ESTADO = ? WHERE ID_ZONA = ?';
-        connection.query(sql, [ZONA_NOMBRE, IP_ZONA, MASCARA_SUBRED, PASARELA, ESTADO, id], (err, data) => {
+        const sql = 'UPDATE Componentes SET nombre = ?, marca = ?, modelo = ?, num_serie = ?, codigoUTA = ?, id_bien_per = ?, id_proveedor_per = ? WHERE id_componente = ?';
+        connection.query(sql, [nombre, marca, modelo, num_serie, codigoUTA, id_bien_per, id_proveedor_per, id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                res.json({ message: 'Zona actualizada exitosamente' });
+                res.json({ message: 'Componente actualizado exitosamente' });
             }
         });
     } catch (error) {
-        console.error('Error en la función updateZona:', error);
+        console.error('Error en la función updateComponente:', error);
         res.status(500).json({ error: 'Error en el servidor' });
     }
 };
 
-const deleteZona = (req, res) => {
+const deleteComponente = (req, res) => {
     const { id } = req.params;
     try {
-        const sql = 'DELETE FROM MAESTRO_ZONA WHERE ID_ZONA = ?';
+        const sql = 'DELETE FROM Componentes WHERE id_componente = ?';
         connection.query(sql, [id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
                 if (data.affectedRows === 0) {
-                    res.status(404).json({ error: 'Zona no encontrada' });
+                    res.status(404).json({ error: 'Componente no encontrado' });
                 } else {
-                    res.json({ message: 'Zona eliminada exitosamente' });
+                    res.json({ message: 'Componente eliminado exitosamente' });
                 }
             }
         });
     } catch (error) {
-        console.error('Error en la función deleteZona:', error);
+        console.error('Error en la función deleteComponente:', error);
         res.status(500).json({ error: 'Error en el servidor' });
     }
 };
 
 module.exports = {
-    getZonas,
-    createZona,
-    getZonaById,
-    updateZona,
-    deleteZona
+    getComponentes,
+    createComponente,
+    getComponenteById,
+    updateComponente,
+    deleteComponente
 };

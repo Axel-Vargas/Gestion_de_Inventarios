@@ -9,6 +9,11 @@ $gutter: 1rem;
 
 @import "../node_modules/primeflex/primeflex.scss";
 
+/* Demos */
+@import "assets/demo/styles/flags/flags.css";
+@import "assets/demo/styles/badges.scss";
+@import "assets/demo/styles/code.scss";
+
 .rounded-icon-field .p-inputtext {
     border-radius: 20px;
     padding-left: 2.5rem; 
@@ -37,7 +42,6 @@ $gutter: 1rem;
 .tooltip.show {
     opacity: 1;
 }
-
 
 
 /* Demos borrar 

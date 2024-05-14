@@ -6,14 +6,16 @@
         <div class="flex justify-content-between flex-wrap">
             <div class="floating-button flex align-items-center">
                 <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar usuario</span>
-                <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()" (mouseleave)="hideTooltip()"></button>
+                <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
+                    (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
             </div>
             <p-iconField class="rounded-icon-field" iconPosition="left">
                 <p-inputIcon styleClass="pi pi-search" />
-                <input type="text" pInputText placeholder="Buscar" />
+                <input type="text" [(ngModel)]="cedulaBuscada" (ngModelChange)="buscarUsuario()" pInputText placeholder="Buscar" />
             </p-iconField>
         </div>
     </div>
+<<<<<<< HEAD
     <p-table [value]="[{}]" [tableStyle]="{ 'min-width': '100%' }">
         <ng-template pTemplate="header" [paginator]="true" [rows]="9" responsiveLayout="scroll">
             <tr>
@@ -67,3 +69,120 @@
         </ng-template>
     </p-table>
 </div>
+=======
+    <div style="max-height: 21rem; overflow-y: auto">
+        <p-table [value]="usuarios" [tableStyle]="{ 'min-width': '100%'}">
+            <ng-template pTemplate="header" responsiveLayout="scroll">
+                <tr>
+                    <th>Cédula</th>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Contraseña</th>
+                    <th>Rol</th>
+                    <th>Editar</th>
+                    <th>Eliminar</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-usuario>
+                <tr>
+                    <td style="width: 30%; min-width: 7rem;">{{ usuario.cedula }}</td>
+                    <td style="width: 30%; min-width: 7rem;">{{ usuario.nombre }}</td>
+                    <td style="width: 30%; min-width: 7rem;">{{ usuario.apellido }}</td>
+                    <td style="width: 30%; min-width: 7rem;">{{ usuario.telefono }}</td>
+                    <td style="width: 30%; min-width: 7rem;">{{ usuario.correo }}</td>
+                    <td style="width: 30%; min-width: 7rem;">{{ usuario.contrasena }}</td>
+                    <td style="width: 30%; min-width: 7rem;">{{ usuario.id_rol_per }}</td>
+                    <td style="width: 15%;">
+                        <button pButton pRipple type="button" icon="pi pi-pen-to-square"
+                            class="p-button p-component p-button-text p-button-icon-only"></button>
+                    </td>
+                    <td style="width: 15%;">
+                        <button pButton  (click)="confirm(usuario.id_usuario)" pRipple type="button" icon="pi pi-trash"
+                            class="p-button p-component p-button-text p-button-trash"></button>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+<p-dialog  header="Agregar Usuario" [modal]="true" [(visible)]="visible" [style]="{ width: '37rem', height: '30rem'}">
+    <div class="flex flex-wrap justify-content-between ap-3">
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%; ">
+            <label for="rol" class="font-semibold w-6rem">Rol</label>
+            <p-dropdown [options]="roles" optionLabel="nombre" placeholder="Seleccione un rol" autoWidth="false"
+                [style]="{'width':'15.9rem'}" [(ngModel)]="selectedRole"></p-dropdown>
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="cedula" class="font-semibold w-6rem">Cédula</label>
+            <input pInputText id="cedula" class="flex-auto" autocomplete="off" [(ngModel)]="cedula" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="nombre" class="font-semibold w-6rem">Nombre</label>
+            <input pInputText id="nombre" class="flex-auto" autocomplete="off" [(ngModel)]="nombre" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="apellido" class="font-semibold w-6rem">Apellido</label>
+            <input pInputText id="apellido" class="flex-auto" autocomplete="off" [(ngModel)]="apellido" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="telefono" class="font-semibold w-6rem">Teléfono</label>
+            <input pInputText id="telefono" class="flex-auto" autocomplete="off" [(ngModel)]="telefono" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="correo" class="font-semibold w-6rem">Correo</label>
+            <input pInputText id="correo" class="flex-auto" autocomplete="off" [(ngModel)]="correo" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="contrasena" class="font-semibold w-6rem">Contraseña</label>
+            <input pInputText id="contrasena" class="flex-auto" autocomplete="off" [(ngModel)]="contrasena" />
+        </div>
+
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button label="Guardar" (click)="registrarUsuario()" (click)="visible = false" [rounded]="true"></p-button>
+    </div>
+</p-dialog>
+<!--
+<p-dialog header="Editar Usuario" [modal]="true" [(visible)]="visible" [style]="{ width: '37rem', height: '30rem'}">
+    <div class="flex flex-wrap justify-content-between ap-3 pt-4">
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%; ">
+            <label for="rol" class="font-semibold w-6rem">Rol</label>
+            <p-dropdown [options]="roles" optionLabel="nombre" placeholder="Seleccione un rol" autoWidth="false"
+                [style]="{'width':'15.9rem'}" [(ngModel)]="selectedRole"></p-dropdown>
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="cedula" class="font-semibold w-6rem">Cédula</label>
+            <input pInputText id="cedula" class="flex-auto" autocomplete="off" [(ngModel)]="cedula" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="nombre" class="font-semibold w-6rem">Nombre</label>
+            <input pInputText id="nombre" class="flex-auto" autocomplete="off" [(ngModel)]="nombre" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="apellido" class="font-semibold w-6rem">Apellido</label>
+            <input pInputText id="apellido" class="flex-auto" autocomplete="off" [(ngModel)]="apellido" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="telefono" class="font-semibold w-6rem">Teléfono</label>
+            <input pInputText id="telefono" class="flex-auto" autocomplete="off" [(ngModel)]="telefono" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="correo" class="font-semibold w-6rem">Correo</label>
+            <input pInputText id="correo" class="flex-auto" autocomplete="off" [(ngModel)]="correo" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="contrasena" class="font-semibold w-6rem">Contraseña</label>
+            <input pInputText id="contrasena" class="flex-auto" autocomplete="off" [(ngModel)]="contrasena" />
+        </div>
+
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button label="Editar" (click)="editarUsuario()" (click)="visible = false" [rounded]="true"></p-button>
+    </div>
+</p-dialog>
+-->
+<p-toast position="bottom-right"></p-toast>
+<p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425">
+>>>>>>> dd3cc37e852f73bfc1117e3cdd6fc3c9b75fd2fd

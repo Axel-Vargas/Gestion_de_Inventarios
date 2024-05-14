@@ -8,13 +8,17 @@ import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
+import { MenuModule } from 'primeng/menu';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 
 @NgModule({
   declarations: [
-    MobiliariosComponent
+    MobiliariosComponent,
+    
   ],
   imports: [
     CommonModule,
@@ -25,7 +29,10 @@ import { DropdownModule } from 'primeng/dropdown';
     InputIconModule,
     InputTextModule,
     FormsModule,
-    DropdownModule
+    DropdownModule,
+    DialogModule,
+    ConfirmDialogModule,
+    MenuModule
   ]
 })
 export class MobiliariosModule { }
