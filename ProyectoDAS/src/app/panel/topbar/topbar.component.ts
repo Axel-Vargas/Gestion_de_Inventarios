@@ -24,15 +24,26 @@ export class TopbarComponent {
   }
 
   getDialogStyle() {
-        if (window.matchMedia("(max-width: 768px)").matches) { 
-          return { 'width': '90%' };
-        } else { // Pantallas grandes
-          return { 'width': '40%' };
-        }
-      }
-    
+    if (window.matchMedia("(max-width: 768px)").matches) { 
+      return { 'width': '90%' };
+    } else { // Pantallas grandes
+      return { 'width': '40%' };
+    }
+  }
 
-  3
+
+onCodeResult(result: string): void {
+      this.displayQRScanner = false;
+      console.log('QR Code Result:', result);
+      // Asegúrate de que el resultado es una URL válida antes de intentar redirigir
+      if (this.isValidUrl(result)) {
+        // Extraer el path de la URL y navegar
+        let url = new URL(result);
+        this.route.navigateByUrl(url.pathname + url.search); // Incluye la búsqueda para mantener parámetros de query si existen
+      } else {
+        console.error('El resultado escaneado no es una URL válida:', result);
+      }
+    }
   
   4
 
