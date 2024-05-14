@@ -54,7 +54,12 @@ onCodeResult(result: string): void {
         }
       }
 
-  5
+    camerasFoundHandler(devices: MediaDeviceInfo[]): void { 
+          console.log(devices);
+        }
+        onModalHide(): void {
+          this.displayQRScanner = false; 
+        }
 
 
   ngOnInit() {
