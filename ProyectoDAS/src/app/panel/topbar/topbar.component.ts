@@ -45,7 +45,14 @@ onCodeResult(result: string): void {
       }
     }
   
-  4
+  isValidUrl(url: string): boolean {
+        try {
+          new URL(url);
+          return true;
+        } catch (_) {
+          return false;
+        }
+      }
 
   5
 
