@@ -2,7 +2,7 @@ const connection = require('../db/connection');
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const selectQuery = `SELECT * FROM usuarios WHERE estado = 'Activo'`;
+    const selectQuery = `SELECT * FROM usuarios`;
     connection.query(selectQuery, (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -20,7 +20,7 @@ exports.getUserByCedula = async (req, res) => {
     const { cedula } = req.params;
     const searchTerm = `%${cedula}%`;
 
-    const selectQuery = `SELECT * FROM usuarios WHERE ced_usuario LIKE ? AND estado = 'Activo'`;
+    const selectQuery = `SELECT * FROM usuarios WHERE cedula LIKE ?`;
 
     connection.query(selectQuery, [searchTerm], (error, results) => {
       if (error) {
@@ -52,7 +52,7 @@ exports.addUser = async (req, res) => {
         return res.status(400).json({ mensaje: 'El correo ya está en uso' });
       }
 
-      const insertQuery = `INSERT INTO usuarios (ced_usuario, nom_usuario, ape_usuario, tel_usuario, correo, contrasena, Id_rol, estado) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+      const insertQuery = `INSERT INTO usuarios (cedula, nombre, apellido, correo, telefono, contrasena, id_rol_per) VALUES (?, ?, ?, ?, ?, ?, ?)`;
       connection.query(insertQuery, [cedula, nombre, apellido, telefono, correo, contrasena, rol, estado], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -94,17 +94,22 @@ exports.editUser = async (req, res) => {
   }
 };
 
-exports.desactivateUser = async (req, res) => {
+exports.deleteUser = async (req, res) => {
   try {
-    const updateQuery = `UPDATE usuarios SET estado = 'Inactivo' WHERE Id_usuario = ?`;
-    const { id } = req.body;
+    const userId = req.params.id;
 
-    connection.query(updateQuery, [id], (error, results) => {
+    const deleteQuery = `DELETE FROM usuarios WHERE id_usuario = ?`;
+
+    connection.query(deleteQuery, [userId], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
       }
 
-      res.status(200).json({ mensaje: 'Usuario dado de baja exitosamente' });
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+      }
+
+      res.status(200).json({ mensaje: 'Usuario eliminado exitosamente' });
     });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error interno del servidor' });

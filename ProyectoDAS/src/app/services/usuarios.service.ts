@@ -24,8 +24,8 @@ export class UsuariosService {
     return this.http.get<any[]>(`${this.API}/${id}`);
   }
 
-  insertarUsuario(cedula: string, nombre: string, apellido: string, telefono: string, correo: string, contrasena: string, rol: string, estado:string) {
-    return this.http.post(this.API, { cedula, nombre, apellido, telefono, correo, contrasena, rol, estado})
+  insertarUsuario(cedula: string, nombre: string, apellido: string, correo: string, telefono: string, contrasena: string, rol: string) {
+    return this.http.post(this.API, { cedula, nombre, apellido, correo, telefono, contrasena, rol})
   }
 
   actualizarUsuario(id: String, cedula: string, nombre: string, apellido: string, telefono: string, correo: string, contrasena: string, rol: string, estado:string) {
@@ -33,7 +33,7 @@ export class UsuariosService {
   }
 
   eliminarUsuario(id: string) {
-    return this.http.put(`${this.API}/${id}/desactivate`, {id});
+    return this.http.delete(`${this.API}/${id}`);
   }
 
   autenticarUsuario(usuario: string, contrasena: string): Observable<any> {

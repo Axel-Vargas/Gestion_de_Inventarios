@@ -76,10 +76,11 @@ exports.editEncargado = async (req, res) => {
 
 exports.deleteEncargado = async (req, res) => {
   try {
-    const deleteQuery = `DELETE FROM encargados WHERE Id_encargado = ?`;
-    const { id } = req.params;
+    const encargadoId = req.params.id;
 
-    connection.query(deleteQuery, [id], (error, results) => {
+    const deleteQuery = `DELETE FROM encargados WHERE id_encargado = ?`;
+
+    connection.query(deleteQuery, [encargadoId], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
       }

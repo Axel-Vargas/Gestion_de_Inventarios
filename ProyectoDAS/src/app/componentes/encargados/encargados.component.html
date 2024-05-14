@@ -40,7 +40,7 @@
                             class="p-button p-component p-button-text p-button-icon-only"></button>
                     </td>
                     <td style="width: 15%;">
-                        <button pButton (click)="confirm(encargado.Id_encargado)" pRipple type="button" icon="pi pi-trash"
+                        <button pButton (click)="confirm(encargado.id_encargado)" pRipple type="button" icon="pi pi-trash"
                             class="p-button p-component p-button-text p-button-trash"></button>
                     </td>
                 </tr>
@@ -49,7 +49,7 @@
     </div>
 </div>
 <p-dialog header="Agregar Encargado" [modal]="true" [(visible)]="visible" [style]="{ width: '37rem', height: '25rem'}">
-    <div class="flex flex-wrap gap-3 pt-4">
+    <div class="flex flex-wrap gap-3">
         <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
             <label for="username" class="font-semibold w-6rem">Cédula</label>
             <input pInputText id="username" class="flex-auto" autocomplete="off" [(ngModel)]="cedula"/>

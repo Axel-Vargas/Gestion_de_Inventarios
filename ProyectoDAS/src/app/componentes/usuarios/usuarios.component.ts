@@ -103,7 +103,7 @@ export class UsuariosComponent {
     if (!this.selectedRole || this.cedula == '' || this.nombre == '' || this.apellido == '' || this.telefono == '' || this.correo == '' || this.contrasena == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      this.usuariosService.insertarUsuario(this.cedula, this.nombre, this.apellido, this.telefono, this.correo, this.contrasena, this.selectedRole.Id_rol, "Activo").subscribe(
+      this.usuariosService.insertarUsuario(this.cedula, this.nombre, this.apellido, this.correo, this.telefono, this.contrasena, this.selectedRole.id_rol).subscribe(
         (response) => {
           this.mostrarMensaje("Usuario registrado con éxito", true);
           this.limpiarFormulario();
@@ -180,7 +180,7 @@ export class UsuariosComponent {
 
   confirm(id: string) {
     this.confirmationService.confirm({
-      message: '¿Seguro que desea dar de baja al Usuario?',
+      message: '¿Seguro que desea eliminar el Usuario?',
       header: 'Confirmación',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {

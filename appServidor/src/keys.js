@@ -2,7 +2,7 @@ const database = {
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'controltec'
+    database: 'proyectodas'
 };
 
 module.exports = database;
