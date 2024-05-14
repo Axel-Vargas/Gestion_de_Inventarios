@@ -32,7 +32,7 @@ export class TopbarComponent {
   }
 
 
-onCodeResult(result: string): void {
+  onCodeResult(result: string): void {
       this.displayQRScanner = false;
       console.log('QR Code Result:', result);
       // Asegúrate de que el resultado es una URL válida antes de intentar redirigir
