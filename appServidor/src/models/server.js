@@ -1,6 +1,8 @@
 const express = require('express');
 const connection = require('../db/connection');
 const cors = require('cors');
+const path = require('path');
+
 class Server {
     constructor() {
         this.app = express();
@@ -22,12 +24,21 @@ class Server {
         this.app.use('/api/roles', require('../routes/rolRoutes.js'));
         this.app.use('/api/usuarios', require('../routes/userRoutes.js'));
         this.app.use('/api/encargados', require('../routes/encargadoRoutes.js'));
+        this.app.use('/api/bientecnologico', require('../routes/bienesTecnologicos.routes.js'));
+        this.app.use('/api/componentes', require('../routes/componentes.routes.js'));
+    
+         // Configuración para servir archivos estáticos
+         this.app.use('/public', express.static(path.join(__dirname, '..', 'controllers', 'public')));
 
     }
 
     middlewares() {
         this.app.use(express.json());
-        this.app.use(cors());
+        this.app.use(cors({
+            origin: '*',
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        }));
     }
 
     conectarDB() {

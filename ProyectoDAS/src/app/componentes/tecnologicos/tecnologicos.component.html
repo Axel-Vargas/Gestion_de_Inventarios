@@ -1,66 +1,91 @@
-<div class="card-table mb-0">
-    <div class="flex flex-column mb-3">
-        <div>
-            <span class="flex mb-5">Bienes Tecnológicos</span>
+
+    <div class="col-12">
+        <div class="card">
+            <p-toast></p-toast>
+            <p-table [value]="tecnologicos" dataKey="id_bien_tec" [tableStyle]="{'min-width': '60rem'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th style="width: 5rem"></th>
+                        <th pSortableColumn="nombre">NOMBRE<p-sortIcon field="nombre"></p-sortIcon></th>
+                        <th>QR</th>
+                        <th pSortableColumn="atributos">ATRIBUTOS <p-sortIcon field="atributos"></p-sortIcon></th>
+                        <th pSortableColumn="marca">MARCA <p-sortIcon field="marca"></p-sortIcon></th>
+                        <th pSortableColumn="modelo">MODELO <p-sortIcon field="modelo"></p-sortIcon></th>
+                        <th pSortableColumn="num_serie">N. SERIE <p-sortIcon field="num_serie"></p-sortIcon></th>
+                        <th pSortableColumn="fecha_adquisicion">FEC ADQUISICION <p-sortIcon field="fecha_adquisicion"></p-sortIcon></th>
+                        <th pSortableColumn="estado">ESTADO <p-sortIcon field="estado"></p-sortIcon></th>
+                        <th pSortableColumn="codigoUTA">CODIGO UTA <p-sortIcon field="codigoUTA"></p-sortIcon></th>
+                        <th pSortableColumn="localizacion">LOCALIZACION <p-sortIcon field="localizacion"></p-sortIcon></th>
+                        
+                        <th pSortableColumn="repotenciado">Repotenciado <p-sortIcon field="repotenciado"></p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-product let-expanded="expanded">
+                    <tr>
+                        <td>
+                            <button type="button" pButton pRipple [pRowToggler]="product"
+                                class="p-button-text p-button-rounded p-button-plain"
+                                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
+                        </td>
+                        <td>{{product.nom_Bien}}</td>
+                        <td><img [src]="product.image" [alt]="product.nombre" width="100"
+                                class="shadow-4" /></td>
+                        <td>{{product.atributos}}</td>
+                        <td>{{product.marca}}</td>
+                        <td>{{product.modelo}}</td>
+                        <td>{{product.num_serie}}</td>
+                        <td>{{product.fecha_adquisicion}}</td>
+                        <td>{{product.estado}}</td>
+                        <td>{{product.codigoUTA}}</td>
+                        <td>{{product.localizacion}}</td>
+                        
+                        <td><span
+                                [class]="'product-badge status-' + product.repotenciado.toLowerCase()">{{product.repotenciado}}</span>
+                        </td>
+                        <td><p-button type="button" icon="pi pi-pen-to-square"></p-button></td>
+                        <td><p-button type="button" icon="pi pi-trash"></p-button></td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="rowexpansion" let-product>
+                    <tr>
+                        <td colspan="14">
+                            <div class="p-3">
+                                <p-table [value]="product.componentes" dataKey="id_bien_tec">
+                                    <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="id">ID <p-sortIcon field="id"></p-sortIcon></th>
+                        <th pSortableColumn="nombre">NOMBRE <p-sortIcon field="nombre"></p-sortIcon></th>
+                        <th pSortableColumn="marca">MARCA <p-sortIcon field="marca"></p-sortIcon></th>
+                        <th pSortableColumn="modelo">MODELO <p-sortIcon field="modelo"></p-sortIcon></th>
+                        <th pSortableColumn="numeroserie">N. SERIE <p-sortIcon field="numeroserie"></p-sortIcon></th>
+                        <th pSortableColumn="codigouta">CODIGO UTA <p-sortIcon field="codigouta"></p-sortIcon></th>
+                        <th style="width: 3rem"></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-order>
+                    <tr>
+                        <td>{{order.id_componente}}</td>
+                        <td>{{order.nombre}}</td>
+                        <td>{{order.marca}}</td>
+                        <td>{{order.modelo}}</td>
+                        <td>{{order.num_serie}}
+                        <td>{{order.codigoUTA}}</td>
+                        
+                        <td><p-button type="button" icon="pi pi-pen-to-square"></p-button></td>
+                        <td><p-button type="button" icon="pi pi-trash"></p-button></td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="6">Sin componentes</td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
-        <div class="flex justify-content-between flex-wrap">
-            <div class="floating-button flex align-items-center">
-                <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar equipo</span>
-                <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()" (mouseleave)="hideTooltip()"></button>
-            </div>
-            <p-iconField class="rounded-icon-field" iconPosition="left">
-                <p-inputIcon styleClass="pi pi-search" />
-                <input type="text" pInputText placeholder="Buscar" />
-            </p-iconField>
-            <div>
-                Filtrar por:
-                <p-dropdown [options]="equipos" [(ngModel)]="selectedCity" optionLabel="name"
-                    placeholder="TODOS" />
-            </div>
-        </div>
+        </td>
+        </tr>
+        </ng-template>
+        </p-table>
     </div>
-    <p-table [value]="[{}]" [tableStyle]="{ 'min-width': '100%' }">
-        <ng-template pTemplate="header" [paginator]="true" [rows]="9" responsiveLayout="scroll">
-            <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Num. Serie</th>
-                <th>Estado</th>
-                <th>Ubicación</th>
-                <th>Localización</th>
-                <th>Fecha de Adquisición</th>
-                <th>Repotenciado</th>
-                <th>Descripción Repotenciación</th>
-                <th>Código Adicional</th>
-                <th>Editar</th>
-                <th>Eliminar</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData>
-            <tr>
-                <td style="width: 30%; min-width: 7rem;">32390807</td>
-                <td style="width: 45%; min-width: 10rem;">Computador de Escritorio</td>
-                <td style="width: 45%; min-width: 7rem;">Dell</td>
-                <td style="width: 30%; min-width: 7rem;">OPTIPLEX 7070</td>
-                <td style="width: 35%; min-width: 9rem;">4J48475</td>
-                <td style="width: 30%; min-width: 7rem;">Nuevo</td>
-                <td style="width: 30%; min-width: 7rem;">Laboratorio CTT</td>
-                <td style="width: 35%; min-width: 7rem;">PC05</td>
-                <td style="width: 30%; min-width: 7rem;">03/05/2023</td>
-                <td style="width: 30%; min-width: 7rem;">Si</td>
-                <td style="width: 35%; min-width: 7rem;">Se añadio Disco Sólido M2 500GB</td>
-                <td style="width: 30%; min-width: 7rem;">523355235</td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-pen-to-square"
-                        class="p-button p-component p-button-text p-button-icon-only"></button>
-                </td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-trash"
-                        class="p-button p-component p-button-text p-button-trash"></button>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
-</div>
+    </div>

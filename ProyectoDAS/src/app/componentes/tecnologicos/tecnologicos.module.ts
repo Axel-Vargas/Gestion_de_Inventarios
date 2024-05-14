@@ -11,7 +11,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 
-
+import { ToastModule } from 'primeng/toast';
+import { RatingModule } from 'primeng/rating';
+import { ToolbarModule } from 'primeng/toolbar';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,10 @@ import { DropdownModule } from 'primeng/dropdown';
     InputIconModule,
     InputTextModule,
     FormsModule,
-    DropdownModule
+    DropdownModule,
+    ToastModule,
+    RatingModule,
+    ToolbarModule
   ]
 })
 export class TecnologicosModule { }
