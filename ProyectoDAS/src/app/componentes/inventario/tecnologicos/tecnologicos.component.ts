@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { SelectItem } from 'primeng/api';
-import { BienestecnologicosService } from '../../services/bienestecnologicos.service';
-import { bienes_Tecnologicos } from '../api/bienesTecnologicos';
-import { componentesService } from '../../services/componentes.service';
+import { BienestecnologicosService } from '../../../services/bienestecnologicos.service';
+import { bienes_Tecnologicos } from '../../api/bienesTecnologicos';
+import { componentesService } from '../../../services/componentes.service';
 import { catchError, forkJoin } from 'rxjs';
 
 @Component({

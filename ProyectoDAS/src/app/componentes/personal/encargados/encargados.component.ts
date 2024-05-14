@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { EncargadosService } from '../../services/encargados.service';
+import { EncargadosService } from '../../../services/encargados.service';
 
 @Component({
   selector: 'app-encargados',

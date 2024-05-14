@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { MobiliariosService } from '../../services/mobiliarios.service';
-import { EncargadoMobiliarioService } from '../../services/encargado.mobiliario.service';
-import { AreaMobiliarioService } from '../../services/area.mobiliario.service';
+import { MobiliariosService } from '../../../services/mobiliarios.service';
+import { EncargadoMobiliarioService } from '../../../services/encargado.mobiliario.service';
+import { AreaMobiliarioService } from '../../../services/area.mobiliario.service';
 import { MessageService } from 'primeng/api';
 
 
