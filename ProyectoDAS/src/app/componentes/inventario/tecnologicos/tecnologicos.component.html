@@ -4,7 +4,7 @@
             <div class="floating-button flex align-items-center">
                 <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Nuevo</span>
                 <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
-                    (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
+                    (mouseleave)="hideTooltip()" (click)="display = true"></button>
             </div>
             <h5>BIENES TECNÓLOGICOS</h5>
             <p-toast></p-toast>
@@ -13,17 +13,16 @@
                 [paginator]="true" [rowsPerPageOptions]="[10,20,30]">
 
                 <ng-template pTemplate="caption">
-                    <div class="flex justify-content-between flex-column sm:flex-row">
-                        <div>
-                            <button pButton label="Clear" class="p-button-outlined mb-2"
-                                icon="pi pi-filter-slash"></button>
-                            <button pButton label="Clear" class="p-button-outlined mb-2"
-                                icon="pi pi-filter-slash"></button>
-                            <button pButton label="Clear" class="p-button-outlined mb-2"
-                                icon="pi pi-filter-slash"></button>
-                            <button pButton label="Clear" class="p-button-outlined mb-2"
-                                icon="pi pi-filter-slash"></button>
+                    <div class="flex justify-content-between flex-column sm:flex-row" style="gap: 6px;">
+                        <div class="flex justify-content-between flex-column sm:flex-row" style="gap: 6px;">
+                            <p-dropdown class="w-full" [options]="categories" optionLabel="name"placeholder="Selecciona un bloque" filter="true" class="fixed-width-dropdown"></p-dropdown>
+                            <p-dropdown class="w-full" [options]="categories" optionLabel="name"
+                                placeholder="Selecciona un area" filter="true"
+                                class="fixed-width-dropdown"></p-dropdown>
+                            <p-button label="Cargar" icon="pi pi-search" [loading]="loading[0]"
+                                (onClick)="load(0)"></p-button>
                         </div>
+
                         <span class="p-input-icon-left mb-2">
                             <i class="pi pi-search"></i>
                             <input pInputText type="text" #filter placeholder="Buscar" class="w-full" />
@@ -32,7 +31,7 @@
                 </ng-template>
 
                 <ng-template pTemplate="header">
-                    <tr >
+                    <tr>
                         <th style="width: 5rem"></th>
                         <th pSortableColumn="qr">QR</th>
                         <th pSortableColumn="nombre">NOMBRE<p-sortIcon field="nombre"></p-sortIcon></th>
@@ -40,10 +39,12 @@
                         <th pSortableColumn="marca">MARCA <p-sortIcon field="marca"></p-sortIcon></th>
                         <th pSortableColumn="modelo">MODELO <p-sortIcon field="modelo"></p-sortIcon></th>
                         <th pSortableColumn="num_serie">N. SERIE <p-sortIcon field="num_serie"></p-sortIcon></th>
-                        <th pSortableColumn="fecha_adquisicion">FE. ADQUISICION <p-sortIcon field="fecha_adquisicion"></p-sortIcon></th>
+                        <th pSortableColumn="fecha_adquisicion">FE. ADQUISICION <p-sortIcon
+                                field="fecha_adquisicion"></p-sortIcon></th>
                         <th pSortableColumn="estado">ESTADO <p-sortIcon field="estado"></p-sortIcon></th>
                         <th pSortableColumn="codigoUTA">CODIGO UTA <p-sortIcon field="codigoUTA"></p-sortIcon></th>
-                        <th pSortableColumn="localizacion">LOCALIZACION <p-sortIcon field="localizacion"></p-sortIcon></th>
+                        <th pSortableColumn="localizacion">LOCALIZACION <p-sortIcon field="localizacion"></p-sortIcon>
+                        </th>
                         <th pSortableColumn="repotenciado">REPOTENCIADO <p-sortIcon field="repotenciado"></p-sortIcon>
                         <th pSortableColumn="acciones">ACCIONES</th>
                     </tr>
@@ -61,7 +62,7 @@
                         <td>{{product.marca}}</td>
                         <td>{{product.modelo}}</td>
                         <td>{{product.num_serie}}</td>
-                        <td>{{product.fecha_adquisicion}}</td>
+                        <td>{{ product.fecha_adquisicion | date:'dd/MM/yyyy' }}</td>
                         <td>{{product.estado}}</td>
                         <td>{{product.codigoUTA}}</td>
                         <td>{{product.localizacion}}</td>
@@ -70,7 +71,7 @@
                             </span>
                         </td>
                         <td class="flex flex-row align-items-center sm:flex-col" style="gap: 8px;">
-                            <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded" ></p-button>
+                            <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"></p-button>
                             <p-button type="button" icon="pi pi-trash" class="p-button-rounded"></p-button>
                             <p-button type="button" icon="pi pi-sync" class="p-button-rounded"></p-button>
                         </td>
@@ -103,7 +104,7 @@
                         <td>{{order.num_serie}}
                         <td>{{order.codigoUTA}}</td>
                         <td class="flex flex-row align-items-center sm:flex-col" style="gap: 8px;">
-                            <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded" ></p-button>
+                            <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"></p-button>
                             <p-button type="button" icon="pi pi-trash" class="p-button-rounded"></p-button>
                             <p-button type="button" icon="pi pi-trash" class="p-button-rounded"></p-button>
                         </td>
@@ -122,4 +123,86 @@
         </p-table>
     </div>
 </div>
+
+<!-- Form para agregar bien -->
+
+<p-dialog header="Agregar Inventario" [(visible)]="display" [modal]="true" [style]="{width: '40vw', minWidth: '300px'}">
+    <form [formGroup]="inventoryForm" (ngSubmit)="guardarBienesTecnologicos()">
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="firstname2">Selecciona el Bloque </label>
+                    <p-dropdown id="firstname2" [options]="categories" optionLabel="name" placeholder="Selecciona" filter="true"
+                                class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                </div>
+                <div class="field col">
+                    <label for="firstname2">Selecciona el Área</label>
+                    <p-dropdown id="firstname2" [options]="categories" optionLabel="name" placeholder="Selecciona" filter="true"
+                                class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="firstname2">Selecciona el Tipo</label>
+                    <p-dropdown id="firstname2" [options]="categories" optionLabel="name" placeholder="Selecciona" filter="true"
+                                class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                </div>
+                <div class="field col">
+                    <label for="firstname2">Selecciona Proveedor</label>
+                    <p-dropdown id="firstname2" [options]="categories" optionLabel="name" placeholder="Selecciona" filter="true"
+                                class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    
+                    <label for="firstname2">Repotenciado</label>
+                    <p-dropdown id="firstname2" [options]="categories" optionLabel="name" placeholder="Selecciona" filter="true"
+                                class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                </div>
+                <div class="field col">
+                    <label for="modelo">Modelo</label>
+                    <input id="modelo" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="num_serie">Numero de serie</label>
+                    <input id="num_serie" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
+                <div class="field col">
+                    <label for="fecha_adquisicion">Fecha de Adquisición</label>
+                    <input id="fecha_adquisicion" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
+            </div>
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="estado">Estado</label>
+                    <input id="estado" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
+                <div class="field col">
+                    <label for="codigoUTA">Código UTA</label>
+                    <input id="codigoUTA" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
+            </div>
+
+            <div class="formgrid grid">
+                <div class="field col">
+                    <label for="marca">Marca</label>
+                    <input id="marca" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                    
+                </div>
+                <div class="field col">
+                    <label for="localizacion">Localización</label>
+                    <input id="localizacion" type="text" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+                </div>
+            </div>
+            
+            
+        <p-footer class="flex justify-content-end gap-3" >
+            <button pButton type="submit" label="Guardar" class="p-button-success"></button>
+            <button pButton type="button" label="Cancelar" class="p-button-secondary"(click)="display = false"></button>
+        </p-footer>
+    </form>
+</p-dialog>
+
 </div>

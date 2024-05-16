@@ -4,11 +4,20 @@ import { BienestecnologicosService } from '../../../services/bienestecnologicos.
 import { bienes_Tecnologicos } from '../../api/bienesTecnologicos';
 import { componentesService } from '../../../services/componentes.service';
 import { catchError, forkJoin } from 'rxjs';
+import { DialogService } from 'primeng/dynamicdialog';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+
+interface Category {
+  name: string;
+  code: string;
+}
 
 @Component({
   selector: 'app-tecnologicos',
   templateUrl: './tecnologicos.component.html',
-  styleUrl: './tecnologicos.component.css'
+  styleUrl: './tecnologicos.component.css',
+  providers: [DialogService]
 })
 export class TecnologicosComponent implements OnInit {
   tooltipVisible: boolean = false;
@@ -17,28 +26,22 @@ export class TecnologicosComponent implements OnInit {
   tecnologicos!: bienes_Tecnologicos[];
   //tecnologico!: bienes_Tecnologicos;
 
-  cities: SelectItem[] = [];
-  selectedDrop: SelectItem = { value: '' };
-
-  bloque: SelectItem[] = [];
-  selectedDropb: SelectItem = { value: '' };
+  
 
   loading = [false, false, false, false];
 
-  constructor(private tecnologicosService: BienestecnologicosService, private componente_service: componentesService) {
+  display: boolean = false;
+  inventoryForm!: FormGroup;
+  categories: Category[];
+  constructor(private tecnologicosService: BienestecnologicosService,
+               private componente_service: componentesService,
+               private fb: FormBuilder) {
 
-    this.cities = [
-      { label: 'Decanato', value: { id: 1, name: 'Decanato', code: 'NY' } },
-      { label: 'Laboratorio CTT', value: { id: 2, name: 'Laboratorio CTT', code: 'RM' } },
-      { label: 'Laboratorio 8', value: { id: 3, name: 'Laboratorio 8', code: 'LDN' } },
-
-    ];
-    this.bloque = [
-      { label: 'BLOQUE 1', value: { id: 1, name: 'BLOQUE 1', code: 'NY' } },
-      { label: 'BLOQUE 2', value: { id: 2, name: 'BLOQUE 2', code: 'RM' } },
-      { label: 'CIENCIAS APLICADAS', value: { id: 3, name: 'CIENCIAS APLICADAS', code: 'LDN' } },
-
-    ];
+                this.categories = [
+                  { name: 'Computadoras', code: 'COMP' },
+                  { name: 'Proyectores', code: 'PROJ' },
+                  { name: 'Impresoras', code: 'PRNT' }
+                ];
   }
 
   load(index: number) {
@@ -48,6 +51,20 @@ export class TecnologicosComponent implements OnInit {
 
   ngOnInit() {
     this.cargarBienesTecnologicos()
+    this.inventoryForm = this.fb.group({
+      name: ['', Validators.required],
+      description: ['', Validators.required],
+      quantity: [0, Validators.required],
+      category: ['', Validators.required]
+    });
+  }
+
+  guardarBienesTecnologicos(): void {
+    if (this.inventoryForm.valid) {
+      console.log(this.inventoryForm.value);
+      // Aquí puedes manejar la lógica para enviar los datos al backend
+      this.display = false;
+    }
   }
 
   cargarBienesTecnologicos(): void {
@@ -67,10 +84,6 @@ export class TecnologicosComponent implements OnInit {
       console.log(this.tecnologicos);
     });
   }
-  openNew() {
-    //this.tecnologico = {};
-    this.productDialog = true;
-  }
 
   showTooltip() {
     this.tooltipVisible = true;
@@ -79,11 +92,6 @@ export class TecnologicosComponent implements OnInit {
   hideTooltip() {
     this.tooltipVisible = false;
   }
-
-  showDialogAgregar() {
-    this.visible = true;
-    //this.listarRoles();
-  }
-
+  
 }
 
