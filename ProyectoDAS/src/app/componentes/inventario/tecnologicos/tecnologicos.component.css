@@ -1,1 +1,14 @@
+/* En tu archivo de estilos globales o componentes con ::ng-deep */
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    background-color: #434343; /* Color de fondo */
+    color: #fafafa;              /* Color del texto */
+    font-weight: bold;        /* Peso de la fuente */
+}
+
+::ng-deep .p-datatable .p-sortable-column:hover {
+    background-color: #ad272e;  /* Rojo Intenso al pasar el ratón */
+    color: #FFFFFF;             /* Mantener el texto blanco para el contraste */
+    cursor: pointer;            /* Indicar que el elemento es interactivo */
+}
+
 

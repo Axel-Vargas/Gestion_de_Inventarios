@@ -14,7 +14,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ToastModule } from 'primeng/toast';
 import { RatingModule } from 'primeng/rating';
 import { ToolbarModule } from 'primeng/toolbar';
-
+import { TooltipModule } from 'primeng/tooltip';
 @NgModule({
   declarations: [
     TecnologicosComponent
@@ -31,7 +31,8 @@ import { ToolbarModule } from 'primeng/toolbar';
     DropdownModule,
     ToastModule,
     RatingModule,
-    ToolbarModule
+    ToolbarModule,
+    TooltipModule
   ]
 })
 export class TecnologicosModule { }

@@ -11,7 +11,8 @@ import { catchError, forkJoin } from 'rxjs';
   styleUrl: './tecnologicos.component.css'
 })
 export class TecnologicosComponent implements OnInit {
-
+  tooltipVisible: boolean = false;
+  visible: boolean = false;
   productDialog!: boolean;
   tecnologicos!: bienes_Tecnologicos[];
   //tecnologico!: bienes_Tecnologicos;
@@ -69,6 +70,19 @@ export class TecnologicosComponent implements OnInit {
   openNew() {
     //this.tecnologico = {};
     this.productDialog = true;
+  }
+
+  showTooltip() {
+    this.tooltipVisible = true;
+  }
+
+  hideTooltip() {
+    this.tooltipVisible = false;
+  }
+
+  showDialogAgregar() {
+    this.visible = true;
+    //this.listarRoles();
   }
 
 }
