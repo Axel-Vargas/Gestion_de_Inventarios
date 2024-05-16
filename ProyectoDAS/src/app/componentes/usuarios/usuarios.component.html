@@ -11,15 +11,17 @@
             </div>
             <p-iconField class="rounded-icon-field" iconPosition="left">
                 <p-inputIcon styleClass="pi pi-search" />
-                <input type="text" [(ngModel)]="cedulaBuscada" (ngModelChange)="buscarUsuario()" pInputText placeholder="Buscar" />
+                <input type="text" [(ngModel)]="cedulaBuscada" (ngModelChange)="buscarUsuario()" pInputText
+                    placeholder="Buscar" />
             </p-iconField>
         </div>
     </div>
-<<<<<<< HEAD
-    <p-table [value]="[{}]" [tableStyle]="{ 'min-width': '100%' }">
-        <ng-template pTemplate="header" [paginator]="true" [rows]="9" responsiveLayout="scroll">
+
+<div style="max-height: 21rem; overflow-y: auto">
+    <p-table [value]="usuarios" [tableStyle]="{ 'min-width': '100%'}">
+        <ng-template pTemplate="header" responsiveLayout="scroll">
             <tr>
-                <th>Cedula</th>
+                <th>Cédula</th>
                 <th>Nombre</th>
                 <th>Apellido</th>
                 <th>Teléfono</th>
@@ -30,84 +32,28 @@
                 <th>Eliminar</th>
             </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-rowData>
+        <ng-template pTemplate="body" let-usuario>
             <tr>
-                <td style="width: 30%; min-width: 7rem;">1234567890</td>
-                <td style="width: 45%; min-width: 7rem;">Axel Ronny</td>
-                <td style="width: 45%; min-width: 7rem;">Vargas Villafuerte</td>
-                <td style="width: 30%; min-width: 7rem;">1241241241</td>
-                <td style="width: 35%; min-width: 7rem;">av&#64;uta.edu.ec</td>
-                <td style="width: 30%; min-width: 7rem;">123</td>
-                <td style="width: 30%; min-width: 7rem;">Administrador</td>
+                <td style="width: 30%; min-width: 7rem;">{{ usuario.cedula }}</td>
+                <td style="width: 30%; min-width: 7rem;">{{ usuario.nombre }}</td>
+                <td style="width: 30%; min-width: 7rem;">{{ usuario.apellido }}</td>
+                <td style="width: 30%; min-width: 7rem;">{{ usuario.telefono }}</td>
+                <td style="width: 30%; min-width: 7rem;">{{ usuario.correo }}</td>
+                <td style="width: 30%; min-width: 7rem;">{{ usuario.contrasena }}</td>
+                <td style="width: 30%; min-width: 7rem;">{{ usuario.id_rol_per }}</td>
                 <td style="width: 15%;">
                     <button pButton pRipple type="button" icon="pi pi-pen-to-square"
                         class="p-button p-component p-button-text p-button-icon-only"></button>
                 </td>
                 <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-trash"
-                        class="p-button p-component p-button-text p-button-trash"></button>
-                </td>
-            </tr>
-
-            <tr>
-                <td style="width: 30%; min-width: 7rem;">1234567890</td>
-                <td style="width: 45%; min-width: 7rem;">Elji David</td>
-                <td style="width: 45%; min-width: 7rem;">Flores Salazar</td>
-                <td style="width: 30%; min-width: 7rem;">1241241241</td>
-                <td style="width: 35%; min-width: 7rem;">av&#64;uta.edu.ec</td>
-                <td style="width: 30%; min-width: 7rem;">123</td>
-                <td style="width: 30%; min-width: 7rem;">Administrador</td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-pen-to-square"
-                        class="p-button p-component p-button-text p-button-icon-only"></button>
-                </td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-trash"
+                    <button pButton (click)="confirm(usuario.id_usuario)" pRipple type="button" icon="pi pi-trash"
                         class="p-button p-component p-button-text p-button-trash"></button>
                 </td>
             </tr>
         </ng-template>
     </p-table>
 </div>
-=======
-    <div style="max-height: 21rem; overflow-y: auto">
-        <p-table [value]="usuarios" [tableStyle]="{ 'min-width': '100%'}">
-            <ng-template pTemplate="header" responsiveLayout="scroll">
-                <tr>
-                    <th>Cédula</th>
-                    <th>Nombre</th>
-                    <th>Apellido</th>
-                    <th>Teléfono</th>
-                    <th>Correo</th>
-                    <th>Contraseña</th>
-                    <th>Rol</th>
-                    <th>Editar</th>
-                    <th>Eliminar</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-usuario>
-                <tr>
-                    <td style="width: 30%; min-width: 7rem;">{{ usuario.cedula }}</td>
-                    <td style="width: 30%; min-width: 7rem;">{{ usuario.nombre }}</td>
-                    <td style="width: 30%; min-width: 7rem;">{{ usuario.apellido }}</td>
-                    <td style="width: 30%; min-width: 7rem;">{{ usuario.telefono }}</td>
-                    <td style="width: 30%; min-width: 7rem;">{{ usuario.correo }}</td>
-                    <td style="width: 30%; min-width: 7rem;">{{ usuario.contrasena }}</td>
-                    <td style="width: 30%; min-width: 7rem;">{{ usuario.id_rol_per }}</td>
-                    <td style="width: 15%;">
-                        <button pButton pRipple type="button" icon="pi pi-pen-to-square"
-                            class="p-button p-component p-button-text p-button-icon-only"></button>
-                    </td>
-                    <td style="width: 15%;">
-                        <button pButton  (click)="confirm(usuario.id_usuario)" pRipple type="button" icon="pi pi-trash"
-                            class="p-button p-component p-button-text p-button-trash"></button>
-                    </td>
-                </tr>
-            </ng-template>
-        </p-table>
-    </div>
-</div>
-<p-dialog  header="Agregar Usuario" [modal]="true" [(visible)]="visible" [style]="{ width: '37rem', height: '30rem'}">
+<p-dialog header="Agregar Usuario" [modal]="true" [(visible)]="visible" [style]="{ width: '37rem', height: '30rem'}">
     <div class="flex flex-wrap justify-content-between ap-3">
         <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%; ">
             <label for="rol" class="font-semibold w-6rem">Rol</label>
@@ -185,4 +131,3 @@
 -->
 <p-toast position="bottom-right"></p-toast>
 <p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425">
->>>>>>> dd3cc37e852f73bfc1117e3cdd6fc3c9b75fd2fd
