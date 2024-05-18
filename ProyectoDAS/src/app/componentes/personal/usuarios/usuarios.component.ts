@@ -54,18 +54,19 @@ export class UsuariosComponent {
   }
 
   cargarUsuario(cedula: string): void {
-    this.usuariosService.obtenerUsuarioPorCedula(cedula).subscribe(
-      (response: any) => {
-        if (response && response.usuarios) {
-          this.usuarios = response.usuarios;
-        } else {
+    if (this.cedulaBuscada.trim() === '') {
+      this.listarUsuarios(); 
+    } else {
+      this.usuariosService.obtenerUsuarioPorCedula(this.cedulaBuscada).subscribe(
+        (data: any) => {
+          this.usuarios = data.usuarios;
+        },
+        (error) => {
+          console.error('Error buscando usuario por cédula', error);
           this.usuarios = [];
         }
-      },
-      (error) => {
-        console.error('Usuario no encontrado:', error);
-      }
-    );
+      );
+    }
   }
 
   buscarUsuario() {

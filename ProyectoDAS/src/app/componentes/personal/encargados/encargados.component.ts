@@ -42,18 +42,19 @@ export class EncargadosComponent {
   }
 
   cargarEncargado(cedula: string): void {
-    this.encargadosService.obtenerEncargadoPorCedula(cedula).subscribe(
-      (response: any) => {
-        if (response && response.encargados) {
-          this.encargados = response.encargados;
-        } else {
+    if (this.cedulaBuscada.trim() === '') {
+      this.listarEncargados(); 
+    } else {
+      this.encargadosService.obtenerEncargadoPorCedula(this.cedulaBuscada).subscribe(
+        (data: any) => {
+          this.encargados = data.encargados;
+        },
+        (error) => {
+          console.error('Error buscando encargado por cédula', error);
           this.encargados = [];
         }
-      },
-      (error) => {
-        console.error('Encargado no encontrado:', error);
-      }
-    );
+      );
+    }
   }
 
   buscarEncargado() {

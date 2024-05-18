@@ -18,11 +18,20 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserByCedula = async (req, res) => {
   try {
     const { cedula } = req.params;
-    const searchTerm = `%${cedula}%`;
 
-    const selectQuery = `SELECT * FROM usuarios WHERE cedula LIKE ?`;
+    let selectQuery;
+    let queryParams;
 
-    connection.query(selectQuery, [searchTerm], (error, results) => {
+    if (cedula) {
+      const searchTerm = `%${cedula}%`;
+      selectQuery = `SELECT * FROM usuarios WHERE cedula LIKE ?`;
+      queryParams = [searchTerm];
+    } else {
+      selectQuery = `SELECT * FROM usuarios`;
+      queryParams = [];
+    }
+
+    connection.query(selectQuery, queryParams, (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
       }
