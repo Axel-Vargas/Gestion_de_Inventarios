@@ -113,8 +113,8 @@ export class EncargadosComponent {
 
   confirm(id: string) {
     this.confirmationService.confirm({
-      message: '¿Seguro que desea eliminar al Encargado?',
-      header: 'Confirmación',
+      message: 'El encargado también será eliminado de todos<br>los bienes a los que haya sido asignado',
+      header: '¿Está seguro?',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.eliminarEncargado(id);

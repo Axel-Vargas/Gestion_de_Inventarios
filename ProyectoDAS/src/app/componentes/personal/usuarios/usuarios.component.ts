@@ -181,8 +181,8 @@ export class UsuariosComponent {
 
   confirm(id: string) {
     this.confirmationService.confirm({
-      message: '¿Seguro que desea eliminar el Usuario?',
-      header: 'Confirmación',
+      message: 'Este usuario sera eliminado de forma permanente del registro ',
+      header: '¿Está seguro?',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.eliminarUsuario(id);

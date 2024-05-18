@@ -78,18 +78,26 @@ exports.deleteEncargado = async (req, res) => {
   try {
     const encargadoId = req.params.id;
 
-    const deleteQuery = `DELETE FROM encargados WHERE id_encargado = ?`;
+    const updateBienesQuery = `UPDATE bien_mobiliario SET id_encargado_per = NULL WHERE id_encargado_per = ?`;
 
-    connection.query(deleteQuery, [encargadoId], (error, results) => {
+    connection.query(updateBienesQuery, [encargadoId], (error, results) => {
       if (error) {
-        return res.status(500).json({ mensaje: 'Error interno del servidor' });
+        return res.status(500).json({ mensaje: 'Error interno del servidor al eliminar el encarado de los bienes' });
       }
 
-      if (results.affectedRows === 0) {
-        return res.status(404).json({ mensaje: 'Encargado no encontrado' });
-      }
+      const deleteEncargadoQuery = `DELETE FROM encargados WHERE id_encargado = ?`;
 
-      res.status(200).json({ mensaje: 'Encargado eliminado exitosamente' });
+      connection.query(deleteEncargadoQuery, [encargadoId], (error, results) => {
+        if (error) {
+          return res.status(500).json({ mensaje: 'Error interno del servidor al eliminar el encargado' });
+        }
+
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ mensaje: 'Encargado no encontrado' });
+        }
+
+        res.status(200).json({ mensaje: 'Encargado eliminado exitosamente' });
+      });
     });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error interno del servidor' });
