@@ -1,23 +1,27 @@
-
 <div class="grid">
-	<div class="col-12">
-		<div class="card">
+    <div class="col-12">
+        <div class="card">
+            <div>
+                <span class="flex mb-5">Bienes Tecnológicos</span>
+            </div>
             <p-toast></p-toast>
             <p-table [value]="tecnologicos" dataKey="id_bien_tec" [tableStyle]="{'min-width': '60rem'}">
                 <ng-template pTemplate="header">
                     <tr>
                         <th style="width: 5rem"></th>
+                        <th>Código QR</th>
                         <th pSortableColumn="nombre">NOMBRE<p-sortIcon field="nombre"></p-sortIcon></th>
-                        <th>QR</th>
                         <th pSortableColumn="atributos">ATRIBUTOS <p-sortIcon field="atributos"></p-sortIcon></th>
                         <th pSortableColumn="marca">MARCA <p-sortIcon field="marca"></p-sortIcon></th>
                         <th pSortableColumn="modelo">MODELO <p-sortIcon field="modelo"></p-sortIcon></th>
                         <th pSortableColumn="num_serie">N. SERIE <p-sortIcon field="num_serie"></p-sortIcon></th>
-                        <th pSortableColumn="fecha_adquisicion">FEC ADQUISICION <p-sortIcon field="fecha_adquisicion"></p-sortIcon></th>
+                        <th pSortableColumn="fecha_adquisicion">FEC ADQUISICION <p-sortIcon
+                                field="fecha_adquisicion"></p-sortIcon></th>
                         <th pSortableColumn="estado">ESTADO <p-sortIcon field="estado"></p-sortIcon></th>
                         <th pSortableColumn="codigoUTA">CODIGO UTA <p-sortIcon field="codigoUTA"></p-sortIcon></th>
-                        <th pSortableColumn="localizacion">LOCALIZACION <p-sortIcon field="localizacion"></p-sortIcon></th>
-                        
+                        <th pSortableColumn="localizacion">LOCALIZACION <p-sortIcon field="localizacion"></p-sortIcon>
+                        </th>
+
                         <th pSortableColumn="repotenciado">Repotenciado <p-sortIcon field="repotenciado"></p-sortIcon>
                         </th>
                     </tr>
@@ -29,9 +33,8 @@
                                 class="p-button-text p-button-rounded p-button-plain"
                                 [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                         </td>
+                        <td><img [src]="product.image" [alt]="product.nombre" width="100" class="shadow-4" /></td>
                         <td>{{product.nom_Bien}}</td>
-                        <td><img [src]="product.image" [alt]="product.nombre" width="100"
-                                class="shadow-4" /></td>
                         <td>{{product.atributos}}</td>
                         <td>{{product.marca}}</td>
                         <td>{{product.modelo}}</td>
@@ -40,7 +43,7 @@
                         <td>{{product.estado}}</td>
                         <td>{{product.codigoUTA}}</td>
                         <td>{{product.localizacion}}</td>
-                        
+
                         <td><span
                                 [class]="'product-badge status-' + product.repotenciado.toLowerCase()">{{product.repotenciado}}</span>
                         </td>
@@ -72,7 +75,7 @@
                         <td>{{order.modelo}}</td>
                         <td>{{order.num_serie}}
                         <td>{{order.codigoUTA}}</td>
-                        
+
                         <td><p-button type="button" icon="pi pi-pen-to-square"></p-button></td>
                         <td><p-button type="button" icon="pi pi-trash"></p-button></td>
                     </tr>
@@ -89,5 +92,5 @@
         </ng-template>
         </p-table>
     </div>
-    </div>
+</div>
 </div>

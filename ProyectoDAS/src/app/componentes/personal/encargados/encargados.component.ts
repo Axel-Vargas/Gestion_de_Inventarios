@@ -10,6 +10,8 @@ import { EncargadosService } from '../../../services/encargados.service';
 export class EncargadosComponent {
 
   encargados: any = [];
+
+  id: string = '';
   cedulaBuscada: string = '';
   cedula = '';
   nombre = '';
@@ -19,6 +21,7 @@ export class EncargadosComponent {
 
   tooltipVisible: boolean = false;
   visible: boolean = false;
+  esEdicion: boolean = false;
 
   constructor(private confirmationService: ConfirmationService, private encargadosService: EncargadosService, private messageService: MessageService) { }
 
@@ -91,6 +94,24 @@ export class EncargadosComponent {
     );
   }
 
+  editarEncargado() {
+    if (this.cedula == '' || this.nombre == '' || this.apellido == '' || this.telefono == '' || this.direccion == '') {
+      this.mostrarMensaje("Complete todos los campos", false);
+    } else {
+      this.encargadosService.actualizarEncargado(this.id, this.cedula, this.nombre, this.apellido, this.telefono, this.direccion).subscribe(
+        (response) => {
+          this.mostrarMensaje("Encargado actualizado con éxito", true);
+          this.limpiarFormulario();
+          this.visible = false;
+          this.listarEncargados();
+        },
+        (error) => {
+          this.mostrarMensaje("Hubo un problema", false);
+        }
+      )
+    };
+  }
+
   showTooltip() {
     this.tooltipVisible = true;
   }
@@ -100,6 +121,19 @@ export class EncargadosComponent {
   }
 
   showDialogAgregar() {
+    this.esEdicion = false;
+    this.visible = true;
+    this.limpiarFormulario();
+  }
+
+  showDialogEditar(encargado: any) {
+    this.esEdicion = true;
+    this.cedula = encargado.cedula;
+    this.nombre = encargado.nombre;
+    this.apellido = encargado.apellido;
+    this.telefono = encargado.telefono;
+    this.direccion = encargado.direccion;
+    this.id = encargado.id_encargado;
     this.visible = true;
   }
 

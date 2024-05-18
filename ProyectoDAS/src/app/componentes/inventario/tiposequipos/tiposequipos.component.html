@@ -14,7 +14,6 @@
             </p-iconField>
         </div>
     </div>
-    <zxing-scanner (camerasFound)="camerasFoundHandler($event)" (scanSuccess)="scanSuccessHandler($event)"></zxing-scanner>
     <p-table [value]="[{}]" [tableStyle]="{ 'min-width': '100%' }">
         <ng-template pTemplate="header" [paginator]="true" [rows]="9" responsiveLayout="scroll">
             <tr>

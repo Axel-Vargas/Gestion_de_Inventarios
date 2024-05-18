@@ -42,14 +42,14 @@ exports.addEncargado = async (req, res) => {
   try {
     const { cedula, nombre, apellido, telefono, direccion } = req.body;
 
-      const insertQuery = `INSERT INTO encargados (cedula, nombre, apellido, telefono, direccion) VALUES (?, ?, ?, ?, ?)`;
-      connection.query(insertQuery, [cedula, nombre, apellido, telefono, direccion], (error, results) => {
-        if (error) {
-          return res.status(500).json({ mensaje: 'Error interno del servidor' });
-        }
+    const insertQuery = `INSERT INTO encargados (cedula, nombre, apellido, telefono, direccion) VALUES (?, ?, ?, ?, ?)`;
+    connection.query(insertQuery, [cedula, nombre, apellido, telefono, direccion], (error, results) => {
+      if (error) {
+        return res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
 
-        res.status(201).json({ mensaje: 'Encargado registrado exitosamente' });
-      });
+      res.status(201).json({ mensaje: 'Encargado registrado exitosamente' });
+    });
 
   } catch (error) {
     res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -58,16 +58,17 @@ exports.addEncargado = async (req, res) => {
 
 exports.editEncargado = async (req, res) => {
   try {
-    const { id, cedula, nombre, apellido, telefono, direccion } = req.body;
+    const id = req.params.id;
+    const { cedula, nombre, apellido, telefono, direccion } = req.body;
 
-      const updateQuery = `UPDATE encargados SET cedula = ?, nombre = ?, apellido = ?, telefono = ?, direccion = ? WHERE Id_encargado = ?`;
-      connection.query(updateQuery, [cedula, nombre, apellido, telefono, direccion], (error, results) => {
-        if (error) {
-          return res.status(500).json({ mensaje: 'Error interno del servidor' });
-        }
+    const updateQuery = `UPDATE encargados SET cedula = ?, nombre = ?, apellido = ?, telefono = ?, direccion = ? WHERE id_encargado = ?`;
+    connection.query(updateQuery, [cedula, nombre, apellido, telefono, direccion, id], (error, results) => {
+      if (error) {
+        return res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
 
-        res.status(200).json({ mensaje: 'Información del encargado actualizada exitosamente' });
-      });
+      res.status(200).json({ mensaje: 'Encargado actualizado exitosamente' });
+    });
 
   } catch (error) {
     res.status(500).json({ mensaje: 'Error interno del servidor' });

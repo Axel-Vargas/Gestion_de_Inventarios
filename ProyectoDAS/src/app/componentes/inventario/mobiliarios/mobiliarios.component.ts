@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { MobiliariosService } from '../../../services/mobiliarios.service';
-import { EncargadoMobiliarioService } from '../../../services/encargado.mobiliario.service';
 import { AreaMobiliarioService } from '../../../services/area.mobiliario.service';
 import { MessageService } from 'primeng/api';
+import { EncargadosService } from '../../../services/encargados.service';
 
 
 @Component({
@@ -12,39 +12,39 @@ import { MessageService } from 'primeng/api';
 })
 export class MobiliariosComponent {
 
- mobiliarios: any = [];
- muebles: any[] | undefined;
- encargados:any[]=[];
- areas:any[]=[];
+  mobiliarios: any = [];
+  muebles: any[] | undefined;
+  encargados: any[] = [];
+  areas: any[] = [];
   selectedCity: any;
   selectEncargado: any;
   selectArea: any;
 
   tooltipVisible: boolean = false;
   visible: boolean = false;
-  nombreBuscado:string='';
+  nombreBuscado: string = '';
 
-  id_bien_mob='';
-  bld_bca ='';
-  nombre='';
-  marca='';
-  modelo='';
-  num_serie='';
-  material='';
-  color='';
-  fecha_adquisicion='';
-  estado='';
-  localizacion='';
-  codigoUTA='';
-  valor_contable='';
-  id_encargado_per='';
-  id_area_per='';
+  id_bien_mob = '';
+  bld_bca = '';
+  nombre = '';
+  marca = '';
+  modelo = '';
+  num_serie = '';
+  material = '';
+  color = '';
+  fecha_adquisicion = '';
+  estado = '';
+  localizacion = '';
+  codigoUTA = '';
+  valor_contable = '';
+  id_encargado_per = '';
+  id_area_per = '';
 
 
-        constructor(private mobiliariosService:MobiliariosService,private encargadosService:EncargadoMobiliarioService,private areasService:AreaMobiliarioService
-          ,private messageService: MessageService ) { 
-          this.listarMobiliario()
-        }
+  constructor(private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService
+    , private messageService: MessageService) {
+    this.listarMobiliario()
+  }
   ngOnInit() {
     this.listarMobiliario();
     this.listarEncargadosPorNombre();
@@ -98,10 +98,10 @@ export class MobiliariosComponent {
         if (response && response.mobiliarios) {
           this.mobiliarios = response.mobiliarios;
         } else {
-          this.mobiliarios =[];
+          this.mobiliarios = [];
         }
-       console.log(response)
-      }, 
+        console.log(response)
+      },
       (error) => {
         console.error('Error al obtener mobiliarios:', error);
       }
@@ -134,10 +134,10 @@ export class MobiliariosComponent {
   }
 
   registrarMobiliario() {
-    if (!this.selectEncargado || !this.selectArea || this.id_bien_mob == '' || this.bld_bca  == '' || this.nombre  == '' || this.marca == '' || this.modelo == '' || this.num_serie == ''|| this.fecha_adquisicion == ''|| this.estado == ''|| this.localizacion == ''|| this.codigoUTA == ''|| this.valor_contable == '') {
+    if (!this.selectEncargado || !this.selectArea || this.id_bien_mob == '' || this.bld_bca == '' || this.nombre == '' || this.marca == '' || this.modelo == '' || this.num_serie == '' || this.fecha_adquisicion == '' || this.estado == '' || this.localizacion == '' || this.codigoUTA == '' || this.valor_contable == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      this.mobiliariosService.insertarMobiliaria(this.id_bien_mob, this.bld_bca, this.nombre, this.marca, this.modelo, this.num_serie, this.material, this.color, this.fecha_adquisicion , this.estado, this.localizacion, this.codigoUTA, this.valor_contable, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
+      this.mobiliariosService.insertarMobiliaria(this.id_bien_mob, this.bld_bca, this.nombre, this.marca, this.modelo, this.num_serie, this.material, this.color, this.fecha_adquisicion, this.estado, this.localizacion, this.codigoUTA, this.valor_contable, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
         (response) => {
           this.mostrarMensaje("Bien registrado con Exito", true);
           this.visible = false;
@@ -146,40 +146,40 @@ export class MobiliariosComponent {
           this.listarMobiliario();
         },
         (error) => {
-         // this.mostrarMensaje("Correo ya existente", false);
+          // this.mostrarMensaje("Correo ya existente", false);
         }
       )
     };
   }
 
   showTooltip() {
-      this.tooltipVisible = true;
+    this.tooltipVisible = true;
   }
 
   hideTooltip() {
-      this.tooltipVisible = false;
+    this.tooltipVisible = false;
   }
   showDialog() {
     this.visible = true;
     this.listarMobiliario()
-}
-limpiarFormulario() {
- this.id_bien_mob='';
- this.bld_bca ='';
- this.nombre='';
- this.marca='';
- this.modelo='';
- this.num_serie='';
- this.material='';
- this.color='';
- this.fecha_adquisicion='';
- this.estado='';
- this.localizacion='';
- this.codigoUTA='';
- this.valor_contable='';
-this.selectEncargado = null;
-this.selectArea=null;
-}
+  }
+  limpiarFormulario() {
+    this.id_bien_mob = '';
+    this.bld_bca = '';
+    this.nombre = '';
+    this.marca = '';
+    this.modelo = '';
+    this.num_serie = '';
+    this.material = '';
+    this.color = '';
+    this.fecha_adquisicion = '';
+    this.estado = '';
+    this.localizacion = '';
+    this.codigoUTA = '';
+    this.valor_contable = '';
+    this.selectEncargado = null;
+    this.selectArea = null;
+  }
 
 
 
