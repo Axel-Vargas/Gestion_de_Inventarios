@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { UsuariosService } from '../../services/usuarios.service';
-import { RolesService } from '../../services/roles.service';
+import { UsuariosService } from '../../../services/usuarios.service';
+import { RolesService } from '../../../services/roles.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ActivatedRoute, Router } from '@angular/router';
 
