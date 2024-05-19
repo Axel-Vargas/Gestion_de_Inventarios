@@ -37,8 +37,7 @@ export class MobiliariosComponent {
   localizacion='';
   codigoUTA='';
   valor_contable='';
-  id_encargado_per='';
-  id_area_per='';
+
 
 
         constructor(private mobiliariosService:MobiliariosService,private encargadosService:EncargadoMobiliarioService,private areasService:AreaMobiliarioService
@@ -49,6 +48,8 @@ export class MobiliariosComponent {
     this.listarMobiliario();
     this.listarEncargadosPorNombre();
     this.listarAreas()
+    this.registrarMobiliario()
+    
 
     this.muebles = [
       { name: 'Archivador', code: 'CO' },
@@ -138,7 +139,7 @@ export class MobiliariosComponent {
     // y que fecha_adquisicion también es una cadena que debe ser convertida a un objeto Date
     if (this.bld_bca == '' || this.nombre == '' || this.marca == '' || this.modelo == '' || 
         this.num_serie == '' ||  this.material == '' || this.color == ''|| this.fecha_adquisicion == '' || this.estado == '' || this.localizacion == '' || 
-        this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado ==''|| this.selectAreas=='') {
+        this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado ==''|| this.selectAreas =='')  {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
       const valorContableInt = parseFloat(this.valor_contable);
@@ -157,10 +158,12 @@ export class MobiliariosComponent {
         this.codigoUTA, valorContableInt, this.selectEncargado.id_encargado, this.selectAreas.id_area).subscribe(
         (response) => {
           this.mostrarMensaje("Bien registrado con éxito", true);
+          this.limpiarFormulario();
           this.visible = false;
+          this.listarMobiliario();
           // Opcionales: listarMobiliario, limpiarFormulario, etc.
-          // this.listarMobiliario();
-          // this.limpiarFormulario();
+          // 
+          // 
         },
         (error) => {
           this.mostrarMensaje("Error al registrar el mobiliario", false);
@@ -194,7 +197,6 @@ limpiarFormulario() {
  this.localizacion='';
  this.codigoUTA='';
  this.valor_contable='';
-this.selectEncargado = null;
 }
 
 

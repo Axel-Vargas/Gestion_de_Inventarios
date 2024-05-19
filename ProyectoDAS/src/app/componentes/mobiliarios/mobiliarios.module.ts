@@ -13,6 +13,9 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+
+
 
 
 @NgModule({
@@ -32,7 +35,9 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     DropdownModule,
     DialogModule,
     ConfirmDialogModule,
-    MenuModule
+    MenuModule,
+    ToastModule
+    
   ]
 })
 export class MobiliariosModule { }
