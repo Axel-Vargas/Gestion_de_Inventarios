@@ -18,7 +18,7 @@ export class MobiliariosComponent {
  areas:any[]=[];
   selectedCity: any;
   selectEncargado: any;
-  selectArea: any;
+  selectAreas: any;
 
   tooltipVisible: boolean = false;
   visible: boolean = false;
@@ -134,22 +134,39 @@ export class MobiliariosComponent {
   }
 
   registrarMobiliario() {
-    if (!this.selectEncargado || !this.selectArea || this.id_bien_mob == '' || this.bld_bca  == '' || this.nombre  == '' || this.marca == '' || this.modelo == '' || this.num_serie == ''|| this.fecha_adquisicion == ''|| this.estado == ''|| this.localizacion == ''|| this.codigoUTA == ''|| this.valor_contable == '') {
+    // Asumiendo que id_bien_mob y valor_contable se manejan como cadenas que necesitan ser convertidas a números
+    // y que fecha_adquisicion también es una cadena que debe ser convertida a un objeto Date
+    if (this.bld_bca == '' || this.nombre == '' || this.marca == '' || this.modelo == '' || 
+        this.num_serie == '' ||  this.material == '' || this.color == ''|| this.fecha_adquisicion == '' || this.estado == '' || this.localizacion == '' || 
+        this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado ==''|| this.selectAreas=='') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      this.mobiliariosService.insertarMobiliaria(this.id_bien_mob, this.bld_bca, this.nombre, this.marca, this.modelo, this.num_serie, this.material, this.color, this.fecha_adquisicion , this.estado, this.localizacion, this.codigoUTA, this.valor_contable, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
+      const valorContableInt = parseFloat(this.valor_contable);
+      const fechaAdquisicionDate = new Date(this.fecha_adquisicion);
+  
+      // Verifica que las conversiones sean válidas
+      if (isNaN(valorContableInt) || isNaN(fechaAdquisicionDate.getTime())) 
+           {
+        this.mostrarMensaje("Datos numéricos o de fecha inválidos", false);
+        return;
+      }
+  
+      // Llamada al servicio con datos ya validados y convertidos
+      this.mobiliariosService.insertarMobiliaria( this.bld_bca, this.nombre, this.marca, this.modelo,
+        this.num_serie, this.material, this.color, fechaAdquisicionDate, this.estado, this.localizacion,
+        this.codigoUTA, valorContableInt, this.selectEncargado.id_encargado, this.selectAreas.id_area).subscribe(
         (response) => {
-          this.mostrarMensaje("Bien registrado con Exito", true);
+          this.mostrarMensaje("Bien registrado con éxito", true);
           this.visible = false;
-          this.listarMobiliario();
-          this.limpiarFormulario();
-          this.listarMobiliario();
+          // Opcionales: listarMobiliario, limpiarFormulario, etc.
+          // this.listarMobiliario();
+          // this.limpiarFormulario();
         },
         (error) => {
-         // this.mostrarMensaje("Correo ya existente", false);
+          this.mostrarMensaje("Error al registrar el mobiliario", false);
         }
-      )
-    };
+      );
+    }
   }
 
   showTooltip() {
@@ -178,7 +195,6 @@ limpiarFormulario() {
  this.codigoUTA='';
  this.valor_contable='';
 this.selectEncargado = null;
-this.selectArea=null;
 }
 
 
