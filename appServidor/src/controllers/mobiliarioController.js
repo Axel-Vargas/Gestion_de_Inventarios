@@ -20,10 +20,10 @@ exports.getAllBienes = async (req, res) => {
 
 exports.addBienes = async (req, res) => {
   try {
-    const {id_bien_mob, bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUta, valor_contable, id_encargado_per, id_area_per} = req.body;
+    const {bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per} = req.body;
 
-      const insertQuery = `INSERT INTO bien_mobiliario (id_bien_mob, bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUta, valor_contable, id_encargado_per, id_area_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      connection.query(insertQuery, [id_bien_mob, bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUta, valor_contable, id_encargado_per, id_area_per], (error, results) => {
+      const insertQuery = `INSERT INTO bien_mobiliario (bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      connection.query(insertQuery, [bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error interno del servidor' });
         }
