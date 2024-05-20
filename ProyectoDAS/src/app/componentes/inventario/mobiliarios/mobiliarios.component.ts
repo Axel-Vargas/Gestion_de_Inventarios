@@ -23,9 +23,8 @@ export class MobiliariosComponent {
   tooltipVisible: boolean = false;
   visible: boolean = false;
   nombreBuscado:string='';
-
-
-
+  esEdicion: boolean = false;
+ 
   id: string = '';
   bld_bca ='';
   nombre='';
@@ -39,6 +38,8 @@ export class MobiliariosComponent {
   localizacion='';
   codigoUTA='';
   valor_contable='';
+  selectEncargados: any =null;
+  selectAreas: any=null;
 
 
 
@@ -205,6 +206,68 @@ eliminarMobiliario(id:string) {
     }
   );
 }
+
+editarMobiliario() {
+  if (this.bld_bca == '' || this.nombre == '' || this.marca == '' || this.modelo == '' || 
+        this.num_serie == '' ||  this.material == '' || this.color == ''|| this.fecha_adquisicion == '' || this.estado == '' || this.localizacion == '' || 
+        this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado ==''|| this.selectArea =='')  {
+      this.mostrarMensaje("Complete todos los campos", false);
+    } else {
+      const valorContableInt = parseFloat(this.valor_contable);
+      const fechaAdquisicionDate = new Date(this.fecha_adquisicion);
+  
+      // Verifica que las conversiones sean válidas
+      if (isNaN(valorContableInt) || isNaN(fechaAdquisicionDate.getTime())) 
+           {
+        this.mostrarMensaje("Datos numéricos o de fecha inválidos", false);
+        return;
+      }
+  
+  
+      this.mobiliariosService.actualizarMobiliarios(this.id,this.bld_bca,this.nombre,this.marca,this. modelo,this.num_serie,this.material,
+        this.color,fechaAdquisicionDate,this.estado,this.localizacion,this.codigoUTA,valorContableInt,this.selectEncargado.id_encargado,this.selectArea.id_area).subscribe(
+        (response) => {
+          this.mostrarMensaje("Bien actualizo con éxito", true);
+          //this.limpiarFormulario();
+          this.visible = false;
+          this.listarMobiliario();
+        },
+        (error) => {
+          this.mostrarMensaje("Error al actualizar el mobiliario", false);
+        }
+      );
+    };
+}
+
+showDialogAgregar() {
+  this.esEdicion = false;
+  this.visible = true;
+  this.limpiarFormulario();
+}
+
+
+showDialogEditar(mobiliario: any) {
+  this.esEdicion = true;
+  this.bld_bca =mobiliario.bld_bca;
+  this.nombre= mobiliario.nombre;
+  this.marca=mobiliario.marca;
+  this. modelo=mobiliario.modelo;
+  this.num_serie=mobiliario.num_serie;
+  this.material=mobiliario.material;
+  this.color=mobiliario.color;
+  this.fecha_adquisicion=mobiliario.fecha_adquisicion;
+  this.estado=mobiliario.estado;
+  this.localizacion=mobiliario.localizacion;
+  this.codigoUTA=mobiliario.codigoUTA;
+  this.valor_contable=mobiliario.valor_contable;
+  this.selectEncargado=this.encargados.find(encargado => encargado.id_encargado === mobiliario.id_encargado_per);
+  this.selectArea=this.areas.find(area => area.id_area === mobiliario.id_area_per);
+  this.id = mobiliario.id_bien_mob;
+  this.visible = true;
+}
+
+
+
 async mostrarMensaje(mensaje: string, exito: boolean) {
   this.messageService.add(
     {

@@ -14,7 +14,7 @@
           class="p-button-rounded p-2.5 text-l"
           (mouseenter)="showTooltip()"
           (mouseleave)="hideTooltip()"
-          (click)="showDialog()"
+          (click)="showDialogAgregar()"
         ></button>
       </div>
       <p-iconField class="rounded-icon-field" iconPosition="left">
@@ -96,7 +96,7 @@
           </td>
           <td style="width: 15%">
             <button
-              pButton
+              pButton (click)="showDialogEditar(mobiliario)"
               pRipple
               type="button"
               icon="pi pi-pen-to-square"
@@ -118,224 +118,221 @@
   </div>
 </div>
 
-<p-dialog
-  header="Agregar Usuario"
-  [modal]="true"
-  [(visible)]="visible"
-  [style]="{ width: '37rem', height: '30rem' }"
->
-  <div class="flex flex-wrap justify-content-between ap-3 pt-4">
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for="bld_bca" class="font-semibold w-6rem">Bld_Bca</label>
-      <input
-        pInputText
-        id="bld_bca"
-        class="flex-auto"
-        autocomplete="off"
-        [(ngModel)]="bld_bca"
-      />
-    </div>
 
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for="nombre " class="font-semibold w-6rem">Nombre </label>
-      <input
-        pInputText
-        id="nombre "
-        class="flex-auto"
-        autocomplete="off"
-        [(ngModel)]="nombre"
-      />
-    </div>
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for=" marca" class="font-semibold w-6rem"> Marca</label>
-      <input
-        pInputText
-        id=" marca"
-        class="flex-auto"
-        autocomplete="off"
-        [(ngModel)]="marca"
-      />
-    </div>
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for="modelo" class="font-semibold w-6rem">Modelo</label>
-      <input
-        pInputText
-        id="modelo"
-        class="flex-auto"
-        autocomplete="off"
-        [(ngModel)]="modelo"
-      />
-    </div>
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for="num_serie" class="font-semibold w-6rem">Num_serie</label>
-      <input
-        pInputText
-        id="num_serie"
-        class="flex-auto"
-        autocomplete="off"
-        [(ngModel)]="num_serie"
-      />
-    </div>
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for="material" class="font-semibold w-6rem">Material</label>
-      <input
-        pInputText
-        id="material"
-        class="flex-auto"
-        autocomplete="off"
-        [(ngModel)]="material"
-      />
-    </div>
 
+<p-dialog  [header]="esEdicion ? 'Editar Mobiliarios' : 'Agregar Mobiliarios'" [modal]="true" [(visible)]="visible" [style]="{ width: '37rem', height: '30rem'}">
+  <div class="flex flex-wrap justify-content-between ap-3">
+      
     <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for=" color" class="font-semibold w-6rem">Color</label>
-      <input
-        pInputText
-        id=" color"
-        class="flex-auto"
-        autocomplete="off"
-        [(ngModel)]="color"
-      />
-    </div>
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="bld_bca" class="font-semibold w-6rem">Bld_Bca</label>
+    <input
+      pInputText
+      id="bld_bca"
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="bld_bca"
+    />
+  </div>
 
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for="fecha_adquisicion" class="font-semibold w-6rem"
-        >Fecha_de_Adquisición</label
-      >
-      <p-calendar
-        id="fecha_adquisicion"
-        inputId="fecha_adquisicion"
-        [(ngModel)]="fecha_adquisicion"
-        [showIcon]="true"
-        [showOnFocus]="true"
-        dateFormat="dd/mm/yy"
-        placeholder="Seleccione una fecha"
-      >
-      </p-calendar>
-    </div>
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for="estado" class="font-semibold w-6rem">Estado</label>
-      <input
-        pInputText
-        id="estado"
-        class="flex-auto"
-        autocomplete="off"
-        [(ngModel)]="estado"
-      />
-    </div>
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for="localizacion" class="font-semibold w-6rem"
-        >Localizacion</label
-      >
-      <input
-        pInputText
-        id="localizacion"
-        class="flex-auto"
-        autocomplete="off"
-        [(ngModel)]="localizacion"
-      />
-    </div>
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="nombre " class="font-semibold w-6rem">Nombre </label>
+    <input
+      pInputText
+      id="nombre "
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="nombre"
+    />
+  </div>
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for=" marca" class="font-semibold w-6rem"> Marca</label>
+    <input
+      pInputText
+      id=" marca"
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="marca"
+    />
+  </div>
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="modelo" class="font-semibold w-6rem">Modelo</label>
+    <input
+      pInputText
+      id="modelo"
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="modelo"
+    />
+  </div>
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="num_serie" class="font-semibold w-6rem">Num_serie</label>
+    <input
+      pInputText
+      id="num_serie"
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="num_serie"
+    />
+  </div>
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="material" class="font-semibold w-6rem">Material</label>
+    <input
+      pInputText
+      id="material"
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="material"
+    />
+  </div>
 
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for="codigoUTA" class="font-semibold w-6rem">CodigoUTA</label>
-      <input
-        pInputText
-        id="codigoUTA"
-        class="flex-auto"
-        autocomplete="off"
-        [(ngModel)]="codigoUTA"
-      />
-    </div>
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for=" color" class="font-semibold w-6rem">Color</label>
+    <input
+      pInputText
+      id=" color"
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="color"
+    />
+  </div>
 
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="fecha_adquisicion" class="font-semibold w-6rem"
+      >Fecha_de_Adquisición</label
     >
-      <label for="valor_contable" class="font-semibold w-6rem"
-        >Valor_contable</label
-      >
-      <input
-        pInputText
-        id="valor_contable"
-        class="flex-auto"
-        autocomplete="off"
-        [(ngModel)]="valor_contable"
-      />
-    </div>
+    <p-calendar
+      id="fecha_adquisicion"
+      inputId="fecha_adquisicion"
+      [(ngModel)]="fecha_adquisicion"
+      [showIcon]="true"
+      [showOnFocus]="true"
+      dateFormat="dd/mm/yy"
+      placeholder="Seleccione una fecha"
+    >
+    </p-calendar>
+  </div>
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="estado" class="font-semibold w-6rem">Estado</label>
+    <input
+      pInputText
+      id="estado"
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="estado"
+    />
+  </div>
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="localizacion" class="font-semibold w-6rem"
+      >Localizacion</label
+    >
+    <input
+      pInputText
+      id="localizacion"
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="localizacion"
+    />
+  </div>
 
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
-    >
-      <label for="encargado" class="font-semibold w-6rem">Encargado</label>
-      <p-dropdown
-        [options]="encargados"
-        dataKey="id_encargado"
-        optionLabel="nombre"
-        placeholder="Seleccione un Encargado"
-        autoWidth="false"
-        [style]="{ width: '15.9rem' }"
-        [(ngModel)]="selectEncargado"
-      ></p-dropdown>
-    </div>
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="codigoUTA" class="font-semibold w-6rem">CodigoUTA</label>
+    <input
+      pInputText
+      id="codigoUTA"
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="codigoUTA"
+    />
+  </div>
 
-    <div
-      class="flex align-items-left gap-3 mb-3 flex-column"
-      style="max-width: 50%"
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="valor_contable" class="font-semibold w-6rem"
+      >Valor_contable</label
     >
-      <label for="area" class="font-semibold w-6rem">Area</label>
-      <p-dropdown
-        [options]="areas"
-        dataKey="id_area"
-        optionLabel="nombre"
-        placeholder="Seleccione un Area"
-        autoWidth="false"
-        [style]="{ width: '15.9rem' }"
-        [(ngModel)]="selectArea"
-      ></p-dropdown>
-    </div>
+    <input
+      pInputText
+      id="valor_contable"
+      class="flex-auto"
+      autocomplete="off"
+      [(ngModel)]="valor_contable"
+    />
+  </div>
+
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="encargado" class="font-semibold w-6rem">Encargado</label>
+    <p-dropdown
+      [options]="encargados"
+      dataKey="id_encargado"
+      optionLabel="nombre"
+      placeholder="Seleccione un Encargado"
+      autoWidth="false"
+      [style]="{ width: '15.9rem' }"
+      [(ngModel)]="selectEncargado"
+    ></p-dropdown>
+  </div>
+
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="area" class="font-semibold w-6rem">Area</label>
+    <p-dropdown
+      [options]="areas"
+      dataKey="id_area"
+      optionLabel="nombre"
+      placeholder="Seleccione un Area"
+      autoWidth="false"
+      [style]="{ width: '15.9rem' }"
+      [(ngModel)]="selectArea"
+    ></p-dropdown>
+  </div>
+
   </div>
   <div class="flex justify-content-end gap-2">
-    <p-button
-      label="Guardar"
-      (click)="registrarMobiliario()"
-      (click)="visible = false"
-      [rounded]="true"
-    ></p-button>
+      <p-button [label]="esEdicion ? 'Editar' : 'Guardar'" (click)="esEdicion ? editarMobiliario() : registrarMobiliario()" (click)="visible = false" [rounded]="true"></p-button>
   </div>
 </p-dialog>
+
+
+
 <p-toast>p-toast position="bottom-right"></p-toast>
 <p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>

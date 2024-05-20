@@ -22,4 +22,7 @@ export class MobiliariosService {
   eliminarMobiliario(id:string){
     return this.http.delete(`${this.API}/${id}`);
   }
+  actualizarMobiliarios(id:string, bld_bca:string , nombre:string, marca:string, modelo:string, num_serie:string, material:string, color:string, fecha_adquisicion:Date, estado:string, localizacion:string, codigoUTA:string, valor_contable:Number, id_encargado_per:string, id_area_per:string) {
+    return this.http.put(`${this.API}/${id}`,{bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per})
+  }
 }
