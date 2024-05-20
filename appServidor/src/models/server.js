@@ -26,7 +26,8 @@ class Server {
         this.app.use('/api/encargados', require('../routes/encargadoRoutes.js'));
         this.app.use('/api/bientecnologico', require('../routes/bienesTecnologicos.routes.js'));
         this.app.use('/api/componentes', require('../routes/componentes.routes.js'));
-    
+        this.app.use('/api/tipotecnologico', require('../routes/tipoTecnologicoRoutes.js'));
+
          // Configuración para servir archivos estáticos
          this.app.use('/public', express.static(path.join(__dirname, '..', 'controllers', 'public')));
 
