@@ -15,7 +15,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
-
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 
 @NgModule({
@@ -37,9 +37,11 @@ import { ToastModule } from 'primeng/toast';
     ConfirmDialogModule,
     MenuModule,
     ToastModule,
-    CalendarModule
-    
-    
+    CalendarModule,
+  ],
+  providers:[
+    MessageService,
+    ConfirmationService
   ]
 })
 export class MobiliariosModule { }

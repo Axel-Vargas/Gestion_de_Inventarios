@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MobiliariosService } from '../../../services/mobiliarios.service';
 import { EncargadoMobiliarioService } from '../../../services/encargado.mobiliario.service';
 import { AreaMobiliarioService } from '../../../services/area.mobiliario.service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 
 @Component({
@@ -24,7 +24,9 @@ export class MobiliariosComponent {
   visible: boolean = false;
   nombreBuscado:string='';
 
-  id_bien_mob='';
+
+
+  id: string = '';
   bld_bca ='';
   nombre='';
   marca='';
@@ -40,8 +42,8 @@ export class MobiliariosComponent {
 
 
 
-        constructor(private mobiliariosService:MobiliariosService,private encargadosService:EncargadoMobiliarioService,private areasService:AreaMobiliarioService
-          ,private messageService: MessageService ) { 
+        constructor(private confirmationService: ConfirmationService ,private mobiliariosService:MobiliariosService,private encargadosService:EncargadoMobiliarioService,private areasService:AreaMobiliarioService
+          ,private messageService: MessageService) { 
           this.listarMobiliario()
         }
   ngOnInit() {
@@ -124,13 +126,7 @@ export class MobiliariosComponent {
   buscarMobiliario() {
     this.cargarMobiliario(this.nombreBuscado);
   }
-  async mostrarMensaje(mensaje: string, exito: boolean) {
-    this.messageService.add(
-      {
-        severity: exito ? 'success' : 'error',
-        summary: exito ? 'Éxito' : 'Error', detail: mensaje
-      });
-  }
+  
 
   registrarMobiliario() {
     // Asumiendo que id_bien_mob y valor_contable se manejan como cadenas que necesitan ser convertidas a números
@@ -184,7 +180,7 @@ export class MobiliariosComponent {
     this.listarMobiliario()
 }
 limpiarFormulario() {
- this.id_bien_mob='';
+
  this.bld_bca ='';
  this.nombre='';
  this.marca='';
@@ -197,6 +193,39 @@ limpiarFormulario() {
  this.localizacion='';
  this.codigoUTA='';
  this.valor_contable='';
+}
+eliminarMobiliario(id:string) {
+  this.mobiliariosService.eliminarMobiliario(id).subscribe(
+    (response) => {
+      this.mostrarMensaje("Bien eliminado con éxito", true);
+      this.listarMobiliario();
+    },
+    (error) => {
+      this.mostrarMensaje("Error al eliminar el Bien", false);
+    }
+  );
+}
+async mostrarMensaje(mensaje: string, exito: boolean) {
+  this.messageService.add(
+    {
+      severity: exito ? 'success' : 'error',
+      summary: exito ? 'Éxito' : 'Error', detail: mensaje
+    });
+}
+
+confirm(id: string) {
+  this.confirmationService.confirm({
+    message: '¿Seguro que desea eliminar el Bien Mobiliario?',
+    header: 'Confirmación',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      this.eliminarMobiliario(id);
+      this.listarMobiliario();
+    },
+    reject: () => {
+      console.log("rechazado");
+    }
+  });
 }
 
 

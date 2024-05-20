@@ -105,7 +105,7 @@
           </td>
           <td style="width: 15%">
             <button
-              pButton
+              pButton  (click)="confirm(mobiliario.id_bien_mob)"
               pRipple
               type="button"
               icon="pi pi-trash"
@@ -337,5 +337,5 @@
     ></p-button>
   </div>
 </p-dialog>
-
 <p-toast>p-toast position="bottom-right"></p-toast>
+<p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>
