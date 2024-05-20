@@ -18,7 +18,7 @@ export class MobiliariosComponent {
  areas:any[]=[];
   selectedCity: any;
   selectEncargado: any;
-  selectAreas: any;
+  selectArea: any;
 
   tooltipVisible: boolean = false;
   visible: boolean = false;
@@ -47,10 +47,8 @@ export class MobiliariosComponent {
   ngOnInit() {
     this.listarMobiliario();
     this.listarEncargadosPorNombre();
-    this.listarAreas()
-    this.registrarMobiliario()
+    this.listarAreas();
     
-
     this.muebles = [
       { name: 'Archivador', code: 'CO' },
       { name: 'Sillas', code: 'CO' },
@@ -86,7 +84,7 @@ export class MobiliariosComponent {
         }
       },
       (error) => {
-        console.error('Error al obtener usuarios:', error);
+        console.error('Error al obtener areas:', error);
       }
     );
   }
@@ -139,7 +137,7 @@ export class MobiliariosComponent {
     // y que fecha_adquisicion también es una cadena que debe ser convertida a un objeto Date
     if (this.bld_bca == '' || this.nombre == '' || this.marca == '' || this.modelo == '' || 
         this.num_serie == '' ||  this.material == '' || this.color == ''|| this.fecha_adquisicion == '' || this.estado == '' || this.localizacion == '' || 
-        this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado ==''|| this.selectAreas =='')  {
+        this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado ==''|| this.selectArea =='')  {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
       const valorContableInt = parseFloat(this.valor_contable);
@@ -153,9 +151,11 @@ export class MobiliariosComponent {
       }
   
       // Llamada al servicio con datos ya validados y convertidos
+      console.log(this.selectEncargado.id_encargado)
+      console.log(this.selectArea.id_area)
       this.mobiliariosService.insertarMobiliaria( this.bld_bca, this.nombre, this.marca, this.modelo,
         this.num_serie, this.material, this.color, fechaAdquisicionDate, this.estado, this.localizacion,
-        this.codigoUTA, valorContableInt, this.selectEncargado.id_encargado, this.selectAreas.id_area).subscribe(
+        this.codigoUTA, valorContableInt, this.selectEncargado.id_encargado,this.selectArea.id_area).subscribe(
         (response) => {
           this.mostrarMensaje("Bien registrado con éxito", true);
           this.limpiarFormulario();

@@ -1,3 +1,4 @@
+import { CalendarModule } from 'primeng/calendar';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -14,7 +15,6 @@ import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
-
 
 
 
@@ -36,7 +36,9 @@ import { ToastModule } from 'primeng/toast';
     DialogModule,
     ConfirmDialogModule,
     MenuModule,
-    ToastModule
+    ToastModule,
+    CalendarModule
+    
     
   ]
 })
