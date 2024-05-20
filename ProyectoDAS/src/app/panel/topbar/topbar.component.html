@@ -6,10 +6,24 @@
             <i class="pi pi-bars"></i>
         </button>
     </a>
+
+   <!--<zxing-scanner (camerasFound)="camerasFoundHandler($event)" (scanSuccess)="scanSuccessHandler($event)"></zxing-scanner>-->
+   <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+    
+    <button class="p-link layout-topbar-button flex align-items-center" (click)="showQRScanner()">
+                <i class="pi pi-camera"></i>
+            </button>
+           
+            <p-dialog header="Escanear QR" [(visible)]="displayQRScanner" [modal]="true" [style]="getDialogStyle()" (onHide)="onModalHide()">
+                <zxing-scanner *ngIf="displayQRScanner" (camerasFound)="camerasFoundHandler($event)"
+                               (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+              </p-dialog> 
+    
     <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
         <i class="pi pi-ellipsis-v"></i>
     </button>
     <div *ngIf="usuario" #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
         <p-menubar [model]="items" [style]="{ 'background-color': 'transparent', 'border': 'none','font-size': '18px','color':'white'}" [autoDisplay]="false" styleClass="custom-menubar"></p-menubar>
+    </div>
     </div>
 </div>

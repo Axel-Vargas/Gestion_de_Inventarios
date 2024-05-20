@@ -11,7 +11,6 @@ export class MenuComponent implements OnInit {
     constructor(public layoutService: LayoutService) { }
 
     ngOnInit() {
-
         this.model = [
             {
                 label: 'Home',
@@ -26,10 +25,10 @@ export class MenuComponent implements OnInit {
                         label: 'Personal', icon: 'pi pi-id-card',
                         items: [
                             {
-                                label: 'Usuarios', icon: 'pi pi-users', routerLink: ['/usuarios']
+                                label: 'Usuarios', icon: 'pi pi-users', routerLink: ['/panel/personal/usuarios']
                             },
                             {
-                                label: 'Encargados', icon: 'pi pi-user-plus', routerLink: ['/encargados']
+                                label: 'Encargados', icon: 'pi pi-user-plus', routerLink: ['/panel/personal/encargados']
                             }
                         ]
                     },
@@ -37,18 +36,18 @@ export class MenuComponent implements OnInit {
                         label: 'Inventario', icon: 'pi pi-box',
                         items: [
                             {
-                                label: 'Tipos de Equipos', icon: 'pi pi-th-large', routerLink: ['/tiposequipos'] 
+                                label: 'Tipos de Equipos', icon: 'pi pi-th-large', routerLink: ['/panel/inventarios/tiposequipos']
                             },
                             {
-                                label: 'Bienes Tecnológicos', icon: 'pi pi-desktop', routerLink: ['/tecnologicos'] 
+                                label: 'Bienes Tecnológicos', icon: 'pi pi-desktop', routerLink: ['/panel/inventarios/tecnologicos']
                             },
                             {
-                                label: 'Bienes Mobiliarios', icon: 'pi pi-building-columns', routerLink: ['/mobiliarios'], get iconHtml() {
+                                label: 'Bienes Mobiliarios', icon: 'pi pi-building-columns', routerLink: ['/panel/inventarios/mobiliarios'], get iconHtml() {
                                     return this.icon;
                                 }
                             },
                             {
-                                label: 'Componentes', icon: 'pi pi-microchip', routerLink: ['/elementos']
+                                label: 'Componentes', icon: 'pi pi-microchip', routerLink: ['/panel/inventarios/componentes']
                             }
                         ]
                     },
@@ -56,21 +55,21 @@ export class MenuComponent implements OnInit {
                         label: 'Infraestructura', icon: 'pi pi-hammer',
                         items: [
                             {
-                                label: 'Facultades', icon: 'pi pi-graduation-cap', routerLink: ['/facultades'], get iconHtml() {
+                                label: 'Facultades', icon: 'pi pi-graduation-cap', routerLink: ['/panel/infraestructura/facultades'], get iconHtml() {
                                     return this.icon;
                                 }
                             },
                             {
-                                label: 'Bloques', icon: 'pi pi-building', routerLink: ['/bloques']
+                                label: 'Bloques', icon: 'pi pi-building', routerLink: ['/panel/infraestructura/bloques']
                             },
                             {
-                                label: 'Áreas', icon: 'pi pi-map-marker', routerLink: ['/areas']
-                            } 
+                                label: 'Áreas', icon: 'pi pi-map-marker', routerLink: ['/panel/infraestructura/areas']
+                            }
                         ]
                     },
-                    { label: 'Programas', icon: 'pi pi-microsoft', routerLink: ['/programas'] },
-                    { label: 'Proveedores', icon: 'pi pi-truck', routerLink: ['/proveedores'] },
-                    { label: 'Historial', icon: 'pi pi-history', routerLink: ['/historial'] },
+                    { label: 'Programas', icon: 'pi pi-microsoft', routerLink: ['/panel/programas'] },
+                    { label: 'Proveedores', icon: 'pi pi-truck', routerLink: ['/panel/proveedores'] },
+                    { label: 'Historial', icon: 'pi pi-history', routerLink: ['/panel/historial'] },
                     {
                         label: 'Reportes', icon: 'pi pi-file',
                         items: [

@@ -16,28 +16,28 @@ export class UsuariosService {
     return this.http.get(this.API);
   }
 
-  obtenerUsuarioPorNombre(nombre: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.API}/name/${nombre}`);
+  obtenerUsuarioPorCedula(cedula: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API}/cedula/${cedula}`);
   }
 
   obtenerUsuarioPorId(id: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.API}/${id}`);
   }
 
-  insertarUsuario(nombre: string, direccion: string, correo: string, usuario: string, contrasena: string, rol: string) {
-    return this.http.post(this.API, { nombre, direccion, correo, usuario, contrasena, rol })
+  insertarUsuario(cedula: string, nombre: string, apellido: string, correo: string, telefono: string, contrasena: string, rol: string) {
+    return this.http.post(this.API, { cedula, nombre, apellido, correo, telefono, contrasena, rol})
   }
 
-  actualizarUsuario(id: String, nombre: string, direccion: string, correo: string, usuario: string) {
-    return this.http.put(`${this.API}/${id}`, { nombre, direccion, correo, usuario })
+  actualizarUsuario(id: String, cedula: string, nombre: string, apellido: string, telefono: string, correo: string, contrasena: string, rol: string, estado:string) {
+    return this.http.put(`${this.API}/${id}`, { cedula, nombre, apellido, telefono, correo, contrasena, rol, estado })
   }
 
   eliminarUsuario(id: string) {
     return this.http.delete(`${this.API}/${id}`);
   }
 
-  autenticarUsuario(usuario: string, contraseña: string): Observable<any> {
-    const body = { usuario, contraseña };
+  autenticarUsuario(usuario: string, contrasena: string): Observable<any> {
+    const body = { usuario, contrasena };
     return this.http.post(`${this.API}/auth`, body).pipe(
       tap((response) => {
         this.authService.setUser(response);
