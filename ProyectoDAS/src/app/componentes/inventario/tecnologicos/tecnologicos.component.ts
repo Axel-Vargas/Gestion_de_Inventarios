@@ -28,13 +28,18 @@ export class TecnologicosComponent implements OnInit {
   productDialog!: boolean;
   tecnologicos!: bienes_Tecnologicos[];
   //tecnologico!: bienes_Tecnologicos;
-
+  date2!: Date;
+  isDropdownDisabled: boolean = true;
+  isFiltrarDisabled: boolean = true;
   loading = [false, false, false, false];
-
   display: boolean = false;
   inventoryForm!: FormGroup;
   categories: { name: string; code: number }[] = [];
   area: { name: string; code: number }[] = [];
+  tipoBien: { name: string; code: number }[] = [];
+  proveedor: { name: string; code: number }[] = [];
+  repotenciado: { name: string; code: number }[] = [];
+  estado: { name: string; code: number }[] = [];
   bloques!: Bloque[];
   areas!: Area[];
 
@@ -46,8 +51,14 @@ export class TecnologicosComponent implements OnInit {
     private fb: FormBuilder
   ) {
     this.cargarBloques()
-    
+    this.estado = [
+      { name: 'Operativo', code: 1 },
+      { name: 'No Funcional', code: 2 }
+    ];
   }
+
+
+
   // Métodos para operaciones CRUD de áreas
   cargarAreas(id:number):void {
     this.areasService.getAreaFiltro(id).subscribe(
@@ -74,6 +85,7 @@ export class TecnologicosComponent implements OnInit {
           this.categories = data
             .filter(bloque => bloque.nombre !== undefined && bloque.id_bloque !== undefined)
             .map(bloque => ({ name: bloque.nombre!, code: bloque.id_bloque! }));
+            
         } else if (data.nombre !== undefined && data.id_bloque !== undefined) {
           this.categories = [{ name: data.nombre!, code: data.id_bloque! }];
           
@@ -87,8 +99,13 @@ export class TecnologicosComponent implements OnInit {
 
   onSelectBloque(event: any) {
     const selectedBlockId = event.value.code; // Obtén el ID de la opción seleccionada
-    console.log('ID del bloque seleccionado:', selectedBlockId);
+    this.isDropdownDisabled = false;
     this.cargarAreas(selectedBlockId)
+  }
+
+  onSelectArea(event: any) {
+    const selectedBlockId = event.value.code; // Obtén el ID de la opción seleccionada
+    this.isFiltrarDisabled = false;
   }
 
   load(index: number) {
@@ -97,6 +114,7 @@ export class TecnologicosComponent implements OnInit {
   }
 
   ngOnInit() {
+    
     this.cargarBienesTecnologicos();
     this.inventoryForm = this.fb.group({
       name: ['', Validators.required],

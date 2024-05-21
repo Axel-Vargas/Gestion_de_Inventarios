@@ -20,16 +20,17 @@
 
                             <p-dropdown class="w-full" [options]="area" optionLabel="name"
                                 placeholder="Selecciona un area" filter="true"
-                                class="fixed-width-dropdown"></p-dropdown>
-                                
+                                class="fixed-width-dropdown" [disabled]="isDropdownDisabled" (onChange)="onSelectArea($event)"></p-dropdown>
+
                             <p-button label="Cargar" icon="pi pi-search" [loading]="loading[0]"
-                                (onClick)="load(0)"></p-button>
+                                (onClick)="load(0)" [disabled]="isFiltrarDisabled"></p-button>
                         </div>
 
                         <span class="p-input-icon-left mb-2">
                             <i class="pi pi-search"></i>
                             <input pInputText type="text" #filter placeholder="Buscar" class="w-full" />
                         </span>
+
                     </div>
                 </ng-template>
 
@@ -195,38 +196,39 @@
     <form [formGroup]="inventoryForm" (ngSubmit)="guardarBienesTecnologicos()">
         <div class="formgrid grid">
             <div class="field col">
-                <label for="firstname2">Selecciona el Bloque </label>
-                <p-dropdown id="firstname2" [options]="categories" optionLabel="name" placeholder="Selecciona"
+                <label for="id_proveedor_per">Selecciona el Bloque </label>
+                <p-dropdown id="id_proveedor_per" [options]="categories" optionLabel="name" placeholder="Selecciona"
+                    filter="true" class="focus:border-primary fixed-width-dropdown"  (onChange)="onSelectBloque($event)"></p-dropdown>
+            </div>
+            <div class="field col">
+                <label for="id_area_per">Selecciona el Área</label>
+                <p-dropdown id="id_area_per" [options]="area" optionLabel="name" placeholder="Selecciona"
+                    filter="true" class="focus:border-primary fixed-width-dropdown"  [disabled]="isDropdownDisabled" (onChange)="onSelectArea($event)"></p-dropdown>
+            </div>
+        
+        </div>
+        <div class="formgrid grid">
+            <div class="field col">
+                <label for="id_tipo_per">Selecciona el Tipo</label>
+                <p-dropdown id="id_tipo_per" [options]="tipoBien" optionLabel="name" placeholder="Selecciona"
                     filter="true" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
             <div class="field col">
-                <label for="firstname2">Selecciona el Área</label>
-                <p-dropdown id="firstname2" [options]="categories" optionLabel="name" placeholder="Selecciona"
+                <label for="id_proveedor_per">Selecciona Proveedor</label>
+                <p-dropdown id="id_proveedor_per" [options]="proveedor" optionLabel="name" placeholder="Selecciona"
                     filter="true" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
         </div>
         <div class="formgrid grid">
             <div class="field col">
-                <label for="firstname2">Selecciona el Tipo</label>
-                <p-dropdown id="firstname2" [options]="categories" optionLabel="name" placeholder="Selecciona"
-                    filter="true" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
-            </div>
-            <div class="field col">
-                <label for="firstname2">Selecciona Proveedor</label>
-                <p-dropdown id="firstname2" [options]="categories" optionLabel="name" placeholder="Selecciona"
-                    filter="true" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
-            </div>
-        </div>
-        <div class="formgrid grid">
-            <div class="field col">
-                <label for="firstname2">Repotenciado</label>
-                <p-dropdown id="firstname2" [options]="categories" optionLabel="name" placeholder="Selecciona"
-                    filter="true" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                <label for="repotenciado">Imagen</label>
+                <p-dropdown id="repotenciado" [options]="repotenciado" optionLabel="name" placeholder="Selecciona"
+                     class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
             <div class="field col">
                 <label for="estado">Estado</label>
-                <p-dropdown id="estado" [options]="categories" optionLabel="name" placeholder="Selecciona"
-                    filter="true" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                <p-dropdown id="estado" [options]="estado" optionLabel="name" placeholder="Selecciona"
+                     class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
         </div>
         <div class="formgrid grid">
@@ -236,10 +238,14 @@
                     class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
             </div>
             <div class="field col">
-                <label for="fecha_adquisicion">Fecha de Adquisición</label>
-                <input id="fecha_adquisicion" type="text"
+                <label for="ip_tecnologico">IP del Equipo</label>
+                <input id="ip_tecnologico" type="text"
                     class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+                
             </div>
+
+            
+
         </div>
         <div class="formgrid grid">
             <div class="field col">
@@ -268,9 +274,9 @@
         </div>
         <div class="formgrid grid">
             <div class="field col">
-                <label for="ip_tecnologico">IP del Equipo</label>
-                <input id="ip_tecnologico" type="text"
-                    class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+                <label for="fecha_adquisicion">Fecha de Adquisición</label>
+                <p-calendar [showIcon]="true" inputId="fecha_adquisicion"></p-calendar>
+                
             </div>
             <div class="field col">
                 <label for="codigo_adicional">Código Adicional</label>

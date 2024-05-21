@@ -17,6 +17,8 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { TooltipModule } from 'primeng/tooltip';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ReactiveFormsModule } from '@angular/forms';
+import {CalendarModule} from 'primeng/calendar';
+
 @NgModule({
   declarations: [
     TecnologicosComponent,
@@ -37,7 +39,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     TooltipModule,
     DialogModule,
     InputNumberModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    CalendarModule
   ],
   exports: [
   ]
