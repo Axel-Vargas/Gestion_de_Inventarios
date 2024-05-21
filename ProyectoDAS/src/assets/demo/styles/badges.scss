@@ -10,17 +10,23 @@
 }
 
 .product-badge {
-    &.status-true {
+    &.status-si {
         background: #C8E6C9;
         color: #256029;
     }
 
- 
+    &.status-operativo {
+        background: #C8E6C9;
+        color: #256029;
+    }
 
-    &.status-false {
+    &.status-no {
         background: #FEEDAF;
         color: #8A5340;
     }
+
+
+   
 }
 
 .customer-badge {
