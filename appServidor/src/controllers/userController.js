@@ -18,11 +18,20 @@ exports.getAllUsers = async (req, res) => {
 exports.getUserByCedula = async (req, res) => {
   try {
     const { cedula } = req.params;
-    const searchTerm = `%${cedula}%`;
 
-    const selectQuery = `SELECT * FROM usuarios WHERE cedula LIKE ?`;
+    let selectQuery;
+    let queryParams;
 
-    connection.query(selectQuery, [searchTerm], (error, results) => {
+    if (cedula) {
+      const searchTerm = `%${cedula}%`;
+      selectQuery = `SELECT * FROM usuarios WHERE cedula LIKE ?`;
+      queryParams = [searchTerm];
+    } else {
+      selectQuery = `SELECT * FROM usuarios`;
+      queryParams = [];
+    }
+
+    connection.query(selectQuery, queryParams, (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
       }
@@ -68,9 +77,10 @@ exports.addUser = async (req, res) => {
 
 exports.editUser = async (req, res) => {
   try {
-    const { id, cedula, nombre, apellido, telefono, correo, contrasena, rol } = req.body;
+    const id = req.params.id;
+    const { cedula, nombre, apellido, telefono, correo, contrasena, rol } = req.body;
 
-    const emailExistsQuery = `SELECT * FROM usuarios WHERE correo = ? AND Id_usuario != ?`;
+    const emailExistsQuery = `SELECT * FROM usuarios WHERE correo = ? AND id_usuario != ?`;
     connection.query(emailExistsQuery, [correo, id], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -80,8 +90,8 @@ exports.editUser = async (req, res) => {
         return res.status(400).json({ mensaje: 'El correo ya está en uso por otro usuario' });
       }
 
-      const updateQuery = `UPDATE usuarios SET ced_usuario = ?, nom_usuario = ?, ape_usuario = ?, tel_usuario = ?, correo = ?, contrasena = ?, Id_rol = ? WHERE Id_usuario = ?`;
-      connection.query(updateQuery, [cedula, nombre, apellido, telefono, correo, contrasena, rol, id], (error, results) => {
+      const updateQuery = `UPDATE usuarios SET cedula = ?, nombre = ?, apellido = ?, correo = ?, telefono = ?, contrasena = ?, id_rol_per = ? WHERE id_usuario = ?`;
+      connection.query(updateQuery, [cedula, nombre, apellido, correo, telefono, contrasena, rol, id], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error interno del servidor' });
         }

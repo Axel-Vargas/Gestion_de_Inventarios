@@ -10,6 +10,8 @@ import { EncargadosService } from '../../../services/encargados.service';
 export class EncargadosComponent {
 
   encargados: any = [];
+
+  id: string = '';
   cedulaBuscada: string = '';
   cedula = '';
   nombre = '';
@@ -19,6 +21,7 @@ export class EncargadosComponent {
 
   tooltipVisible: boolean = false;
   visible: boolean = false;
+  esEdicion: boolean = false;
 
   constructor(private confirmationService: ConfirmationService, private encargadosService: EncargadosService, private messageService: MessageService) { }
 
@@ -42,18 +45,19 @@ export class EncargadosComponent {
   }
 
   cargarEncargado(cedula: string): void {
-    this.encargadosService.obtenerEncargadoPorCedula(cedula).subscribe(
-      (response: any) => {
-        if (response && response.encargados) {
-          this.encargados = response.encargados;
-        } else {
+    if (this.cedulaBuscada.trim() === '') {
+      this.listarEncargados(); 
+    } else {
+      this.encargadosService.obtenerEncargadoPorCedula(this.cedulaBuscada).subscribe(
+        (data: any) => {
+          this.encargados = data.encargados;
+        },
+        (error) => {
+          console.error('Error buscando encargado por cédula', error);
           this.encargados = [];
         }
-      },
-      (error) => {
-        console.error('Encargado no encontrado:', error);
-      }
-    );
+      );
+    }
   }
 
   buscarEncargado() {
@@ -90,6 +94,24 @@ export class EncargadosComponent {
     );
   }
 
+  editarEncargado() {
+    if (this.cedula == '' || this.nombre == '' || this.apellido == '' || this.telefono == '' || this.direccion == '') {
+      this.mostrarMensaje("Complete todos los campos", false);
+    } else {
+      this.encargadosService.actualizarEncargado(this.id, this.cedula, this.nombre, this.apellido, this.telefono, this.direccion).subscribe(
+        (response) => {
+          this.mostrarMensaje("Encargado actualizado con éxito", true);
+          this.limpiarFormulario();
+          this.visible = false;
+          this.listarEncargados();
+        },
+        (error) => {
+          this.mostrarMensaje("Hubo un problema", false);
+        }
+      )
+    };
+  }
+
   showTooltip() {
     this.tooltipVisible = true;
   }
@@ -99,6 +121,19 @@ export class EncargadosComponent {
   }
 
   showDialogAgregar() {
+    this.esEdicion = false;
+    this.visible = true;
+    this.limpiarFormulario();
+  }
+
+  showDialogEditar(encargado: any) {
+    this.esEdicion = true;
+    this.cedula = encargado.cedula;
+    this.nombre = encargado.nombre;
+    this.apellido = encargado.apellido;
+    this.telefono = encargado.telefono;
+    this.direccion = encargado.direccion;
+    this.id = encargado.id_encargado;
     this.visible = true;
   }
 
@@ -112,8 +147,8 @@ export class EncargadosComponent {
 
   confirm(id: string) {
     this.confirmationService.confirm({
-      message: '¿Seguro que desea eliminar al Encargado?',
-      header: 'Confirmación',
+      message: 'El encargado también será eliminado de todos<br>los bienes a los que haya sido asignado',
+      header: '¿Está seguro?',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
         this.eliminarEncargado(id);

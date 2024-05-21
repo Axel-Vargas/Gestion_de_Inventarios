@@ -28,8 +28,8 @@ export class UsuariosService {
     return this.http.post(this.API, { cedula, nombre, apellido, correo, telefono, contrasena, rol})
   }
 
-  actualizarUsuario(id: String, cedula: string, nombre: string, apellido: string, telefono: string, correo: string, contrasena: string, rol: string, estado:string) {
-    return this.http.put(`${this.API}/${id}`, { cedula, nombre, apellido, telefono, correo, contrasena, rol, estado })
+  actualizarUsuario(id: String, cedula: string, nombre: string, apellido: string, correo: string, telefono: string, contrasena: string, rol: string) {
+    return this.http.put(`${this.API}/${id}`, { cedula, nombre, apellido, correo, telefono, contrasena, rol})
   }
 
   eliminarUsuario(id: string) {
