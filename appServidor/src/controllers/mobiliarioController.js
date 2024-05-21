@@ -38,11 +38,11 @@ exports.addBienes = async (req, res) => {
 exports.editBienes = async (req, res) => {
     try {
       const id_bien_mob = req.params.id; // Recibir el ID del bien desde la URL
-      const {bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUta, valor_contable, id_encargado_per, id_area_per} = req.body;
+      const {bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per} = req.body;
   
-      const updateQuery = `UPDATE bien_mobiliario SET bld_bca = ?, nombre = ?, marca = ?, modelo = ?, num_serie = ?, material = ?, color = ?, fecha_adquisicion = ?, estado = ?, localizacion = ?, codigoUta = ?, valor_contable = ?, id_encargado_per = ?, id_area_per = ? WHERE id_bien_mob = ?`;
+      const updateQuery = `UPDATE bien_mobiliario SET bld_bca = ?, nombre = ?, marca = ?, modelo = ?, num_serie = ?, material = ?, color = ?, fecha_adquisicion = ?, estado = ?, localizacion = ?, codigoUTA = ?, valor_contable = ?, id_encargado_per = ?, id_area_per = ? WHERE id_bien_mob = ?`;
   
-      connection.query(updateQuery, [bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUta, valor_contable, id_encargado_per, id_area_per, id_bien_mob], (error, results) => {
+      connection.query(updateQuery, [bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per, id_bien_mob], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error al actualizar el bien' });
         }
