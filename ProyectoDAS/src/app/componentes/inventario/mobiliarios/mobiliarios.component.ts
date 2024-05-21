@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { MobiliariosService } from '../../../services/mobiliarios.service';
 import { EncargadoMobiliarioService } from '../../../services/encargado.mobiliario.service';
 import { AreaMobiliarioService } from '../../../services/area.mobiliario.service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 
 @Component({
@@ -23,8 +23,9 @@ export class MobiliariosComponent {
   tooltipVisible: boolean = false;
   visible: boolean = false;
   nombreBuscado:string='';
-
-  id_bien_mob='';
+  esEdicion: boolean = false;
+ 
+  id: string = '';
   bld_bca ='';
   nombre='';
   marca='';
@@ -37,19 +38,20 @@ export class MobiliariosComponent {
   localizacion='';
   codigoUTA='';
   valor_contable='';
-  id_encargado_per='';
-  id_area_per='';
+  selectEncargados: any =null;
+  selectAreas: any=null;
 
 
-        constructor(private mobiliariosService:MobiliariosService,private encargadosService:EncargadoMobiliarioService,private areasService:AreaMobiliarioService
-          ,private messageService: MessageService ) { 
+
+        constructor(private confirmationService: ConfirmationService ,private mobiliariosService:MobiliariosService,private encargadosService:EncargadoMobiliarioService,private areasService:AreaMobiliarioService
+          ,private messageService: MessageService) { 
           this.listarMobiliario()
         }
   ngOnInit() {
     this.listarMobiliario();
     this.listarEncargadosPorNombre();
-    this.listarAreas()
-
+    this.listarAreas();
+    
     this.muebles = [
       { name: 'Archivador', code: 'CO' },
       { name: 'Sillas', code: 'CO' },
@@ -85,7 +87,7 @@ export class MobiliariosComponent {
         }
       },
       (error) => {
-        console.error('Error al obtener usuarios:', error);
+        console.error('Error al obtener areas:', error);
       }
     );
   }
@@ -125,31 +127,46 @@ export class MobiliariosComponent {
   buscarMobiliario() {
     this.cargarMobiliario(this.nombreBuscado);
   }
-  async mostrarMensaje(mensaje: string, exito: boolean) {
-    this.messageService.add(
-      {
-        severity: exito ? 'success' : 'error',
-        summary: exito ? 'Éxito' : 'Error', detail: mensaje
-      });
-  }
+  
 
   registrarMobiliario() {
-    if (!this.selectEncargado || !this.selectArea || this.id_bien_mob == '' || this.bld_bca  == '' || this.nombre  == '' || this.marca == '' || this.modelo == '' || this.num_serie == ''|| this.fecha_adquisicion == ''|| this.estado == ''|| this.localizacion == ''|| this.codigoUTA == ''|| this.valor_contable == '') {
+    // Asumiendo que id_bien_mob y valor_contable se manejan como cadenas que necesitan ser convertidas a números
+    // y que fecha_adquisicion también es una cadena que debe ser convertida a un objeto Date
+    if (this.bld_bca == '' || this.nombre == '' || this.marca == '' || this.modelo == '' || 
+        this.num_serie == '' ||  this.material == '' || this.color == ''|| this.fecha_adquisicion == '' || this.estado == '' || this.localizacion == '' || 
+        this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado ==''|| this.selectArea =='')  {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      this.mobiliariosService.insertarMobiliaria(this.id_bien_mob, this.bld_bca, this.nombre, this.marca, this.modelo, this.num_serie, this.material, this.color, this.fecha_adquisicion , this.estado, this.localizacion, this.codigoUTA, this.valor_contable, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
+      const valorContableInt = parseFloat(this.valor_contable);
+      const fechaAdquisicionDate = new Date(this.fecha_adquisicion);
+  
+      // Verifica que las conversiones sean válidas
+      if (isNaN(valorContableInt) || isNaN(fechaAdquisicionDate.getTime())) 
+           {
+        this.mostrarMensaje("Datos numéricos o de fecha inválidos", false);
+        return;
+      }
+  
+      // Llamada al servicio con datos ya validados y convertidos
+      console.log(this.selectEncargado.id_encargado)
+      console.log(this.selectArea.id_area)
+      this.mobiliariosService.insertarMobiliaria( this.bld_bca, this.nombre, this.marca, this.modelo,
+        this.num_serie, this.material, this.color, fechaAdquisicionDate, this.estado, this.localizacion,
+        this.codigoUTA, valorContableInt, this.selectEncargado.id_encargado,this.selectArea.id_area).subscribe(
         (response) => {
-          this.mostrarMensaje("Bien registrado con Exito", true);
+          this.mostrarMensaje("Bien registrado con éxito", true);
+          this.limpiarFormulario();
           this.visible = false;
           this.listarMobiliario();
-          this.limpiarFormulario();
-          this.listarMobiliario();
+          // Opcionales: listarMobiliario, limpiarFormulario, etc.
+          // 
+          // 
         },
         (error) => {
-         // this.mostrarMensaje("Correo ya existente", false);
+          this.mostrarMensaje("Error al registrar el mobiliario", false);
         }
-      )
-    };
+      );
+    }
   }
 
   showTooltip() {
@@ -164,7 +181,7 @@ export class MobiliariosComponent {
     this.listarMobiliario()
 }
 limpiarFormulario() {
- this.id_bien_mob='';
+
  this.bld_bca ='';
  this.nombre='';
  this.marca='';
@@ -177,8 +194,101 @@ limpiarFormulario() {
  this.localizacion='';
  this.codigoUTA='';
  this.valor_contable='';
-this.selectEncargado = null;
-this.selectArea=null;
+}
+eliminarMobiliario(id:string) {
+  this.mobiliariosService.eliminarMobiliario(id).subscribe(
+    (response) => {
+      this.mostrarMensaje("Bien eliminado con éxito", true);
+      this.listarMobiliario();
+    },
+    (error) => {
+      this.mostrarMensaje("Error al eliminar el Bien", false);
+    }
+  );
+}
+
+editarMobiliario() {
+  if (this.bld_bca == '' || this.nombre == '' || this.marca == '' || this.modelo == '' || 
+        this.num_serie == '' ||  this.material == '' || this.color == ''|| this.fecha_adquisicion == '' || this.estado == '' || this.localizacion == '' || 
+        this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado ==''|| this.selectArea =='')  {
+      this.mostrarMensaje("Complete todos los campos", false);
+    } else {
+      const valorContableInt = parseFloat(this.valor_contable);
+      const fechaAdquisicionDate = new Date(this.fecha_adquisicion);
+  
+      // Verifica que las conversiones sean válidas
+      if (isNaN(valorContableInt) || isNaN(fechaAdquisicionDate.getTime())) 
+           {
+        this.mostrarMensaje("Datos numéricos o de fecha inválidos", false);
+        return;
+      }
+  
+  
+      this.mobiliariosService.actualizarMobiliarios(this.id,this.bld_bca,this.nombre,this.marca,this. modelo,this.num_serie,this.material,
+        this.color,fechaAdquisicionDate,this.estado,this.localizacion,this.codigoUTA,valorContableInt,this.selectEncargado.id_encargado,this.selectArea.id_area).subscribe(
+        (response) => {
+          this.mostrarMensaje("Bien actualizo con éxito", true);
+          //this.limpiarFormulario();
+          this.visible = false;
+          this.listarMobiliario();
+        },
+        (error) => {
+          this.mostrarMensaje("Error al actualizar el mobiliario", false);
+        }
+      );
+    };
+}
+
+showDialogAgregar() {
+  this.esEdicion = false;
+  this.visible = true;
+  this.limpiarFormulario();
+}
+
+
+showDialogEditar(mobiliario: any) {
+  this.esEdicion = true;
+  this.bld_bca =mobiliario.bld_bca;
+  this.nombre= mobiliario.nombre;
+  this.marca=mobiliario.marca;
+  this. modelo=mobiliario.modelo;
+  this.num_serie=mobiliario.num_serie;
+  this.material=mobiliario.material;
+  this.color=mobiliario.color;
+  this.fecha_adquisicion=mobiliario.fecha_adquisicion;
+  this.estado=mobiliario.estado;
+  this.localizacion=mobiliario.localizacion;
+  this.codigoUTA=mobiliario.codigoUTA;
+  this.valor_contable=mobiliario.valor_contable;
+  this.selectEncargado=this.encargados.find(encargado => encargado.id_encargado === mobiliario.id_encargado_per);
+  this.selectArea=this.areas.find(area => area.id_area === mobiliario.id_area_per);
+  this.id = mobiliario.id_bien_mob;
+  this.visible = true;
+}
+
+
+
+async mostrarMensaje(mensaje: string, exito: boolean) {
+  this.messageService.add(
+    {
+      severity: exito ? 'success' : 'error',
+      summary: exito ? 'Éxito' : 'Error', detail: mensaje
+    });
+}
+
+confirm(id: string) {
+  this.confirmationService.confirm({
+    message: '¿Seguro que desea eliminar el Bien Mobiliario?',
+    header: 'Confirmación',
+    icon: 'pi pi-exclamation-triangle',
+    accept: () => {
+      this.eliminarMobiliario(id);
+      this.listarMobiliario();
+    },
+    reject: () => {
+      console.log("rechazado");
+    }
+  });
 }
 
 

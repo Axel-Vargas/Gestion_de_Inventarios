@@ -1,3 +1,4 @@
+import { CalendarModule } from 'primeng/calendar';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -13,6 +14,8 @@ import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 
 @NgModule({
@@ -32,7 +35,13 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     DropdownModule,
     DialogModule,
     ConfirmDialogModule,
-    MenuModule
+    MenuModule,
+    ToastModule,
+    CalendarModule,
+  ],
+  providers:[
+    MessageService,
+    ConfirmationService
   ]
 })
 export class MobiliariosModule { }

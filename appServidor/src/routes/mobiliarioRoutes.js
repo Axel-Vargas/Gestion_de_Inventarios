@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { addBienes, getAllBienes, getBuscarBienPorId, editBienes ,deleteBienes, getMobiliarioByName} = require('../controllers/mobiliarioController.js');
+const { addBienes, getAllBienes, getMobiliarioByName,editBienes ,deleteBienes} = require('../controllers/mobiliarioController.js');
 
 
 
