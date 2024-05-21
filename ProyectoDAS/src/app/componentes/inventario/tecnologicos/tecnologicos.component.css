@@ -1,9 +1,4 @@
 
-span{
-    font-size: 28px;
-    color: rgb(105, 105, 105);
-    font-weight: bold;
-}
 
 /* En tu archivo de estilos globales o componentes con ::ng-deep */
 ::ng-deep .p-datatable .p-datatable-thead > tr > th {

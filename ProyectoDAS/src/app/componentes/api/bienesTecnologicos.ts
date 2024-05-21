@@ -19,5 +19,8 @@ export interface bienes_Tecnologicos {
     localizacion?: string;
     ip_tecnologico?: string;
     codigo_adicional?: string;
+    id_tipo_per?: number;
+    id_area_per?: number;
+    id_proveedor_per?: number;
     componentes: Componentes[];
 }

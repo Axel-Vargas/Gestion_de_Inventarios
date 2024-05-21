@@ -24,10 +24,10 @@ export class BienestecnologicosService {
         return this.http.get<bienes_Tecnologicos>(`${this.myAppUrl}${this.myApyUrl}${id}`);
     }
 
-    agregarBienTecnologico(bien: bienes_Tecnologicos): Observable<bienes_Tecnologicos> {
-        return this.http.post<bienes_Tecnologicos>(this.myAppUrl + this.myApyUrl, bien);
+    agregarBienTecnologico(bien: any): Observable<any> {
+        return this.http.post<any>(this.myAppUrl + this.myApyUrl, bien);
     }
-
+    
     actualizarBienTecnologico(id: number, bien: bienes_Tecnologicos): Observable<any> {
         return this.http.put(`${this.myAppUrl}${this.myApyUrl}${id}`, bien);
     }

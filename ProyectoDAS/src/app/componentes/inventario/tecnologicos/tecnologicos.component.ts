@@ -5,11 +5,15 @@ import { bienes_Tecnologicos } from '../../api/bienesTecnologicos';
 import { componentesService } from '../../../services/componentes.service';
 import { catchError, forkJoin } from 'rxjs';
 import { DialogService } from 'primeng/dynamicdialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { AreasService } from '../../../services/area.service';
 import { BloquesService } from '../../../services/bloques.service';
 import { Bloque } from '../../api/bloques';
 import { Area } from '../../api/Areas';
+import { TipoTecnologicoService } from '../../../services/tipotecnologico.service';
+import { TipoTecnologico } from '../../api/tipoTecnologico';
+import { ProveedorService } from '../../../services/provedor.service';
+import { Proveedor } from '../../api/Proveedores';
 
 interface Category {
   name: string;
@@ -42,15 +46,19 @@ export class TecnologicosComponent implements OnInit {
   estado: { name: string; code: number }[] = [];
   bloques!: Bloque[];
   areas!: Area[];
-
+  fecha_adquisicion = '';
   constructor(
     private tecnologicosService: BienestecnologicosService,
     private componente_service: componentesService,
     private areasService: AreasService,
     private bloquesService: BloquesService,
+    private tipoTecnologiaService: TipoTecnologicoService,
+    private proveedorservice: ProveedorService,
     private fb: FormBuilder
   ) {
     this.cargarBloques()
+    this.cargarTipoTecnologico()
+    this.cargarProveedores()
     this.estado = [
       { name: 'Operativo', code: 1 },
       { name: 'No Funcional', code: 2 }
@@ -97,6 +105,45 @@ export class TecnologicosComponent implements OnInit {
     );
   }
 
+  cargarTipoTecnologico() {
+    this.tipoTecnologiaService.getTiposTecnologicos().subscribe(
+      (data: TipoTecnologico | TipoTecnologico[]) => { 
+        if (Array.isArray(data)) {
+          this.tipoBien = data
+            .filter(bien => bien.nombre !== undefined && bien.id_tipo !== undefined)
+            .map(bien => ({ name: bien.nombre!, code: bien.id_tipo! }));
+            
+        } else if (data.nombre !== undefined && data.id_tipo !== undefined) {
+          this.tipoBien = [{ name: data.nombre!, code: data.id_tipo! }];
+          
+        }
+      },
+      (error) => {
+        
+      }
+    );
+  }
+  
+  cargarProveedores() {
+    this.proveedorservice.getProveedores().subscribe(
+      (data: Proveedor | Proveedor[]) => { 
+        console.log(data);
+        if (Array.isArray(data)) {
+          this.proveedor = data
+            .filter(provedor => provedor.nombre !== undefined && provedor.id_proveedor !== undefined)
+            .map(provedor => ({ name: provedor.nombre!, code: provedor.id_proveedor! }));
+            
+        } else if (data.nombre !== undefined && data.id_proveedor !== undefined) {
+          this.proveedor = [{ name: data.nombre!, code: data.id_proveedor! }];
+          
+        }
+      },
+      (error) => {
+        console.error(error)
+      }
+    );
+  }
+
   onSelectBloque(event: any) {
     const selectedBlockId = event.value.code; // Obtén el ID de la opción seleccionada
     this.isDropdownDisabled = false;
@@ -104,7 +151,7 @@ export class TecnologicosComponent implements OnInit {
   }
 
   onSelectArea(event: any) {
-    const selectedBlockId = event.value.code; // Obtén el ID de la opción seleccionada
+    const selectedAreaId = event.value.code; // Obtén el ID de la opción seleccionada
     this.isFiltrarDisabled = false;
   }
 
@@ -114,23 +161,60 @@ export class TecnologicosComponent implements OnInit {
   }
 
   ngOnInit() {
-    
-    this.cargarBienesTecnologicos();
-    this.inventoryForm = this.fb.group({
-      name: ['', Validators.required],
-      description: ['', Validators.required],
-      quantity: [0, Validators.required],
-      category: ['', Validators.required],
+    this.cargarBienesTecnologicos()
+    this.inventoryForm = new FormGroup({
+      id_proveedor_per: new FormControl('', Validators.required),
+      id_area_per: new FormControl('', Validators.required),
+      id_tipo_per: new FormControl('', Validators.required),
+      fecha_adquisicion: new FormControl('', Validators.required),
+      estado: new FormControl('', Validators.required),
+      num_serie: new FormControl(''),
+      codigo_adicional: new FormControl(''),
+      modelo: new FormControl(''),
+      codigoUTA: new FormControl(''),
+      marca: new FormControl(''),
+      localizacion: new FormControl(''),
+      ip_tecnologico: new FormControl('')
     });
   }
 
-  guardarBienesTecnologicos(): void {
-    if (this.inventoryForm.valid) {
-      console.log(this.inventoryForm.value);
-      // Aquí puedes manejar la lógica para enviar los datos al backend
-      this.display = false;
-    }
+   // Método para abrir el diálogo de agregar/editar
+   openDialog(item?: any) {
+    
   }
+
+  guardarBienesTecnologicos(): void {
+    const idProveedor = this.inventoryForm.value.id_proveedor_per.code;
+    const idArea = this.inventoryForm.value.id_area_per.code;
+    const idTipo = this.inventoryForm.value.id_tipo_per.code;
+    const estado = this.inventoryForm.value.estado.name;
+      // Crear un objeto con solo los campos específicos que deseas enviar
+      const nuevoBienTecnologico = {
+        marca: this.inventoryForm.value.marca,
+        modelo: this.inventoryForm.value.modelo,
+        num_serie: this.inventoryForm.value.num_serie,
+        fecha_adquisicion: this.inventoryForm.value.fecha_adquisicion,
+        estado: estado,
+        codigoUTA: this.inventoryForm.value.codigoUTA,
+        localizacion: this.inventoryForm.value.localizacion,
+        ip_tecnologico: this.inventoryForm.value.ip_tecnologico,
+        codigo_adicional: this.inventoryForm.value.codigo_adicional,
+        id_tipo_per:idTipo,
+        id_area_per: idArea,
+        id_proveedor_per: idProveedor
+      };
+      // Enviar el objeto al servicio
+      this.tecnologicosService.agregarBienTecnologico(nuevoBienTecnologico)
+        .subscribe((response) => {
+          this.cargarBienesTecnologicos(); // Recargar la lista después de agregar
+        }, (error) => {
+          console.error('Error al guardar el bien tecnológico:', error);
+        });
+   
+  }
+  
+  
+  
 
   cargarBienesTecnologicos(): void {
     forkJoin({
