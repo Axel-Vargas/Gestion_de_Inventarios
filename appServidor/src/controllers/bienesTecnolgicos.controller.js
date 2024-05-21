@@ -47,7 +47,7 @@ const getBienesTecnologicos = (req, res) => {
 };
 
 const createBienTecnologico = async (req, res) => {
-    const {marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion,ip_tecnologico,codigo_adicional, image, id_tipo_per, id_area_per, id_proveedor_per } = req.body;
+    const {marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion,ip_tecnologico,codigo_adicional, id_tipo_per, id_area_per, id_proveedor_per } = req.body;
 
     try {
 
