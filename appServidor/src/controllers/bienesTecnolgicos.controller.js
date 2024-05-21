@@ -96,10 +96,10 @@ const getBienTecnologicoById = (req, res) => {
 
 const updateBienTecnologico = (req, res) => {
     const { id } = req.params;
-    const { marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion,ip_tecnologico,codigo_adicional, repotenciado, image, id_tipo_per, id_area_per, id_proveedor_per } = req.body;
+    const {marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion,ip_tecnologico,codigo_adicional, id_tipo_per, id_area_per, id_proveedor_per } = req.body;
     try {
-        const sql = 'UPDATE Bien_Tecnologico SET marca = ?, modelo = ?, num_serie = ?, fecha_adquisicion = ?, estado = ?, codigoUTA = ?, localizacion = ?,ip_tecnologico=?,codigo_adicional=?, repotenciado = ?,image=?, id_tipo_per = ?, id_area_per = ?, id_proveedor_per = ? WHERE id_bien_tec = ?';
-        connection.query(sql, [marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion,ip_tecnologico,codigo_adicional, repotenciado, image, id_tipo_per, id_area_per, id_proveedor_per, id], (err, data) => {
+        const sql = 'UPDATE Bien_Tecnologico SET marca = ?, modelo = ?, num_serie = ?, fecha_adquisicion = ?, estado = ?, codigoUTA = ?, localizacion = ?,ip_tecnologico=?,codigo_adicional=?, id_tipo_per = ?, id_area_per = ?, id_proveedor_per = ? WHERE id_bien_tec = ?';
+        connection.query(sql, [marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion,ip_tecnologico,codigo_adicional, id_tipo_per, id_area_per, id_proveedor_per, id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
