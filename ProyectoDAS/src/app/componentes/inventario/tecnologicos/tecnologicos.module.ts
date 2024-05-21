@@ -10,14 +10,18 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
-
+import { DialogModule } from 'primeng/dialog';
 import { ToastModule } from 'primeng/toast';
 import { RatingModule } from 'primeng/rating';
 import { ToolbarModule } from 'primeng/toolbar';
+import { TooltipModule } from 'primeng/tooltip';
+import { InputNumberModule } from 'primeng/inputnumber';
+import { ReactiveFormsModule } from '@angular/forms';
+import {CalendarModule} from 'primeng/calendar';
 
 @NgModule({
   declarations: [
-    TecnologicosComponent
+    TecnologicosComponent,
   ],
   imports: [
     CommonModule,
@@ -31,7 +35,14 @@ import { ToolbarModule } from 'primeng/toolbar';
     DropdownModule,
     ToastModule,
     RatingModule,
-    ToolbarModule
+    ToolbarModule,
+    TooltipModule,
+    DialogModule,
+    InputNumberModule,
+    ReactiveFormsModule,
+    CalendarModule
+  ],
+  exports: [
   ]
 })
 export class TecnologicosModule { }

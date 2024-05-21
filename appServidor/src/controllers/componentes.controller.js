@@ -18,10 +18,10 @@ const getComponentes = (req, res) => {
 };
 
 const createComponente = (req, res) => {
-    const { nombre, marca, modelo, num_serie, codigoUTA, id_bien_per, id_proveedor_per } = req.body;
+    const { nombre, marca, modelo, num_serie,estado,repotenciado, codigoUTA, id_bien_per, id_proveedor_per } = req.body;
     try {
-        const sql = 'INSERT INTO Componentes (nombre, marca, modelo, num_serie, codigoUTA, id_bien_per, id_proveedor_per) VALUES (?, ?, ?, ?, ?, ?, ?)';
-        connection.query(sql, [nombre, marca, modelo, num_serie, codigoUTA, id_bien_per, id_proveedor_per], (err, data) => {
+        const sql = 'INSERT INTO Componentes (nombre, marca, modelo, num_serie,estado,repotenciado, codigoUTA, id_bien_per, id_proveedor_per) VALUES (?, ?, ?, ?, ?, ?, ?,?,?)';
+        connection.query(sql, [nombre, marca, modelo, num_serie,estado,repotenciado, codigoUTA, id_bien_per, id_proveedor_per], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
@@ -59,10 +59,10 @@ const getComponenteById = (req, res) => {
 
 const updateComponente = (req, res) => {
     const { id } = req.params;
-    const { nombre, marca, modelo, num_serie, codigoUTA, id_bien_per, id_proveedor_per } = req.body;
+    const { nombre, marca, modelo, num_serie,estado,repotenciado, codigoUTA, id_bien_per, id_proveedor_per } = req.body;
     try {
-        const sql = 'UPDATE Componentes SET nombre = ?, marca = ?, modelo = ?, num_serie = ?, codigoUTA = ?, id_bien_per = ?, id_proveedor_per = ? WHERE id_componente = ?';
-        connection.query(sql, [nombre, marca, modelo, num_serie, codigoUTA, id_bien_per, id_proveedor_per, id], (err, data) => {
+        const sql = 'UPDATE Componentes SET nombre = ?, marca = ?, modelo = ?, num_serie = ?,estado=?,repotenciado=?, codigoUTA = ?, id_bien_per = ?, id_proveedor_per = ? WHERE id_componente = ?';
+        connection.query(sql, [nombre, marca, modelo, num_serie,estado,repotenciado, codigoUTA, id_bien_per, id_proveedor_per, id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
