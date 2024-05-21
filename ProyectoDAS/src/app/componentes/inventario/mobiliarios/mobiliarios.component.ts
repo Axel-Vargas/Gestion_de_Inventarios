@@ -84,8 +84,8 @@ export class MobiliariosComponent {
   listarAreas(): void {
     this.areasService.obtenerAreas().subscribe(
       (response: any) => {
-        if (response && response.areas) {
-          this.areas = response.areas;
+        if (response ) {
+          this.areas = response;
         } else {
           this.areas = [];
         }

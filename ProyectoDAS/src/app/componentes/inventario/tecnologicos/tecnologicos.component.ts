@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { SelectItem } from 'primeng/api';
+import { MessageService, SelectItem } from 'primeng/api';
 import { BienestecnologicosService } from '../../../services/bienestecnologicos.service';
 import { bienes_Tecnologicos } from '../../api/bienesTecnologicos';
 import { componentesService } from '../../../services/componentes.service';
 import { catchError, forkJoin } from 'rxjs';
 import { DialogService } from 'primeng/dynamicdialog';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { AreasService } from '../../../services/area.service';
 import { BloquesService } from '../../../services/bloques.service';
 import { Bloque } from '../../api/bloques';
@@ -14,11 +19,6 @@ import { TipoTecnologicoService } from '../../../services/tipotecnologico.servic
 import { TipoTecnologico } from '../../api/tipoTecnologico';
 import { ProveedorService } from '../../../services/provedor.service';
 import { Proveedor } from '../../api/Proveedores';
-
-interface Category {
-  name: string;
-  code: string;
-}
 
 @Component({
   selector: 'app-tecnologicos',
@@ -31,12 +31,11 @@ export class TecnologicosComponent implements OnInit {
   visible: boolean = false;
   productDialog!: boolean;
   tecnologicos!: bienes_Tecnologicos[];
-  //tecnologico!: bienes_Tecnologicos;
-  date2!: Date;
   isDropdownDisabled: boolean = true;
   isFiltrarDisabled: boolean = true;
   loading = [false, false, false, false];
   display: boolean = false;
+  componentes: boolean = false;
   inventoryForm!: FormGroup;
   categories: { name: string; code: number }[] = [];
   area: { name: string; code: number }[] = [];
@@ -46,7 +45,13 @@ export class TecnologicosComponent implements OnInit {
   estado: { name: string; code: number }[] = [];
   bloques!: Bloque[];
   areas!: Area[];
-  fecha_adquisicion = '';
+
+  selectedBienTecnologico: any = null;
+  isEditMode: boolean = false;
+  componentForm!: FormGroup;
+
+  selectedComponente: any = null;
+  isEditModeComponentes: boolean = false;
   constructor(
     private tecnologicosService: BienestecnologicosService,
     private componente_service: componentesService,
@@ -54,104 +59,125 @@ export class TecnologicosComponent implements OnInit {
     private bloquesService: BloquesService,
     private tipoTecnologiaService: TipoTecnologicoService,
     private proveedorservice: ProveedorService,
+    private messageService: MessageService,
     private fb: FormBuilder
   ) {
-    this.cargarBloques()
-    this.cargarTipoTecnologico()
-    this.cargarProveedores()
+    this.cargarBloques();
+    this.cargarTipoTecnologico();
+    this.cargarProveedores();
+
     this.estado = [
       { name: 'Operativo', code: 1 },
-      { name: 'No Funcional', code: 2 }
+      { name: 'No Funcional', code: 2 },
+    ];
+
+    this.repotenciado = [
+      { name: 'SI', code: 1 },
+      { name: 'NO', code: 2 },
     ];
   }
 
-
-
-  // Métodos para operaciones CRUD de áreas
-  cargarAreas(id:number):void {
-    this.areasService.getAreaFiltro(id).subscribe(
-       (data: Area | Area[]) => { // Puede devolver un solo bloque o un array de bloques
-        if (Array.isArray(data)) {
-          this.area = data
-            .filter(area => area.nombre !== undefined && area.id_area !== undefined)
-            .map(area => ({ name: area.nombre!, code: area.id_area! }));
-        } else if (data.nombre !== undefined && data.id_area !== undefined) {
-          this.area = [{ name: data.nombre!, code: data.id_area! }];
-          
+  cargarAreas(id: number): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.areasService.getAreaFiltro(id).subscribe(
+        (data: Area | Area[]) => {
+          if (Array.isArray(data)) {
+            this.area = data.map((area) => ({
+              name: area.nombre !== undefined ? area.nombre : '',
+              code: area.id_area !== undefined ? area.id_area : 0,
+            }));
+          } else {
+            this.area = [
+              {
+                name: data.nombre !== undefined ? data.nombre : '',
+                code: data.id_area !== undefined ? data.id_area : 0,
+              },
+            ];
+          }
+          resolve();
+        },
+        (error) => {
+          console.error('Error al cargar áreas:', error);
+          reject(error);
         }
-      },
-      (error) => {
-        // Maneja los errores
-      }
-    );
+      );
+    });
   }
 
   cargarBloques() {
     this.bloquesService.getBloqueFiltro(1).subscribe(
-      (data: Bloque | Bloque[]) => { 
+      (data: Bloque | Bloque[]) => {
         if (Array.isArray(data)) {
           this.categories = data
-            .filter(bloque => bloque.nombre !== undefined && bloque.id_bloque !== undefined)
-            .map(bloque => ({ name: bloque.nombre!, code: bloque.id_bloque! }));
-            
+            .filter(
+              (bloque) =>
+                bloque.nombre !== undefined && bloque.id_bloque !== undefined
+            )
+            .map((bloque) => ({
+              name: bloque.nombre!,
+              code: bloque.id_bloque!,
+            }));
         } else if (data.nombre !== undefined && data.id_bloque !== undefined) {
           this.categories = [{ name: data.nombre!, code: data.id_bloque! }];
-          
         }
       },
-      (error) => {
-        
-      }
+      (error) => {}
     );
   }
 
   cargarTipoTecnologico() {
     this.tipoTecnologiaService.getTiposTecnologicos().subscribe(
-      (data: TipoTecnologico | TipoTecnologico[]) => { 
+      (data: TipoTecnologico | TipoTecnologico[]) => {
         if (Array.isArray(data)) {
           this.tipoBien = data
-            .filter(bien => bien.nombre !== undefined && bien.id_tipo !== undefined)
-            .map(bien => ({ name: bien.nombre!, code: bien.id_tipo! }));
-            
+            .filter(
+              (bien) => bien.nombre !== undefined && bien.id_tipo !== undefined
+            )
+            .map((bien) => ({ name: bien.nombre!, code: bien.id_tipo! }));
         } else if (data.nombre !== undefined && data.id_tipo !== undefined) {
           this.tipoBien = [{ name: data.nombre!, code: data.id_tipo! }];
-          
         }
       },
-      (error) => {
-        
-      }
+      (error) => {}
     );
   }
-  
+
   cargarProveedores() {
     this.proveedorservice.getProveedores().subscribe(
-      (data: Proveedor | Proveedor[]) => { 
+      (data: Proveedor | Proveedor[]) => {
         console.log(data);
         if (Array.isArray(data)) {
           this.proveedor = data
-            .filter(provedor => provedor.nombre !== undefined && provedor.id_proveedor !== undefined)
-            .map(provedor => ({ name: provedor.nombre!, code: provedor.id_proveedor! }));
-            
-        } else if (data.nombre !== undefined && data.id_proveedor !== undefined) {
+            .filter(
+              (provedor) =>
+                provedor.nombre !== undefined &&
+                provedor.id_proveedor !== undefined
+            )
+            .map((provedor) => ({
+              name: provedor.nombre!,
+              code: provedor.id_proveedor!,
+            }));
+        } else if (
+          data.nombre !== undefined &&
+          data.id_proveedor !== undefined
+        ) {
           this.proveedor = [{ name: data.nombre!, code: data.id_proveedor! }];
-          
         }
       },
       (error) => {
-        console.error(error)
+        console.error(error);
       }
     );
   }
 
   onSelectBloque(event: any) {
-    const selectedBlockId = event.value.code; // Obtén el ID de la opción seleccionada
+    const selectedBlockId = event.value.code;
     this.isDropdownDisabled = false;
-    this.cargarAreas(selectedBlockId)
+    this.cargarAreas(selectedBlockId);
   }
 
   onSelectArea(event: any) {
-    const selectedAreaId = event.value.code; // Obtén el ID de la opción seleccionada
+    const selectedAreaId = event.value.code;
     this.isFiltrarDisabled = false;
   }
 
@@ -160,8 +186,13 @@ export class TecnologicosComponent implements OnInit {
     setTimeout(() => (this.loading[index] = false), 1000);
   }
 
+  abrirModalTecnologico(){
+    this.inventoryForm.reset();
+    this.display =  true
+  }
+
   ngOnInit() {
-    this.cargarBienesTecnologicos()
+    this.cargarBienesTecnologicos();
     this.inventoryForm = new FormGroup({
       id_proveedor_per: new FormControl('', Validators.required),
       id_area_per: new FormControl('', Validators.required),
@@ -174,47 +205,84 @@ export class TecnologicosComponent implements OnInit {
       codigoUTA: new FormControl(''),
       marca: new FormControl(''),
       localizacion: new FormControl(''),
-      ip_tecnologico: new FormControl('')
+      ip_tecnologico: new FormControl(''),
     });
-  }
 
-   // Método para abrir el diálogo de agregar/editar
-   openDialog(item?: any) {
-    
+    this.componentForm = this.fb.group({
+      nombre: ['', Validators.required],
+      marca: ['', Validators.required],
+      modelo: ['', Validators.required],
+      num_serie: ['', Validators.required],
+      codigoUTA: ['', Validators.required],
+      estado: ['', Validators.required],
+      repotenciado: ['', Validators.required],
+      
+      id_proveedor_per: new FormControl('', Validators.required),
+    });
   }
 
   guardarBienesTecnologicos(): void {
     const idProveedor = this.inventoryForm.value.id_proveedor_per.code;
     const idArea = this.inventoryForm.value.id_area_per.code;
     const idTipo = this.inventoryForm.value.id_tipo_per.code;
-    const estado = this.inventoryForm.value.estado.name;
-      // Crear un objeto con solo los campos específicos que deseas enviar
-      const nuevoBienTecnologico = {
-        marca: this.inventoryForm.value.marca,
-        modelo: this.inventoryForm.value.modelo,
-        num_serie: this.inventoryForm.value.num_serie,
-        fecha_adquisicion: this.inventoryForm.value.fecha_adquisicion,
-        estado: estado,
-        codigoUTA: this.inventoryForm.value.codigoUTA,
-        localizacion: this.inventoryForm.value.localizacion,
-        ip_tecnologico: this.inventoryForm.value.ip_tecnologico,
-        codigo_adicional: this.inventoryForm.value.codigo_adicional,
-        id_tipo_per:idTipo,
-        id_area_per: idArea,
-        id_proveedor_per: idProveedor
-      };
-      // Enviar el objeto al servicio
-      this.tecnologicosService.agregarBienTecnologico(nuevoBienTecnologico)
-        .subscribe((response) => {
-          this.cargarBienesTecnologicos(); // Recargar la lista después de agregar
-        }, (error) => {
-          console.error('Error al guardar el bien tecnológico:', error);
-        });
-   
+    const estado = this.inventoryForm.value.estado.name.toUpperCase();
+
+    const nuevoBienTecnologico = {
+      marca: this.inventoryForm.value.marca.toUpperCase(),
+      modelo: this.inventoryForm.value.modelo.toUpperCase(),
+      num_serie: this.inventoryForm.value.num_serie.toUpperCase(),
+      fecha_adquisicion: this.inventoryForm.value.fecha_adquisicion,
+      estado: estado,
+      codigoUTA: this.inventoryForm.value.codigoUTA.toUpperCase(),
+      localizacion: this.inventoryForm.value.localizacion.toUpperCase(),
+      ip_tecnologico: this.inventoryForm.value.ip_tecnologico.toUpperCase(),
+      codigo_adicional: this.inventoryForm.value.codigo_adicional.toUpperCase(),
+      id_tipo_per: idTipo,
+      id_area_per: idArea,
+      id_proveedor_per: idProveedor,
+    };
+
+    if (this.isEditMode) {
+      this.tecnologicosService
+        .actualizarBienTecnologico(
+          this.selectedBienTecnologico.id_bien_tec,
+          nuevoBienTecnologico
+        )
+        .subscribe(
+          (response) => {
+            this.cargarBienesTecnologicos();
+            this.messageService.add({
+              key: 'bc',
+              severity: 'success',
+              summary: 'Actualizado',
+              detail: 'Actualizado con éxito',
+            });
+            this.display = false;
+          },
+          (error) => {
+            console.error('Error al actualizar el bien tecnológico:', error);
+          }
+        );
+    } else {
+      this.tecnologicosService
+        .agregarBienTecnologico(nuevoBienTecnologico)
+        .subscribe(
+          (response) => {
+            this.cargarBienesTecnologicos();
+            this.messageService.add({
+              key: 'bc',
+              severity: 'success',
+              summary: 'Completado',
+              detail: 'Ingresado con éxito',
+            });
+            this.display = false;
+          },
+          (error) => {
+            console.error('Error al guardar el bien tecnológico:', error);
+          }
+        );
+    }
   }
-  
-  
-  
 
   cargarBienesTecnologicos(): void {
     forkJoin({
@@ -224,7 +292,7 @@ export class TecnologicosComponent implements OnInit {
       .pipe(
         catchError((error) => {
           console.error('Error al cargar datos', error);
-          return []; // o manejo de error adecuado
+          return [];
         })
       )
       .subscribe(({ bienesTecnologicos, componentes }) => {
@@ -236,6 +304,182 @@ export class TecnologicosComponent implements OnInit {
         this.tecnologicos = bienesTecnologicos;
         console.log(this.tecnologicos);
       });
+  }
+
+  editarBienTecnologico(bien: any): void {
+    this.selectedBienTecnologico = bien;
+    this.isEditMode = true;
+    this.display = true;
+    
+    const fecha = new Date(bien.fecha_adquisicion);
+    const proveedorSeleccionado = this.proveedor.find(
+      (p) => p.code === bien.id_proveedor_per
+    );
+    const tipoSeleccionado = this.tipoBien.find(
+      (t) => t.code === bien.id_tipo_per
+    );
+    const estadoSeleccionado = this.estado.find(
+      (e) => e.name.toLowerCase().trim() === bien.estado.toLowerCase().trim()
+    );
+    this.cargarAreas(bien.id_area_per)
+      .then(() => {
+        const areaSeleccionada = this.area.find(
+          (a) => a.code === bien.id_area_per
+        );
+        if (areaSeleccionada) {
+          this.inventoryForm.patchValue({
+            id_proveedor_per: proveedorSeleccionado || null,
+            id_area_per: areaSeleccionada || null,
+            id_tipo_per: tipoSeleccionado || null,
+            fecha_adquisicion: fecha,
+            estado: estadoSeleccionado || null,
+            num_serie: bien.num_serie,
+            codigo_adicional: bien.codigo_adicional,
+            modelo: bien.modelo,
+            codigoUTA: bien.codigoUTA,
+            marca: bien.marca,
+            localizacion: bien.localizacion,
+            ip_tecnologico: bien.ip_tecnologico,
+          });
+        } else {
+          console.error('Área no encontrada para el ID:', bien.id_area_per);
+        }
+      })
+      .catch((error) => {
+        console.error('Error al cargar y seleccionar el área:', error);
+      });
+  }
+
+  eliminar(): void {
+    this.tecnologicosService
+      .eliminarBienTecnologico(this.selectedBienTecnologico.id_bien_tec)
+      .subscribe(
+        (response) => {
+          this.cargarBienesTecnologicos();
+          this.messageService.add({
+            key: 'bc',
+            severity: 'success',
+            summary: 'Eliminado',
+            detail: 'Eliminado con éxito',
+          });
+          this.display = false;
+        },
+        (error) => {
+          console.error('Error al actualizar el bien tecnológico:', error);
+        }
+      );
+  }
+
+  // **************** COMPONENTES ****************
+
+
+  guardarComponentes() {
+    if (this.componentForm.valid) {
+      const formData = this.componentForm.value;
+      if(!this.isEditModeComponentes){
+        formData.id_bien_per = this.selectedBienTecnologico.id_bien_tec;
+      }else{
+        formData.id_bien_per = this.selectedComponente.id_bien_per;
+      }
+
+      formData.id_proveedor_per = this.componentForm.value.id_proveedor_per.code;
+      formData.estado = this.componentForm.value.estado.name;
+      formData.repotenciado = this.componentForm.value.repotenciado.name;
+      console.log(this.componentForm.value);
+      if (this.isEditModeComponentes) {
+        this.componente_service.actualizarComponente(this.selectedComponente.id_componente,formData).subscribe({
+          next: (response) => {
+            this.messageService.add({
+              key: 'bc',
+              severity: 'success',
+              summary: 'Completado',
+              detail: 'Editado con éxito',
+            });
+            this.componentes = false;
+            this.cargarBienesTecnologicos();
+          },
+          error: (error) => {
+            console.error('Error al guardar el componente:', error);
+          },
+        });
+      } else {
+        this.componente_service.agregarComponente(formData).subscribe({
+          next: (response) => {
+            this.messageService.add({
+              key: 'bc',
+              severity: 'success',
+              summary: 'Completado',
+              detail: 'Agregado con éxito',
+            });
+            this.componentes = false;
+            this.cargarBienesTecnologicos();
+          },
+          error: (error) => {
+            console.error('Error al guardar el componente:', error);
+          },
+        });
+      }
+
+    } else {
+      console.error('Formulario no válido');
+    }
+  }
+
+  cargarComponentes() {
+    this.componente_service.getComponentes().subscribe({
+      next: (response) => {},
+      error: (error) => {
+        console.error('Error al guardar el componente:', error);
+      },
+    });
+  }
+
+  openEditComponentModal(componente: any) {
+    this.selectedComponente = componente;
+    console.log(this.selectedComponente)
+    this.isEditModeComponentes = true;
+    this.componentes = true;
+
+    const proveedorSeleccionado = this.proveedor.find((p) => p.code === componente.id_proveedor_per);
+    const tipoSeleccionado = this.tipoBien.find((t) => t.code === componente.id_tipo_per);
+    const estadoSeleccionado = this.estado.find((e) =>e.name.toLowerCase().trim() === componente.estado.toLowerCase().trim());
+    const repotenciado = this.repotenciado.find((r) => r.name.toLowerCase().trim() ===componente.repotenciado.toLowerCase().trim());
+    this.componentForm.patchValue({
+      id_proveedor_per: proveedorSeleccionado || null,
+      id_bien_per: tipoSeleccionado || null,
+      estado: estadoSeleccionado || null,
+      num_serie: componente.num_serie,
+      repotenciado: repotenciado || null,
+      nombre: componente.nombre,
+      modelo: componente.modelo,
+      codigoUTA: componente.codigoUTA,
+      marca: componente.marca,
+    });
+  }
+
+  abrirModalComponente(bien: any) {
+    this.componentes = true;
+    this.selectedBienTecnologico = bien;
+    this.componentForm.reset();
+  }
+
+  eliminarComponente(order: any){
+    this.selectedComponente = order;
+    this.componente_service.eliminarComponente(order.id_componente).subscribe({
+      next: (response) => {
+        this.messageService.add({
+          key: 'bc',
+          severity: 'success',
+          summary: 'Eliminado',
+          detail: 'Eliminado con éxito',
+        });
+        this.componentes = false;
+        this.cargarBienesTecnologicos();
+      },
+      error: (error) => {
+        console.error('Error al guardar el componente:', error);
+      },
+    });
   }
 
   showTooltip() {

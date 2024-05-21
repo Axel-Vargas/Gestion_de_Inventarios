@@ -19,6 +19,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { ReactiveFormsModule } from '@angular/forms';
 import {CalendarModule} from 'primeng/calendar';
 
+
 @NgModule({
   declarations: [
     TecnologicosComponent,
@@ -40,7 +41,8 @@ import {CalendarModule} from 'primeng/calendar';
     DialogModule,
     InputNumberModule,
     ReactiveFormsModule,
-    CalendarModule
+    CalendarModule,
+
   ],
   exports: [
   ]
