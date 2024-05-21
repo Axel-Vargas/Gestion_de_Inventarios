@@ -3,7 +3,7 @@ const connection = require('../db/connection');
 
 exports.getAllAreas = async (req, res) => {
     try {
-      const selectQuery = `SELECT nombre FROM areas`;
+      const selectQuery = `SELECT * FROM areas`;
       connection.query(selectQuery, (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error interno del servidor' });
