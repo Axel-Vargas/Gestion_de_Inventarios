@@ -82,14 +82,17 @@ export class MobiliariosComponent {
     );
   }
   listarAreas(): void {
+    console.log("ok");
     this.areasService.obtenerAreas().subscribe(
       (response: any) => {
-        if (response && response.areas) {
-          this.areas = response.areas;
+        if (response) {
+          this.areas = response;
         } else {
           this.areas = [];
         }
+        console.log(this.areas);
       },
+      
       (error) => {
         console.error('Error al obtener areas:', error);
       }
@@ -106,7 +109,6 @@ export class MobiliariosComponent {
         } else {
           this.mobiliarios = [];
         }
-        console.log(response)
       },
       (error) => {
         console.error('Error al obtener mobiliarios:', error);

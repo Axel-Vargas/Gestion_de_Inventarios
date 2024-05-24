@@ -1,5 +1,21 @@
-span{
+.encargados{
     font-size: 28px;
     color: rgb(105, 105, 105);
     font-weight: bold;
+}
+
+.mensaje-cedula {
+    font-size: 0.9rem;
+    transition: all 0.3s ease-in-out;
+}
+
+.valido {
+    color: green;
+}
+
+.invalido {
+    background-color: bisque;
+    padding: 5px;
+    border-radius: 10px;
+    color: red;
 }

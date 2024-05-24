@@ -8,7 +8,7 @@
             </div>
             <h5>BIENES TECNÓLOGICOS</h5>
             <p-toast></p-toast>
-            <p-table [value]="tecnologicos" dataKey="id_bien_tec" [tableStyle]="{ 'min-width': '60rem' }"
+            <p-table [value]="tecnologicos" dataKey="id_bien_tec" [tableStyle]="{ 'width': '90rem' }"
                 scrollDirection="both" [scrollable]="true" scrollHeight="400px" [rowHover]="true" [rows]="10"
                 [paginator]="true" [rowsPerPageOptions]="[10, 20, 30]">
                 <ng-template pTemplate="caption">
@@ -36,7 +36,7 @@
 
                 <ng-template pTemplate="header">
                     <tr>
-                        <th style="width: 5rem"></th>
+                        <th></th>
                         <th pSortableColumn="qr">QR</th>
                         <th pSortableColumn="nombre">
                             NOMBRE<p-sortIcon field="nombre"></p-sortIcon>

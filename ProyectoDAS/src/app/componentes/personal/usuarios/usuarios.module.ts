@@ -15,6 +15,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { PasswordModule } from 'primeng/password';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     DropdownModule,
     ToastModule,
     FormsModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    PasswordModule
   ],
   providers:[
     MessageService,

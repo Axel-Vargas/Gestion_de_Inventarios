@@ -16,6 +16,8 @@ import { MenubarModule } from 'primeng/menubar';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { TagModule } from 'primeng/tag';
+import { Table, TableModule } from 'primeng/table';
 
 @NgModule({
   declarations: [
@@ -29,7 +31,7 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner';
     MenubarModule,
     DialogModule, 
     ButtonModule,
-    ZXingScannerModule 
+    ZXingScannerModule
   ],
   exports: [
     LayoutComponent,

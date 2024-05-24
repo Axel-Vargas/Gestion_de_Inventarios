@@ -15,10 +15,6 @@ export class EncargadosService {
     return this.http.get(this.API);
   }
 
-  obtenerEncargadoPorCedula(cedula: string): Observable<any[]> {
-    return this.http.get<any[]>(`${this.API}/cedula/${cedula}`);
-  }
-
   insertarEncargado(cedula: string, nombre: string, apellido: string, telefono: string, direccion: string) {
     return this.http.post(this.API, { cedula, nombre, apellido, telefono, direccion})
   }

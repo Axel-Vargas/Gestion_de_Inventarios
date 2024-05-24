@@ -36,18 +36,12 @@ export class MenuComponent implements OnInit {
                         label: 'Inventario', icon: 'pi pi-box',
                         items: [
                             {
-                                label: 'Tipos de Equipos', icon: 'pi pi-th-large', routerLink: ['/panel/inventarios/tiposequipos']
-                            },
-                            {
                                 label: 'Bienes Tecnológicos', icon: 'pi pi-desktop', routerLink: ['/panel/inventarios/tecnologicos']
                             },
                             {
                                 label: 'Bienes Mobiliarios', icon: 'pi pi-building-columns', routerLink: ['/panel/inventarios/mobiliarios'], get iconHtml() {
                                     return this.icon;
                                 }
-                            },
-                            {
-                                label: 'Componentes', icon: 'pi pi-microchip', routerLink: ['/panel/inventarios/componentes']
                             }
                         ]
                     },

@@ -1,15 +1,19 @@
-import { Component } from '@angular/core';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { Component, ViewChild } from '@angular/core';
+import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { EncargadosService } from '../../../services/encargados.service';
+import { Encargados } from '../../api/Encargados';
+import { Table } from 'primeng/table';
 
 @Component({
   selector: 'app-encargados',
   templateUrl: './encargados.component.html',
   styleUrl: './encargados.component.css'
 })
-export class EncargadosComponent {
 
+
+export class EncargadosComponent {
   encargados: any = [];
+  filterOptions: any = [];
 
   id: string = '';
   cedulaBuscada: string = '';
@@ -18,12 +22,23 @@ export class EncargadosComponent {
   apellido = '';
   telefono = '';
   direccion = '';
+  mensajeValidacionCedula: string = '';
 
   tooltipVisible: boolean = false;
   visible: boolean = false;
   esEdicion: boolean = false;
+  soloLetrasRegex = /^[a-zA-Z]*$/;
+  soloNumerosRegex = /^[0-9]*$/;
 
   constructor(private confirmationService: ConfirmationService, private encargadosService: EncargadosService, private messageService: MessageService) { }
+
+  matchModeOptions = [
+    { label: 'Empieza con', value: 'startsWith' },
+    { label: 'Termina con', value: 'endsWith' },
+    { label: 'Contiene', value: 'contains' },
+    { label: 'Es igual a', value: 'equals' },
+    { label: 'No es igual a', value: 'notEquals' },
+  ];
 
   ngOnInit(): void {
     this.listarEncargados();
@@ -42,26 +57,6 @@ export class EncargadosComponent {
         console.error('Error al obtener encargados:', error);
       }
     );
-  }
-
-  cargarEncargado(cedula: string): void {
-    if (this.cedulaBuscada.trim() === '') {
-      this.listarEncargados(); 
-    } else {
-      this.encargadosService.obtenerEncargadoPorCedula(this.cedulaBuscada).subscribe(
-        (data: any) => {
-          this.encargados = data.encargados;
-        },
-        (error) => {
-          console.error('Error buscando encargado por cédula', error);
-          this.encargados = [];
-        }
-      );
-    }
-  }
-
-  buscarEncargado() {
-    this.cargarEncargado(this.cedulaBuscada);
   }
 
   registrarEncargado() {
@@ -112,6 +107,36 @@ export class EncargadosComponent {
     };
   }
 
+  validarCedula(cedula: string): boolean {
+    if (cedula.length !== 10) {
+      return false;
+    }
+
+    if (!/^\d+$/.test(cedula)) {
+      return false;
+    }
+
+    const digitoVerificador = parseInt(cedula.charAt(9));
+    const digitos = cedula.substr(0, 9).split('').map(digito => parseInt(digito));
+
+    let suma = 0;
+    for (let i = 0; i < digitos.length; i++) {
+      let digito = digitos[i];
+      if (i % 2 === 0) {
+        digito *= 2;
+        if (digito > 9) {
+          digito -= 9;
+        }
+      }
+      suma += digito;
+    }
+
+    const residuo = suma % 10;
+    const digitoEsperado = residuo === 0 ? 0 : 10 - residuo;
+
+    return digitoEsperado === digitoVerificador;
+  }
+
   showTooltip() {
     this.tooltipVisible = true;
   }
@@ -158,6 +183,37 @@ export class EncargadosComponent {
         console.log("rechazado");
       }
     });
+  }
+
+  handleInput(event: any) {
+    const inputValue = event.target.value;
+    if (!this.soloLetrasRegex.test(inputValue)) {
+      event.target.value = inputValue.replace(/[^a-zA-Z]/g, '');
+    }
+  }
+
+  handleInputNumbers(event: any) {
+    const inputValue = event.target.value;
+    if (!this.soloNumerosRegex.test(inputValue)) {
+      event.target.value = inputValue.replace(/\D/g, '');
+    }
+  }
+
+  handleInputCedula(event: any) {
+    const inputValue = event.target.value;
+    const cedula = event.target.value;
+
+    if (!this.soloNumerosRegex.test(inputValue)) {
+      event.target.value = inputValue.replace(/\D/g, '');
+    }
+
+    if (cedula === '') {
+      this.mensajeValidacionCedula = '';
+    } else {
+      const esCedulaValida = this.validarCedula(cedula);
+      this.mensajeValidacionCedula = esCedulaValida ? '' : 'Cédula inválida';
+    }
+
   }
 
   limpiarFormulario() {

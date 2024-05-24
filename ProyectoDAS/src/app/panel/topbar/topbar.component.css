@@ -30,9 +30,5 @@
 }
 
 /* Muestra el botón solo en pantallas pequeñas */
-@media (max-width: 768px) { /* Ajusta 768px según tu punto de corte específico */
-    .layout-topbar-menu-button {
-        display: block;
-    }
-}
+
 

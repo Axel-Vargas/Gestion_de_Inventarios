@@ -1,8 +1,13 @@
 const connection = require('../db/connection');
+const bcrypt = require('bcrypt');
 
 exports.getAllUsers = async (req, res) => {
   try {
-    const selectQuery = `SELECT * FROM usuarios`;
+    const selectQuery = `
+      SELECT u.*, r.nombre AS nombre_rol
+      FROM usuarios u
+      INNER JOIN roles r ON u.id_rol_per = r.id_rol
+    `;
     connection.query(selectQuery, (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -61,13 +66,19 @@ exports.addUser = async (req, res) => {
         return res.status(400).json({ mensaje: 'El correo ya está en uso' });
       }
 
-      const insertQuery = `INSERT INTO usuarios (cedula, nombre, apellido, correo, telefono, contrasena, id_rol_per) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-      connection.query(insertQuery, [cedula, nombre, apellido, telefono, correo, contrasena, rol, estado], (error, results) => {
-        if (error) {
+      bcrypt.hash(contrasena, 10, (err, hash) => {
+        if (err) {
           return res.status(500).json({ mensaje: 'Error interno del servidor' });
         }
 
-        res.status(201).json({ mensaje: 'Usuario registrado exitosamente' });
+        const insertQuery = `INSERT INTO usuarios (cedula, nombre, apellido, correo, telefono, contrasena, id_rol_per) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+        connection.query(insertQuery, [cedula, nombre, apellido, correo, telefono, hash, rol, estado], (error, results) => {
+          if (error) {
+            return res.status(500).json({ mensaje: 'Error interno del servidor' });
+          }
+
+          res.status(201).json({ mensaje: 'Usuario registrado exitosamente' });
+        });
       });
     });
   } catch (error) {
@@ -90,14 +101,38 @@ exports.editUser = async (req, res) => {
         return res.status(400).json({ mensaje: 'El correo ya está en uso por otro usuario' });
       }
 
-      const updateQuery = `UPDATE usuarios SET cedula = ?, nombre = ?, apellido = ?, correo = ?, telefono = ?, contrasena = ?, id_rol_per = ? WHERE id_usuario = ?`;
-      connection.query(updateQuery, [cedula, nombre, apellido, correo, telefono, contrasena, rol, id], (error, results) => {
+      const updateQuery = `UPDATE usuarios SET cedula = ?, nombre = ?, apellido = ?, correo = ?, telefono = ?, id_rol_per = ? WHERE id_usuario = ?`;
+      connection.query(updateQuery, [cedula, nombre, apellido, correo, telefono, rol, id], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error interno del servidor' });
         }
 
         res.status(200).json({ mensaje: 'Información de usuario actualizada exitosamente' });
       });
+    });
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
+exports.updatePassword = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const { contrasena } = req.body;
+
+    if (!contrasena) {
+      return res.status(400).json({ mensaje: 'La contraseña es requerida' });
+    }
+
+    const hashedPassword = await bcrypt.hash(contrasena, 10);
+
+    const updateQuery = `UPDATE usuarios SET contrasena = ? WHERE id_usuario = ?`;
+    connection.query(updateQuery, [hashedPassword, id], (error, results) => {
+      if (error) {
+        return res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
+
+      res.status(200).json({ mensaje: 'Contraseña actualizada exitosamente' });
     });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error interno del servidor' });

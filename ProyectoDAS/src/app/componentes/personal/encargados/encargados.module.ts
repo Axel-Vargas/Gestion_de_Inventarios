@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { EncargadosRoutingModule } from './encargados-routing.module';
 import { EncargadosComponent } from './encargados.component';
 import { MenuModule } from 'primeng/menu';
-import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
@@ -15,6 +14,8 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TagModule } from 'primeng/tag';
+import { Table, TableModule } from 'primeng/table';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
     DropdownModule,
     ToastModule,
     FormsModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    TagModule
   ],
   providers:[
     MessageService,
