@@ -19,6 +19,11 @@
     min-width: 200px;
   }
 
+  .hidden-column {
+    display: none;
+}
+
+
 /* Estilos para el p-dialog */
 @media screen and (max-width: 600px) {
     ::ng-deep .p-dialog {

@@ -30,10 +30,10 @@ export class componentesService {
       }
     
       actualizarComponente(id: number, componente: Componentes): Observable<any> {
-        return this.http.put(`${this.myAppUrl}${this.myApyUrl}${id}`, componente);
+        return this.http.put(`${this.myAppUrl}${this.myApyUrl}/${id}`, componente);
       }
     
       eliminarComponente(id: number): Observable<any> {
-        return this.http.delete(`${this.myAppUrl}${this.myApyUrl}${id}`);
+        return this.http.delete(`${this.myAppUrl}${this.myApyUrl}/${id}`);
       }
 }

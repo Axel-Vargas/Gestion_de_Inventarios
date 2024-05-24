@@ -85,7 +85,11 @@ export class MobiliariosComponent {
     console.log("ok");
     this.areasService.obtenerAreas().subscribe(
       (response: any) => {
+<<<<<<< HEAD
         if (response) {
+=======
+        if (response ) {
+>>>>>>> f2e0df6ae6b4029f2c0b971ee67437092bc86743
           this.areas = response;
         } else {
           this.areas = [];

@@ -28,11 +28,11 @@ export class BienestecnologicosService {
         return this.http.post<any>(this.myAppUrl + this.myApyUrl, bien);
     }
     
-    actualizarBienTecnologico(id: number, bien: bienes_Tecnologicos): Observable<any> {
-        return this.http.put(`${this.myAppUrl}${this.myApyUrl}${id}`, bien);
+    actualizarBienTecnologico(id: number, bien: any): Observable<any> {
+        return this.http.put(`${this.myAppUrl}${this.myApyUrl}/${id}`, bien);
     }
 
     eliminarBienTecnologico(id: number): Observable<any> {
-        return this.http.delete(`${this.myAppUrl}${this.myApyUrl}${id}`);
+        return this.http.delete(`${this.myAppUrl}${this.myApyUrl}/${id}`);
     }
 }

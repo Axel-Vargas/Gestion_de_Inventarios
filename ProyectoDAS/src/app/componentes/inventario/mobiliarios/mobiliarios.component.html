@@ -122,8 +122,39 @@
 
 <p-dialog  [header]="esEdicion ? 'Editar Mobiliarios' : 'Agregar Mobiliarios'" [modal]="true" [(visible)]="visible" [style]="{ width: '37rem', height: '30rem'}">
   <div class="flex flex-wrap justify-content-between ap-3">
-      
     <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="encargado" class="font-semibold w-6rem">Encargado</label>
+    <p-dropdown
+      [options]="encargados"
+      dataKey="id_encargado"
+      optionLabel="nombre"
+      placeholder="Seleccione un Encargado"
+      autoWidth="false"
+      [style]="{ width: '15.9rem' }"
+      [(ngModel)]="selectEncargado"
+    ></p-dropdown>
+  </div>
+
+  <div
+    class="flex align-items-left gap-3 mb-3 flex-column"
+    style="max-width: 50%"
+  >
+    <label for="area" class="font-semibold w-6rem">Area</label>
+    <p-dropdown
+      [options]="areas"
+      dataKey="id_area"
+      optionLabel="nombre"
+      placeholder="Seleccione un Area"
+      autoWidth="false"
+      [style]="{ width: '15.9rem' }"
+      [(ngModel)]="selectArea"
+    ></p-dropdown>
+  </div>
+    <div
+
     class="flex align-items-left gap-3 mb-3 flex-column"
     style="max-width: 50%"
   >
@@ -294,37 +325,7 @@
     />
   </div>
 
-  <div
-    class="flex align-items-left gap-3 mb-3 flex-column"
-    style="max-width: 50%"
-  >
-    <label for="encargado" class="font-semibold w-6rem">Encargado</label>
-    <p-dropdown
-      [options]="encargados"
-      dataKey="id_encargado"
-      optionLabel="nombre"
-      placeholder="Seleccione un Encargado"
-      autoWidth="false"
-      [style]="{ width: '15.9rem' }"
-      [(ngModel)]="selectEncargado"
-    ></p-dropdown>
-  </div>
-
-  <div
-    class="flex align-items-left gap-3 mb-3 flex-column"
-    style="max-width: 50%"
-  >
-    <label for="area" class="font-semibold w-6rem">Area</label>
-    <p-dropdown
-      [options]="areas"
-      dataKey="id_area"
-      optionLabel="nombre"
-      placeholder="Seleccione un Area"
-      autoWidth="false"
-      [style]="{ width: '15.9rem' }"
-      [(ngModel)]="selectArea"
-    ></p-dropdown>
-  </div>
+  
 
   </div>
   <div class="flex justify-content-end gap-2">
