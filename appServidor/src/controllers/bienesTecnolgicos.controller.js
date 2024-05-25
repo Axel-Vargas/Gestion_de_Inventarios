@@ -9,10 +9,8 @@ function generateQR(data) {
         const qrDirectory = path.join(__dirname, 'public', 'qrcodes');
         const filename = `${Date.now()}.png`;
         const qrPath = path.join(qrDirectory, filename);
-
         // Crear el directorio si no existe
         fs.mkdirSync(qrDirectory, { recursive: true });
-
         QRCode.toFile(qrPath, data, {
             color: {
                 dark: '#000',  // Black dots
@@ -28,10 +26,9 @@ function generateQR(data) {
         });
     });
 }
-
 const getBienesTecnologicos = (req, res) => {
     try {
-        const sql = 'SELECT * FROM bien_tecnologico'
+        const sql = 'SELECT * FROM bien_tecnologico WHERE estado != "BODEGA"';
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -46,23 +43,59 @@ const getBienesTecnologicos = (req, res) => {
     }
 };
 
-const createBienTecnologico = async (req, res) => {
-    const {marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion,ip_tecnologico,codigo_adicional, id_tipo_per, id_area_per, id_proveedor_per } = req.body;
+const obtenerBienesPorBloqueYArea = (req, res) => {
+    const { nombreBloque, nombreArea } = req.params;
 
     try {
-
-        // Datos para el QR
-        const qrData = `num_serie: ${num_serie}`;
-        // Generar QR y obtener el path relativo
-        const imagePath = await generateQR(qrData);
-        // SQL para insertar con path del QR
-        const sql = 'INSERT INTO Bien_Tecnologico (marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion,ip_tecnologico,codigo_adicional, image, id_tipo_per, id_area_per, id_proveedor_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)';
-        connection.query(sql, [marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion,ip_tecnologico,codigo_adicional, imagePath, id_tipo_per, id_area_per, id_proveedor_per], (err, data) => {
+        const sql = `
+            SELECT BT.*
+            FROM BLOQUES B
+            JOIN AREAS A ON B.ID_BLOQUE = A.ID_BLOQUE_PER
+            JOIN BIEN_TECNOLOGICO BT ON A.ID_AREA = BT.ID_AREA_PER
+            WHERE B.NOMBRE = ?
+            AND A.NOMBRE = ?
+            AND BT.ESTADO != "BODEGA";
+        `;
+        connection.query(sql, [nombreBloque, nombreArea], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                res.status(201).json({ message: 'Bien tecnológico creado exitosamente', qrPath: imagePath });
+                res.json(data);
+            }
+        });
+    } catch (error) {
+        console.error('Error en la función obtenerBienesPorBloqueYArea:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+};
+
+
+const createBienTecnologico = async (req, res) => {
+    const { nombre_bien, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, ip_tecnologico, atributos,  id_area_per, id_proveedor_per } = req.body;
+    try {
+        // SQL para insertar sin el QR
+        const sqlInsert = 'INSERT INTO Bien_Tecnologico (nombre_bien, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, ip_tecnologico, atributos,  id_area_per, id_proveedor_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        connection.query(sqlInsert, [nombre_bien, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, ip_tecnologico, JSON.stringify(atributos),  id_area_per, id_proveedor_per], async (err, result) => {
+            if (err) {
+                console.error('Error en la consulta SQL:', err);
+                res.status(500).json({ error: 'Error en el servidor' });
+            } else {
+                const idBienTec = result.insertId;
+                // Datos para el QR
+                const qrData = `id_bien_tec: ${idBienTec}`;
+                // Generar QR y obtener el path relativo
+                const imagePath = await generateQR(qrData);
+                // SQL para actualizar con path del QR
+                const sqlUpdate = 'UPDATE Bien_Tecnologico SET image = ? WHERE id_bien_tec = ?';
+                connection.query(sqlUpdate, [imagePath, idBienTec], (err, data) => {
+                    if (err) {
+                        console.error('Error en la consulta SQL:', err);
+                        res.status(500).json({ error: 'Error en el servidor' });
+                    } else {
+                        res.status(201).json({ message: 'Bien tecnológico creado exitosamente', qrPath: imagePath });
+                    }
+                });
             }
         });
     } catch (error) {
@@ -70,7 +103,6 @@ const createBienTecnologico = async (req, res) => {
         res.status(500).json({ error: 'Error en el servidor' });
     }
 };
-
 
 const getBienTecnologicoById = (req, res) => {
     const { id } = req.params;
@@ -96,10 +128,10 @@ const getBienTecnologicoById = (req, res) => {
 
 const updateBienTecnologico = (req, res) => {
     const { id } = req.params;
-    const {marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion,ip_tecnologico,codigo_adicional, id_tipo_per, id_area_per, id_proveedor_per } = req.body;
+    const { nombre_bien, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, ip_tecnologico, atributos,  id_area_per, id_proveedor_per } = req.body;
     try {
-        const sql = 'UPDATE Bien_Tecnologico SET marca = ?, modelo = ?, num_serie = ?, fecha_adquisicion = ?, estado = ?, codigoUTA = ?, localizacion = ?,ip_tecnologico=?,codigo_adicional=?, id_tipo_per = ?, id_area_per = ?, id_proveedor_per = ? WHERE id_bien_tec = ?';
-        connection.query(sql, [marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion,ip_tecnologico,codigo_adicional, id_tipo_per, id_area_per, id_proveedor_per, id], (err, data) => {
+        const sql = 'UPDATE Bien_Tecnologico SET nombre_bien = ?, marca = ?, modelo = ?, num_serie = ?, fecha_adquisicion = ?, estado = ?, codigoUTA = ?, localizacion = ?, ip_tecnologico = ?, atributos = ?,  id_area_per = ?, id_proveedor_per = ? WHERE id_bien_tec = ?';
+        connection.query(sql, [nombre_bien, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, ip_tecnologico, JSON.stringify(atributos), id_area_per, id_proveedor_per, id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
@@ -116,7 +148,7 @@ const updateBienTecnologico = (req, res) => {
 const deleteBienTecnologico = (req, res) => {
     const { id } = req.params;
     try {
-        const sql = 'DELETE FROM Bien_Tecnologico WHERE id_bien_tec = ?';
+        const sql = 'UPDATE Bien_Tecnologico SET estado = "BODEGA" WHERE id_bien_tec = ?';
         connection.query(sql, [id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -125,7 +157,7 @@ const deleteBienTecnologico = (req, res) => {
                 if (data.affectedRows === 0) {
                     res.status(404).json({ error: 'Bien tecnológico no encontrado' });
                 } else {
-                    res.json({ message: 'Bien tecnológico eliminado exitosamente' });
+                    res.json({ message: 'Bien tecnológico actualizado exitosamente' });
                 }
             }
         });
@@ -140,5 +172,6 @@ module.exports = {
     createBienTecnologico,
     getBienTecnologicoById,
     updateBienTecnologico,
-    deleteBienTecnologico
+    deleteBienTecnologico,
+    obtenerBienesPorBloqueYArea
 };

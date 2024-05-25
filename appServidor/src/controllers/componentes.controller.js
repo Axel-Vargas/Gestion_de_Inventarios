@@ -2,7 +2,7 @@ const connection = require('../db/connection');
 
 const getComponentes = (req, res) => {
     try {
-        const sql = 'SELECT * FROM Componentes';
+        const sql = 'SELECT * FROM Componentes WHERE estado != "BODEGA"';
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -79,23 +79,27 @@ const updateComponente = (req, res) => {
 const deleteComponente = (req, res) => {
     const { id } = req.params;
     try {
-        const sql = 'DELETE FROM Componentes WHERE id_componente = ?';
+        const sql = 'UPDATE Componentes SET estado = "BODEGA" WHERE id_componente = ?';
         connection.query(sql, [id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
                 if (data.affectedRows === 0) {
-                    res.status(404).json({ error: 'Componente no encontrado' });
+                    res.status(404).json({ error: 'Bien tecnológico no encontrado' });
                 } else {
-                    res.json({ message: 'Componente eliminado exitosamente' });
+                    res.json({ message: 'Bien tecnológico actualizado exitosamente' });
                 }
             }
         });
     } catch (error) {
-        console.error('Error en la función deleteComponente:', error);
+        console.error('Error en la función deleteBienTecnologico:', error);
         res.status(500).json({ error: 'Error en el servidor' });
     }
+};
+
+const deleteBienTecnologico = (req, res) => {
+    
 };
 
 module.exports = {
