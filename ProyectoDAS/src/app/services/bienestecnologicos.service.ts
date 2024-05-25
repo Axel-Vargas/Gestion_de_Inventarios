@@ -10,15 +10,21 @@ import { environment } from '../../environments/environments';
 export class BienestecnologicosService {
     private myAppUrl: string;
     private myApyUrl: string;
-
+    private myApyUrls: string;
     constructor(private http: HttpClient) {
         this.myAppUrl = environment.endpoint;
         this.myApyUrl = 'api/bientecnologico';
+        this.myApyUrls = 'api/bientecnologico/obtenerPorBloqueYArea';
     }
 
     getBienesTecnologicos(): Observable<bienes_Tecnologicos[]> {
         return this.http.get<bienes_Tecnologicos[]>(this.myAppUrl + this.myApyUrl);
     }
+
+    getPorBloqueYArea(bloque: string, area: string): Observable<bienes_Tecnologicos[]> {
+    const url = `${this.myAppUrl}${this.myApyUrls}/${bloque}/${area}`;
+    return this.http.get<bienes_Tecnologicos[]>(url);
+  }
 
     getBienTecnologico(id: number): Observable<bienes_Tecnologicos> {
         return this.http.get<bienes_Tecnologicos>(`${this.myAppUrl}${this.myApyUrl}${id}`);

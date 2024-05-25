@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MessageService, SelectItem } from 'primeng/api';
+import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { BienestecnologicosService } from '../../../services/bienestecnologicos.service';
 import { bienes_Tecnologicos } from '../../api/bienesTecnologicos';
 import { componentesService } from '../../../services/componentes.service';
@@ -19,6 +19,9 @@ import { TipoTecnologicoService } from '../../../services/tipotecnologico.servic
 import { TipoTecnologico } from '../../api/tipoTecnologico';
 import { ProveedorService } from '../../../services/provedor.service';
 import { Proveedor } from '../../api/Proveedores';
+import { Table } from 'primeng/table';
+
+
 
 @Component({
   selector: 'app-tecnologicos',
@@ -52,6 +55,9 @@ export class TecnologicosComponent implements OnInit {
 
   selectedComponente: any = null;
   isEditModeComponentes: boolean = false;
+
+  selectedBlockName!: string;
+  selectedAreaName!: string;
   constructor(
     private tecnologicosService: BienestecnologicosService,
     private componente_service: componentesService,
@@ -60,7 +66,8 @@ export class TecnologicosComponent implements OnInit {
     private tipoTecnologiaService: TipoTecnologicoService,
     private proveedorservice: ProveedorService,
     private messageService: MessageService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private confirmationService: ConfirmationService
   ) {
     this.cargarBloques();
     this.cargarTipoTecnologico();
@@ -76,6 +83,10 @@ export class TecnologicosComponent implements OnInit {
       { name: 'NO', code: 2 },
     ];
   }
+
+  onGlobalFilter(table: Table, event: Event) {
+    table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+}
 
   cargarAreas(id: number): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -169,20 +180,43 @@ export class TecnologicosComponent implements OnInit {
       }
     );
   }
-
+  
   onSelectBloque(event: any) {
     const selectedBlockId = event.value.code;
+    this.selectedBlockName = event.value.name;
     this.isDropdownDisabled = false;
     this.cargarAreas(selectedBlockId);
   }
-
+  
   onSelectArea(event: any) {
-    const selectedAreaId = event.value.code;
+     this.selectedAreaName = event.value.name;
     this.isFiltrarDisabled = false;
   }
 
   load(index: number) {
     this.loading[index] = true;
+    forkJoin({
+      bienesTecnologicos: this.tecnologicosService.getPorBloqueYArea(this.selectedBlockName,this.selectedAreaName),
+      componentes: this.componente_service.getComponentes(),
+    })
+      .pipe(
+        catchError((error) => {
+          console.error('Error al cargar datos', error);
+          return [];
+        })
+      )
+      .subscribe(({ bienesTecnologicos, componentes }) => {
+        bienesTecnologicos.forEach((t) => {
+          if (t.atributos && typeof t.atributos === 'string') {
+            t.atributos = JSON.parse(t.atributos);
+          }
+          t.componentes = componentes.filter(
+            (c) => c.id_bien_per === t.id_bien_tec
+          );
+        });
+        this.tecnologicos = bienesTecnologicos;
+        console.log(this.tecnologicos);
+      });
     setTimeout(() => (this.loading[index] = false), 1000);
   }
 
@@ -195,12 +229,13 @@ export class TecnologicosComponent implements OnInit {
     this.cargarBienesTecnologicos();
     this.inventoryForm = new FormGroup({
       id_proveedor_per: new FormControl('', Validators.required),
+      id_bloque_per: new FormControl(''),
       id_area_per: new FormControl('', Validators.required),
-      id_tipo_per: new FormControl('', Validators.required),
       fecha_adquisicion: new FormControl('', Validators.required),
       estado: new FormControl('', Validators.required),
       num_serie: new FormControl(''),
-      codigo_adicional: new FormControl(''),
+      nombre_bien: new FormControl('', Validators.required),
+      atributos: new FormControl(''),
       modelo: new FormControl(''),
       codigoUTA: new FormControl(''),
       marca: new FormControl(''),
@@ -210,9 +245,9 @@ export class TecnologicosComponent implements OnInit {
 
     this.componentForm = this.fb.group({
       nombre: ['', Validators.required],
-      marca: ['', Validators.required],
-      modelo: ['', Validators.required],
-      num_serie: ['', Validators.required],
+      marca: ['', ],
+      modelo: ['',],
+      num_serie: ['', ],
       codigoUTA: ['', Validators.required],
       estado: ['', Validators.required],
       repotenciado: ['', Validators.required],
@@ -224,7 +259,6 @@ export class TecnologicosComponent implements OnInit {
   guardarBienesTecnologicos(): void {
     const idProveedor = this.inventoryForm.value.id_proveedor_per.code;
     const idArea = this.inventoryForm.value.id_area_per.code;
-    const idTipo = this.inventoryForm.value.id_tipo_per.code;
     const estado = this.inventoryForm.value.estado.name.toUpperCase();
 
     const nuevoBienTecnologico = {
@@ -236,8 +270,8 @@ export class TecnologicosComponent implements OnInit {
       codigoUTA: this.inventoryForm.value.codigoUTA.toUpperCase(),
       localizacion: this.inventoryForm.value.localizacion.toUpperCase(),
       ip_tecnologico: this.inventoryForm.value.ip_tecnologico.toUpperCase(),
-      codigo_adicional: this.inventoryForm.value.codigo_adicional.toUpperCase(),
-      id_tipo_per: idTipo,
+      nombre_bien: this.inventoryForm.value.nombre_bien.toUpperCase(),
+      atributos: this.inventoryForm.value.atributos,
       id_area_per: idArea,
       id_proveedor_per: idProveedor,
     };
@@ -297,11 +331,15 @@ export class TecnologicosComponent implements OnInit {
       )
       .subscribe(({ bienesTecnologicos, componentes }) => {
         bienesTecnologicos.forEach((t) => {
+          if (t.atributos && typeof t.atributos === 'string') {
+            t.atributos = JSON.parse(t.atributos);
+          }
           t.componentes = componentes.filter(
             (c) => c.id_bien_per === t.id_bien_tec
           );
         });
         this.tecnologicos = bienesTecnologicos;
+        
         console.log(this.tecnologicos);
       });
   }
@@ -334,7 +372,8 @@ export class TecnologicosComponent implements OnInit {
             fecha_adquisicion: fecha,
             estado: estadoSeleccionado || null,
             num_serie: bien.num_serie,
-            codigo_adicional: bien.codigo_adicional,
+            nombre_bien: bien.nombre_bien,
+            atributos: bien.atributos,
             modelo: bien.modelo,
             codigoUTA: bien.codigoUTA,
             marca: bien.marca,
@@ -350,24 +389,30 @@ export class TecnologicosComponent implements OnInit {
       });
   }
 
-  eliminar(): void {
-    this.tecnologicosService
-      .eliminarBienTecnologico(this.selectedBienTecnologico.id_bien_tec)
-      .subscribe(
-        (response) => {
-          this.cargarBienesTecnologicos();
-          this.messageService.add({
-            key: 'bc',
-            severity: 'success',
-            summary: 'Eliminado',
-            detail: 'Eliminado con éxito',
-          });
-          this.display = false;
-        },
-        (error) => {
-          console.error('Error al actualizar el bien tecnológico:', error);
-        }
-      );
+  eliminar(id: number): void {
+    this.confirmationService.confirm({
+      message: 'Estas seguro de eliminar este bien tecnológico?',
+      accept: () => {
+        this.tecnologicosService
+        .eliminarBienTecnologico(id)
+        .subscribe(
+          (response) => {
+            this.cargarBienesTecnologicos();
+            this.messageService.add({
+              key: 'bc',
+              severity: 'success',
+              summary: 'Eliminado',
+              detail: 'Eliminado con éxito',
+            });
+            this.display = false;
+          },
+          (error) => {
+            console.error('Error al actualizar el bien tecnológico:', error);
+          }
+        );
+      }
+  });
+    
   }
 
   // **************** COMPONENTES ****************
@@ -463,23 +508,28 @@ export class TecnologicosComponent implements OnInit {
     this.componentForm.reset();
   }
 
-  eliminarComponente(order: any){
-    this.selectedComponente = order;
-    this.componente_service.eliminarComponente(order.id_componente).subscribe({
-      next: (response) => {
-        this.messageService.add({
-          key: 'bc',
-          severity: 'success',
-          summary: 'Eliminado',
-          detail: 'Eliminado con éxito',
+  eliminarComponente(id: number){
+    this.confirmationService.confirm({
+      message: 'Estas seguro de eliminar este componente?',
+      accept: () => {
+        this.componente_service.eliminarComponente(id).subscribe({
+          next: (response) => {
+            this.messageService.add({
+              key: 'bc',
+              severity: 'success',
+              summary: 'Eliminado',
+              detail: 'Eliminado con éxito',
+            });
+            this.componentes = false;
+            this.cargarBienesTecnologicos();
+          },
+          error: (error) => {
+            console.error('Error al guardar el componente:', error);
+          },
         });
-        this.componentes = false;
-        this.cargarBienesTecnologicos();
-      },
-      error: (error) => {
-        console.error('Error al guardar el componente:', error);
-      },
-    });
+      }
+  });
+   
   }
 
   showTooltip() {

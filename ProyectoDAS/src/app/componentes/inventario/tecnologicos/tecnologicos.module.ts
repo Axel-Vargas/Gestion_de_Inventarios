@@ -18,7 +18,8 @@ import { TooltipModule } from 'primeng/tooltip';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { ReactiveFormsModule } from '@angular/forms';
 import {CalendarModule} from 'primeng/calendar';
-
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -42,9 +43,11 @@ import {CalendarModule} from 'primeng/calendar';
     InputNumberModule,
     ReactiveFormsModule,
     CalendarModule,
+    ConfirmDialogModule,
 
   ],
   exports: [
-  ]
+  ],
+  providers: [ConfirmationService],
 })
 export class TecnologicosModule { }
