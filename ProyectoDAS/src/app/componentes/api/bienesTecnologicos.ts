@@ -7,7 +7,7 @@ interface Estado {
 export interface bienes_Tecnologicos {
     id_bien_tec?: number;
     nombre_bien?: string;
-    atributos?: { [key: string]: any };
+    atributos?: any;
     marca?: string;
     modelo?: string;
     num_serie?: string;

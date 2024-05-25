@@ -58,6 +58,12 @@ export class TecnologicosComponent implements OnInit {
 
   selectedBlockName!: string;
   selectedAreaName!: string;
+
+  atributosTexto: string = '';
+  mostrarDialogo: boolean = false;
+  temporalClave: string = '';
+  temporalValor: string = '';
+
   constructor(
     private tecnologicosService: BienestecnologicosService,
     private componente_service: componentesService,
@@ -83,9 +89,62 @@ export class TecnologicosComponent implements OnInit {
       { name: 'NO', code: 2 },
     ];
   }
+  ngOnInit() {
+    this.cargarBienesTecnologicos();
+    this.inventoryForm = new FormGroup({
+      id_proveedor_per: new FormControl('', Validators.required),
+      id_bloque_per: new FormControl(''),
+      id_area_per: new FormControl('', Validators.required),
+      fecha_adquisicion: new FormControl('', Validators.required),
+      estado: new FormControl('', Validators.required),
+      num_serie: new FormControl(''),
+      nombre_bien: new FormControl('', Validators.required),
+      atributos: this.fb.control({}),
+      modelo: new FormControl(''),
+      codigoUTA: new FormControl(''),
+      marca: new FormControl(''),
+      localizacion: new FormControl(''),
+      ip_tecnologico: new FormControl(''),
+    });
 
-  onGlobalFilter(table: Table, event: Event) {
+    this.componentForm = this.fb.group({
+      nombre: ['', Validators.required],
+      marca: ['', ],
+      modelo: ['',],
+      num_serie: ['', ],
+      codigoUTA: ['', Validators.required],
+      estado: ['', Validators.required],
+      repotenciado: ['', Validators.required],
+      id_proveedor_per: new FormControl('', Validators.required),
+    });
+  }
+
+onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
+}
+
+abrirDialogo(): void {
+  this.mostrarDialogo = true;
+}
+
+cerrarDialogo(): void {
+  this.mostrarDialogo = false;
+  this.temporalClave = '';
+  this.temporalValor = '';
+}
+atributosVisuales: any[] = [];
+
+agregarAtributo(): void {
+  if (this.temporalClave && this.temporalValor) {
+    const atributosControl = this.inventoryForm.get('atributos');
+    if (atributosControl) {
+      let atributosActuales = atributosControl.value ? JSON.parse(atributosControl.value) : {};
+      atributosActuales[this.temporalClave] = this.temporalValor;
+      // Eliminar el formateo "pretty-printed", guardando el JSON en una línea.
+      atributosControl.setValue(JSON.stringify(atributosActuales));
+    }
+    this.cerrarDialogo();
+  }
 }
 
   cargarAreas(id: number): Promise<void> {
@@ -192,7 +251,7 @@ export class TecnologicosComponent implements OnInit {
      this.selectedAreaName = event.value.name;
     this.isFiltrarDisabled = false;
   }
-
+  
   load(index: number) {
     this.loading[index] = true;
     forkJoin({
@@ -208,7 +267,12 @@ export class TecnologicosComponent implements OnInit {
       .subscribe(({ bienesTecnologicos, componentes }) => {
         bienesTecnologicos.forEach((t) => {
           if (t.atributos && typeof t.atributos === 'string') {
-            t.atributos = JSON.parse(t.atributos);
+            try {
+              t.atributos = JSON.parse(t.atributos);
+            } catch (error) {
+              console.error('Error parsing JSON for product:', t);
+            }
+            
           }
           t.componentes = componentes.filter(
             (c) => c.id_bien_per === t.id_bien_tec
@@ -225,42 +289,16 @@ export class TecnologicosComponent implements OnInit {
     this.display =  true
   }
 
-  ngOnInit() {
-    this.cargarBienesTecnologicos();
-    this.inventoryForm = new FormGroup({
-      id_proveedor_per: new FormControl('', Validators.required),
-      id_bloque_per: new FormControl(''),
-      id_area_per: new FormControl('', Validators.required),
-      fecha_adquisicion: new FormControl('', Validators.required),
-      estado: new FormControl('', Validators.required),
-      num_serie: new FormControl(''),
-      nombre_bien: new FormControl('', Validators.required),
-      atributos: new FormControl(''),
-      modelo: new FormControl(''),
-      codigoUTA: new FormControl(''),
-      marca: new FormControl(''),
-      localizacion: new FormControl(''),
-      ip_tecnologico: new FormControl(''),
-    });
-
-    this.componentForm = this.fb.group({
-      nombre: ['', Validators.required],
-      marca: ['', ],
-      modelo: ['',],
-      num_serie: ['', ],
-      codigoUTA: ['', Validators.required],
-      estado: ['', Validators.required],
-      repotenciado: ['', Validators.required],
-      
-      id_proveedor_per: new FormControl('', Validators.required),
-    });
-  }
-
+  
   guardarBienesTecnologicos(): void {
     const idProveedor = this.inventoryForm.value.id_proveedor_per.code;
     const idArea = this.inventoryForm.value.id_area_per.code;
     const estado = this.inventoryForm.value.estado.name.toUpperCase();
-
+  
+    // Convertir atributos de string JSON a objeto, si no es un objeto ya.
+    const atributosObj = typeof this.inventoryForm.value.atributos === 'string' ?
+      JSON.parse(this.inventoryForm.value.atributos) : this.inventoryForm.value.atributos;
+  
     const nuevoBienTecnologico = {
       marca: this.inventoryForm.value.marca.toUpperCase(),
       modelo: this.inventoryForm.value.modelo.toUpperCase(),
@@ -271,11 +309,11 @@ export class TecnologicosComponent implements OnInit {
       localizacion: this.inventoryForm.value.localizacion.toUpperCase(),
       ip_tecnologico: this.inventoryForm.value.ip_tecnologico.toUpperCase(),
       nombre_bien: this.inventoryForm.value.nombre_bien.toUpperCase(),
-      atributos: this.inventoryForm.value.atributos,
+      atributos: atributosObj, // Asegurarse de que esto es un objeto
       id_area_per: idArea,
       id_proveedor_per: idProveedor,
     };
-
+  
     if (this.isEditMode) {
       this.tecnologicosService
         .actualizarBienTecnologico(
@@ -317,6 +355,7 @@ export class TecnologicosComponent implements OnInit {
         );
     }
   }
+  
 
   cargarBienesTecnologicos(): void {
     forkJoin({
@@ -332,7 +371,11 @@ export class TecnologicosComponent implements OnInit {
       .subscribe(({ bienesTecnologicos, componentes }) => {
         bienesTecnologicos.forEach((t) => {
           if (t.atributos && typeof t.atributos === 'string') {
-            t.atributos = JSON.parse(t.atributos);
+            try {
+              t.atributos = JSON.parse(t.atributos);
+            } catch (error) {
+              console.error('Error parsing JSON for product:', t);
+            }
           }
           t.componentes = componentes.filter(
             (c) => c.id_bien_per === t.id_bien_tec
@@ -348,7 +391,6 @@ export class TecnologicosComponent implements OnInit {
     this.selectedBienTecnologico = bien;
     this.isEditMode = true;
     this.display = true;
-    
     const fecha = new Date(bien.fecha_adquisicion);
     const proveedorSeleccionado = this.proveedor.find(
       (p) => p.code === bien.id_proveedor_per
@@ -373,7 +415,7 @@ export class TecnologicosComponent implements OnInit {
             estado: estadoSeleccionado || null,
             num_serie: bien.num_serie,
             nombre_bien: bien.nombre_bien,
-            atributos: bien.atributos,
+            atributos: JSON.stringify(bien.atributos, null, 2),
             modelo: bien.modelo,
             codigoUTA: bien.codigoUTA,
             marca: bien.marca,

@@ -75,7 +75,7 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-product let-expanded="expanded">
-                    <tr>
+                    <tr >
                         <td>
                             <button type="button" pButton pRipple [pRowToggler]="product"
                                 class="p-button-text p-button-rounded p-button-plain"
@@ -240,8 +240,8 @@
                     class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
             </div>
             <div class="field col">
-                <label for="atributos">Atributos</label>
-                <input formControlName="atributos" type="text"
+                <label for="ip_tecnologico">IP del Equipo</label>
+                <input formControlName="ip_tecnologico" type="text"
                     class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
             </div>
         </div>
@@ -272,9 +272,10 @@
         </div>
         <div class="formgrid grid">
             <div class="field col">
-                <label for="ip_tecnologico">IP del Equipo</label>
-                <input formControlName="ip_tecnologico" type="text"
-                    class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+                <label for="atributos">Atributos</label>
+                <button pButton pRipple type="button" icon="pi pi-plus" (click)="abrirDialogo()" class="p-button-rounded"></button>
+                <textarea  pInputTextarea rows="5" formControlName="atributos" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
+               
             </div>
             <div class="field col">
             </div>
@@ -287,6 +288,28 @@
     </form>
 </p-dialog>
 
+<!-- Form para atributos -->
+<p-dialog header="Añadir Atributo" [(visible)]="mostrarDialogo" [modal]="true" class="dialog-atributos">
+    <div class="p-fluid" >
+      <div class="p-grid">
+        <div class="p-col-12 p-md-6">
+          <div class="p-field">
+            <label for="clave">Clave</label>
+            <input type="text" pInputText id="clave" [(ngModel)]="temporalClave">
+          </div>
+        </div>
+        <div class="p-col-12 p-md-6">
+          <div class="p-field">
+            <label for="valor">Valor</label>
+            <input type="text" pInputText id="valor" [(ngModel)]="temporalValor">
+          </div>
+        </div>
+      </div>
+      <br>
+      <p-button label="Aceptar" (click)="agregarAtributo()"></p-button>
+    </div>
+  </p-dialog>
+  
 
 <p-toast position="bottom-center" key="bc"></p-toast>
 
