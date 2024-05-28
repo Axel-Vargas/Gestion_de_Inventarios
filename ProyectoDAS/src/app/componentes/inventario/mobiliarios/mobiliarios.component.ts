@@ -20,6 +20,7 @@ export class MobiliariosComponent {
   selectedCity: any;
   selectEncargado: any;
   selectArea: any;
+  selectEstado: any;
 
   tooltipVisible: boolean = false;
   visible: boolean = false;
@@ -35,39 +36,47 @@ export class MobiliariosComponent {
   material = '';
   color = '';
   fecha_adquisicion = '';
-  estado = '';
   localizacion = '';
   codigoUTA = '';
   valor_contable = '';
   selectEncargados: any = null;
   selectAreas: any = null;
+  soloLetrasRegex = /^[a-zA-Z]*$/;
+  representatives: any[] = [];
+  representativesA: any[] = [];
+  estados: any[] = [];
+  selectedRepresentatives: any[] = [];
+  selectedRepresentativesA: any[] = [];
 
-  constructor(private confirmationService: ConfirmationService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService
-    , private messageService: MessageService) {
-    this.listarMobiliario()
-  }
+  constructor(private confirmationService: ConfirmationService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService, private messageService: MessageService) {}
 
   id_bien_mob = '';
   id_encargado_per = '';
   id_area_per = '';
 
+  matchModeOptions = [
+    { label: 'Empieza con', value: 'startsWith' },
+    { label: 'Termina con', value: 'endsWith' },
+    { label: 'Contiene', value: 'contains' },
+    { label: 'Es igual a', value: 'equals' },
+    { label: 'No es igual a', value: 'notEquals' },
+  ];
+
+
   ngOnInit() {
     this.listarMobiliario();
-    this.listarEncargadosPorNombre();
     this.listarAreas();
+    this.listarAreasComboBox();
+    this.listarEncargados();
+    this.listarEncargadosComboBox();
 
-    this.muebles = [
-      { name: 'Archivador', code: 'CO' },
-      { name: 'Sillas', code: 'CO' },
-      { name: 'Mesas de Computadora', code: 'CA' },
-      { name: 'Pizarrones', code: 'AI' },
-      { name: 'Bancas', code: 'IM' },
-      { name: 'Lockers', code: 'IM' },
-    ]
-
-
+    this.estados = [
+      { name: 'Operativo', code: 1 },
+      { name: 'No Funcional', code: 2 },
+    ];
   }
-  listarEncargadosPorNombre(): void {
+
+  listarEncargados(): void {
     this.encargadosService.obtenerEncargados().subscribe(
       (response: any) => {
         if (response && response.encargados) {
@@ -77,36 +86,86 @@ export class MobiliariosComponent {
         }
       },
       (error) => {
-        console.error('Error al obtener encargado:', error);
+        console.error('Error al obtener encargados:', error);
       }
     );
   }
+
+  listarEncargadosComboBox(): void {
+    this.encargadosService.obtenerEncargados().subscribe(
+      (response: any) => {
+        if (response && response.encargados) {
+          this.representatives = Array.from(new Set(response.encargados.map((encargado: any) => encargado.nombre)))
+            .map(name => {
+              return {
+                name: name,
+                label: name
+              };
+            });
+        } else {
+          this.representatives = [];
+        }
+      },
+      (error) => {
+        console.error('Error al obtener encargados:', error);
+      }
+    );
+  }
+
+
   listarAreas(): void {
-    console.log("ok");
     this.areasService.obtenerAreas().subscribe(
       (response: any) => {
 
-        if (response ) {
+        if (response) {
           this.areas = response;
         } else {
           this.areas = [];
         }
-        console.log(this.areas);
       },
-      
       (error) => {
         console.error('Error al obtener areas:', error);
       }
     );
   }
 
+  listarAreasComboBox(): void {
+    this.areasService.obtenerAreas().subscribe(
+      (response: any) => {
+        if (response) {
+          this.representativesA = Array.from(new Set(response.map((area: any) => area.nombre)))
+            .map(name => {
+              return {
+                name: name,
+                label: name
+              };
+            });
+        } else {
+          this.representativesA = [];
+        }
+      },
+      (error) => {
+        console.error('Error al obtener areas:', error);
+      }
+    );
+  }
 
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
 
   listarMobiliario(): void {
     this.mobiliariosService.obtenerMobiliarios().subscribe(
       (response: any) => {
         if (response && response.mobiliarios) {
-          this.mobiliarios = response.mobiliarios;
+          this.mobiliarios = response.mobiliarios.map((mobiliario: any) => ({
+            ...mobiliario,
+            fecha_adquisicion: this.formatDate(mobiliario.fecha_adquisicion)
+          }));
         } else {
           this.mobiliarios = [];
         }
@@ -114,31 +173,13 @@ export class MobiliariosComponent {
       (error) => {
         console.error('Error al obtener mobiliarios:', error);
       }
-    )
-  }
-
-  cargarMobiliario(nombre: string): void {
-    this.mobiliariosService.obtenerUsuarioPorNombre(nombre).subscribe(
-      (response: any) => {
-        if (response && response.mobiliarios) {
-          this.mobiliarios = response.mobiliarios;
-        } else {
-          this.mobiliarios = [];
-        }
-      },
-      (error) => {
-        console.error('Usuario no encontrado:', error);
-      }
     );
   }
-  buscarMobiliario() {
-    this.cargarMobiliario(this.nombreBuscado);
-  }
-
 
   registrarMobiliario() {
+    console.log(this.selectEstado);
     if (this.bld_bca == '' || this.nombre == '' || this.marca == '' || this.modelo == '' ||
-      this.num_serie == '' || this.material == '' || this.color == '' || this.fecha_adquisicion == '' || this.estado == '' || this.localizacion == '' ||
+      this.num_serie == '' || this.material == '' || this.color == '' || this.fecha_adquisicion == '' || !this.selectEstado || this.localizacion == '' ||
       this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado == '' || this.selectArea == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
@@ -151,7 +192,7 @@ export class MobiliariosComponent {
       }
 
       this.mobiliariosService.insertarMobiliaria(this.bld_bca, this.nombre, this.marca, this.modelo,
-        this.num_serie, this.material, this.color, fechaAdquisicionDate, this.estado, this.localizacion,
+        this.num_serie, this.material, this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion,
         this.codigoUTA, valorContableInt, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
           (response) => {
             this.mostrarMensaje("Bien registrado con éxito", true);
@@ -165,7 +206,6 @@ export class MobiliariosComponent {
         );
     }
   }
-
 
   showTooltip() {
     this.tooltipVisible = true;
@@ -193,25 +233,22 @@ export class MobiliariosComponent {
 
   editarMobiliario() {
     if (this.bld_bca == '' || this.nombre == '' || this.marca == '' || this.modelo == '' ||
-      this.num_serie == '' || this.material == '' || this.color == '' || this.fecha_adquisicion == '' || this.estado == '' || this.localizacion == '' ||
+      this.num_serie == '' || this.material == '' || this.color == '' || this.fecha_adquisicion == '' || !this.estados || this.localizacion == '' ||
       this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado == '' || this.selectArea == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
       const valorContableInt = parseFloat(this.valor_contable);
       const fechaAdquisicionDate = new Date(this.fecha_adquisicion);
 
-      // Verifica que las conversiones sean válidas
       if (isNaN(valorContableInt) || isNaN(fechaAdquisicionDate.getTime())) {
         this.mostrarMensaje("Datos numéricos o de fecha inválidos", false);
         return;
       }
 
-
       this.mobiliariosService.actualizarMobiliarios(this.id, this.bld_bca, this.nombre, this.marca, this.modelo, this.num_serie, this.material,
-        this.color, fechaAdquisicionDate, this.estado, this.localizacion, this.codigoUTA, valorContableInt, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
+        this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion, this.codigoUTA, valorContableInt, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
           (response) => {
             this.mostrarMensaje("Bien actualizo con éxito", true);
-            //this.limpiarFormulario();
             this.visible = false;
             this.listarMobiliario();
           },
@@ -222,12 +259,18 @@ export class MobiliariosComponent {
     };
   }
 
+  handleInput(event: any) {
+    const inputValue = event.target.value;
+    if (!this.soloLetrasRegex.test(inputValue)) {
+      event.target.value = inputValue.replace(/[^a-zA-Z\s]/g, '');
+    }
+  }
+
   showDialogAgregar() {
     this.esEdicion = false;
     this.visible = true;
     this.limpiarFormulario();
   }
-
 
   showDialogEditar(mobiliario: any) {
     this.esEdicion = true;
@@ -238,8 +281,8 @@ export class MobiliariosComponent {
     this.num_serie = mobiliario.num_serie;
     this.material = mobiliario.material;
     this.color = mobiliario.color;
-    this.fecha_adquisicion = mobiliario.fecha_adquisicion;
-    this.estado = mobiliario.estado;
+    this.fecha_adquisicion = this.formatDate(mobiliario.fecha_adquisicion);
+    this.selectEstado = this.estados.find(estado => estado.name === mobiliario.estado);
     this.localizacion = mobiliario.localizacion;
     this.codigoUTA = mobiliario.codigoUTA;
     this.valor_contable = mobiliario.valor_contable;
@@ -248,8 +291,6 @@ export class MobiliariosComponent {
     this.id = mobiliario.id_bien_mob;
     this.visible = true;
   }
-
-
 
   async mostrarMensaje(mensaje: string, exito: boolean) {
     this.messageService.add(
@@ -284,13 +325,13 @@ export class MobiliariosComponent {
     this.material = '';
     this.color = '';
     this.fecha_adquisicion = '';
-    this.estado = '';
     this.localizacion = '';
     this.codigoUTA = '';
     this.valor_contable = '';
     this.selectEncargado = null;
-    this.selectArea = null;
-  }
+    this.selectArea = null;
+  }
+
 
 }
 
