@@ -16,7 +16,7 @@ import { DialogModule } from 'primeng/dialog';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
-
+import {MultiSelectModule} from 'primeng/multiselect';
 
 @NgModule({
   declarations: [
@@ -38,6 +38,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
     MenuModule,
     ToastModule,
     CalendarModule,
+    MultiSelectModule
   ],
   providers:[
     MessageService,
