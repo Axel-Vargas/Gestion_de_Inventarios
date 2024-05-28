@@ -1,19 +1,26 @@
 const connection = require('../db/connection');
 
 exports.getAllBienes = async (req, res) => {
-    try {
-      const selectQuery = `SELECT * FROM bien_mobiliario`;
-      connection.query(selectQuery, (error, results) => {
-        if (error) {
-          return res.status(500).json({ mensaje: 'Error interno del servidor' });
-        }
-  
-        res.status(200).json({ mobiliarios: results });
-      });
-    } catch (error) {
-      res.status(500).json({ mensaje: 'Error interno del servidor' });
-    }
-  };
+  try {
+    const selectQuery = `
+      SELECT bm.*, 
+             e.nombre AS nombre_encargado, 
+             a.nombre AS nombre_area 
+      FROM bien_mobiliario bm
+      LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
+      LEFT JOIN areas a ON bm.id_area_per = a.id_area
+    `;
+    connection.query(selectQuery, (error, results) => {
+      if (error) {
+        return res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
+
+      res.status(200).json({ mobiliarios: results });
+    });
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+}
+};
 
 
   
