@@ -8,6 +8,8 @@ import { MenuModule } from 'primeng/menu';
 import { TableModule } from 'primeng/table';
 
 import { ButtonModule } from 'primeng/button';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { DialogModule } from 'primeng/dialog';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,9 @@ import { ButtonModule } from 'primeng/button';
     InicioRoutingModule,
     MenuModule,
     TableModule,
-    ButtonModule
+    ButtonModule,
+    ZXingScannerModule,
+    DialogModule,
   ],
   exports: [
     InicioComponent
