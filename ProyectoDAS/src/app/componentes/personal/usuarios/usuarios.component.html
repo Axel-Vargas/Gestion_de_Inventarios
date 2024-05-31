@@ -1,0 +1,165 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="flex justify-content-between flex-wrap mb-5">
+                <span class="flex usuarios align-items-center">Usuarios</span>
+                <div class="flex align-items-center">
+                    <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar usuario</span>
+                    <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
+                        (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
+                </div>
+            </div>
+            <p-table #dt [value]="usuarios" dataKey="id_usuario" [rows]="5" [rowsPerPageOptions]="[5,10, 25, 50]"
+                [paginator]="true"
+                [globalFilterFields]="['cedula', 'nombre', 'apellido', 'telefono', 'correo','nombre_rol']"
+                [tableStyle]="{ 'min-width': '100rem' }">
+                <ng-template pTemplate="caption">
+                    <div class="flex">
+                        <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input pInputText type="text"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                                placeholder="Buscar Usuario" />
+                        </p-iconField>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>
+                            <span class="flex mb-2">CEDULA</span>
+                            <p-columnFilter class="custom-column-filter" [matchModeOptions]="matchModeOptions"
+                                type="text" field="cedula" placeholder="Buscar por cédula" ariaLabel="Filter Cédula" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">NOMBRE</span>
+                            <p-columnFilter [matchModeOptions]="matchModeOptions" type="text" field="nombre"
+                                placeholder="Buscar por nombre" ariaLabel="Filter Nombre" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">APELLIDO</span>
+                            <p-columnFilter [matchModeOptions]="matchModeOptions" type="text" field="apellido"
+                                placeholder="Buscar por apellido" ariaLabel="Filter Apellido" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">TELEFONO</span>
+                            <p-columnFilter [matchModeOptions]="matchModeOptions" type="text" field="telefono"
+                                placeholder="Buscar por teléfono" ariaLabel="Filter Teléfono" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">CORREO</span>
+                            <p-columnFilter [matchModeOptions]="matchModeOptions" type="text" field="correo"
+                                placeholder="Buscar por correo" ariaLabel="Filter Correo" />
+                        </th>
+                        <th><span class="flex mb-2">ROL</span>
+                            <p-columnFilter class="custom-column-filter" [matchModeOptions]="matchModeOptions"
+                                type="text" field="nombre_rol" placeholder="Buscar por rol" ariaLabel="Filter Rol" />
+                        </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-usuario>
+                    <tr>
+                        <td>{{ usuario.cedula }}</td>
+                        <td>{{ usuario.nombre }}</td>
+                        <td>{{ usuario.apellido }}</td>
+                        <td>{{ usuario.telefono }}</td>
+                        <td>{{ usuario.correo }}</td>
+                        <td>{{ usuario.nombre_rol }}</td>
+                        <td class="flex flex-row ">
+                            <button pButton (click)="showDialogEditar(usuario)" pRipple type="button"
+                                icon="pi pi-pen-to-square"
+                                class="p-button p-component p-button-text flex align-items-center justify-content-center"></button>
+                            <button pButton (click)="confirm(usuario.id_usuario)" pRipple type="button"
+                                icon="pi pi-trash"
+                                class="p-button p-component p-button-text flex align-items-center justify-content-center"></button>
+                            <button pButton (click)="showDialogContrasena(usuario)" pRipple type="button"
+                                icon="pi pi-unlock"
+                                class="p-button p-component p-button-text flex align-items-center justify-content-center"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="5">No se encontraron usuarios.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [header]="esEdicionContra ? 'Cambio de contraseña' : (esEdicion ? 'Editar Usuario' : 'Agregar Usuario')"
+    [modal]="true" [(visible)]="visible" [style]="{ width: '37rem'}">
+    <div class="flex flex-wrap justify-content-between ap-3">
+        <div *ngIf="!esEdicionContra" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%; ">
+            <label for="rol" class="font-semibold w-6rem">Rol</label>
+            <p-dropdown [options]="roles" dataKey="id_rol" optionLabel="nombre" placeholder="Seleccione un rol"
+                autoWidth="false" [style]="{'width':'15.9rem'}" [(ngModel)]="selectedRole"></p-dropdown>
+        </div>
+        <div *ngIf="!esEdicionContra" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="cedula" class="font-semibold w-6rem">Cédula</label>
+            <input pInputText id="cedula" class="flex-auto" autocomplete="off" [(ngModel)]="cedula" maxlength="10"
+                (input)="handleInputCedula($event)" />
+            <div class="mensaje-cedula"
+                [ngClass]="{'valido': mensajeValidacionCedula === 'Cédula válida', 'invalido': mensajeValidacionCedula === 'Cédula inválida'}">
+                {{ mensajeValidacionCedula }}
+            </div>
+        </div>
+        <div *ngIf="!esEdicionContra" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="nombre" class="font-semibold w-6rem">Nombre</label>
+            <input pInputText id="nombre" class="flex-auto" autocomplete="off" [(ngModel)]="nombre" maxlength="20"
+                (input)="handleInput($event)" />
+        </div>
+        <div *ngIf="!esEdicionContra" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="apellido" class="font-semibold w-6rem">Apellido</label>
+            <input pInputText id="apellido" class="flex-auto" autocomplete="off" [(ngModel)]="apellido" maxlength="20"
+                (input)="handleInput($event)" />
+        </div>
+        <div *ngIf="!esEdicionContra" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="telefono" class="font-semibold w-6rem">Teléfono</label>
+            <input pInputText id="telefono" autocomplete="off" [(ngModel)]="telefono" maxlength="10"
+                (input)="handleInputNumbers($event)" />
+        </div>
+        <div *ngIf="!esEdicionContra" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="correo" class="font-semibold w-6rem">Correo</label>
+            <input pInputText id="correo" class="flex-auto" autocomplete="off" [(ngModel)]="correo" maxlength="20"
+                (input)="validarCorreo()" />
+            <div class="mensaje-correo"
+                [ngClass]="{'valido': mensajeValidacionCorreo === 'Correo válido', 'invalido': mensajeValidacionCorreo === 'Correo inválido'}">
+                {{ mensajeValidacionCorreo }}
+            </div>
+        </div>
+        <div *ngIf="!esEdicion" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="contrasena" class="font-semibold w-6rem">Contraseña</label>
+            <p-password id="contrasena" class="flex-auto" [(ngModel)]="contrasena" maxlength="20"></p-password>
+        </div>
+        <div *ngIf="esEdicionContra" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="newcontrasena" class="font-semibold w-12rem">Nueva Contraseña</label>
+            <p-password id="newcontrasena" class="flex-auto" [(ngModel)]="nuevaContrasena" maxlength="20"
+                (input)="validarContrasenas()"></p-password>
+        </div>
+        <div *ngIf="esEdicionContra" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="recontrasena" class="font-semibold w-15rem">Confirme la contraseña</label>
+            <p-password id="recontrasena" class="flex-auto" [(ngModel)]="confirmarContrasena" maxlength="20"
+                (input)="validarContrasenas()"></p-password>
+        </div>
+        <div *ngIf="esEdicionContra" class="mensaje-contrasena">
+            <label class="font-semibold w-12rem"></label>
+            <div [ngClass]="{'valido': mensajeValidacionContrasena === '', 'invalido': mensajeValidacionContrasena === 'Las contraseñas no coinciden'}">
+                {{ mensajeValidacionContrasena }}
+            </div>
+        </div>
+    </div>
+    <div *ngIf="esEdicionContra" class="flex justify-content-end gap-2">
+        <p-button label="Confirmar" (click)="cambiarContrasena()" (click)="visible = false" [rounded]="true" [disabled]="!contrasenasCoinciden"></p-button>
+    </div>
+    <div *ngIf="!esEdicionContra" class="flex justify-content-end gap-2">
+        <p-button [label]="esEdicion ? 'Editar' : 'Guardar'" (click)="esEdicion ? editarUsuario() : registrarUsuario()"
+            (click)="visible = false" [rounded]="true"></p-button>
+    </div>
+
+</p-dialog>
+<p-toast position="bottom-right"></p-toast>
+<p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425">

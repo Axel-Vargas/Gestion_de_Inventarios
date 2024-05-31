@@ -1,0 +1,257 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <div class="flex mobiliarios  ustify-content-between flex-wrap mb-5">
+        <span class="flex mobiliarios align-items-center">Bienes Mobiliarios</span>
+    </div>
+    <div class="flex align-items-center">
+      <div class="floating-button flex align-items-center">
+        <span class="tooltip" [ngClass]="{ show: tooltipVisible }"
+          >Agregar Bien</span
+        >
+        <button
+          pButton
+          icon="pi pi-plus"
+          class="p-button-rounded p-2.5 text-l"
+          (mouseenter)="showTooltip()"
+          (mouseleave)="hideTooltip()"
+          (click)="showDialogAgregar()"
+        ></button>
+        </div>
+      </div>
+      <p-table #dt [value]="mobiliarios" dataKey="id_encargado" [rows]="5" [rowsPerPageOptions]="[5,10, 25, 50]"
+        [paginator]="true"
+        [globalFilterFields]="['bld_bca', 'nombre', 'marca', 'modelo', 'num_serie', 'material', 'color', 'fecha_adquisicion', 'estado', 'localizacion', 'codigoUTA', 'valor_contable', 'nombre_encargado', 'nombre_area']"
+        [tableStyle]="{ 'min-width': '250rem' }">
+        <ng-template pTemplate="caption">
+          <div class="flex">
+            <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+              <p-inputIcon>
+                <i class="pi pi-search"></i>
+              </p-inputIcon>
+              <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                placeholder="Buscar Bien" />
+            </p-iconField>
+          </div>
+        </ng-template>
+        <ng-template pTemplate="header">
+          <tr>
+            <th>
+              <span class="flex mb-2">BLD/BCA</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="bld_bca"
+                placeholder="Buscar por BLD/BCA" ariaLabel="Filter Bld/Bca" />
+            </th>
+            <th>
+              <span class="flex mb-2">NOMBRE</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="nombre"
+                placeholder="Buscar por nombre" ariaLabel="Filter Nombre" />
+            </th>
+            <th>
+              <span class="flex mb-2">MARCA</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="marca"
+                placeholder="Buscar por marca" ariaLabel="Filter Marca" />
+            </th>
+            <th>
+              <span class="flex mb-2">MODELO</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="modelo"
+                placeholder="Buscar por modelo" ariaLabel="Filter Modelo" />
+            </th>
+            <th>
+              <span class="flex mb-2">NUM. SERIE</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="num_serie"
+                placeholder="Buscar por Num. Serie" ariaLabel="Filter Serie" />
+            </th>
+            <th>
+              <span class="flex mb-2">MATERIAL</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="material"
+                placeholder="Buscar por material" ariaLabel="Filter Material" />
+            </th>
+            <th>
+              <span class="flex mb-2">COLOR</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="color"
+                placeholder="Buscar por color" ariaLabel="Filter Color" />
+            </th>
+            <th>
+              <span class="flex mb-2">FECHA DE ADQUISICIÓN</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="fecha_adquisicion"
+                placeholder="Buscar por fecha" ariaLabel="Filter Fecha" />
+            </th>
+            <th>
+              <span class="flex mb-2">ESTADO</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="estado"
+                placeholder="Buscar por estado" ariaLabel="Filter Estado" />
+            </th>
+            <th>
+              <span class="flex mb-2">LOCALIZACIÓN</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="localizacion"
+                placeholder="Buscar por localización" ariaLabel="Filter Localización" />
+            </th>
+            <th>
+              <span class="flex mb-2">CÓDIGO UTA</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="codigoUTA"
+                placeholder="Buscar por código UTA" ariaLabel="Filter CódigoUTA" />
+            </th>
+            <th>
+              <span class="flex mb-2">VALOR CONTABLE</span>
+              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="valor_contable"
+                placeholder="Buscar por valor contable" ariaLabel="Filter Valor" />
+            </th>
+            <th>
+              <span class="flex mb-2">ENCARGADO</span>
+              <p-columnFilter field="nombre_encargado" matchMode="in" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-multiSelect [(ngModel)]="selectedRepresentatives" [options]="representatives"
+                    placeholder="Buscar Encargado" (onChange)="filter($event.value)" optionLabel="name"
+                    optionValue="name">
+                    <ng-template let-option pTemplate="item">
+                      <div class="inline-block vertical-align-middle">
+                        <span class="ml-1 mt-1">
+                          {{ option.name }}
+                        </span>
+                      </div>
+                    </ng-template>
+                  </p-multiSelect>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th>
+              <span class="flex mb-2">ÁREA</span>
+              <p-columnFilter field="nombre_area" matchMode="in" [showMenu]="false">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                  <p-multiSelect [(ngModel)]="selectedRepresentativesA" [options]="representativesA"
+                    placeholder="Buscar Area" (onChange)="filter($event.value)" optionLabel="name" optionValue="name">
+                    <ng-template let-option pTemplate="item">
+                      <div class="inline-block vertical-align-middle">
+                        <span class="ml-1 mt-1">
+                          {{ option.name }}
+                        </span>
+                      </div>
+                    </ng-template>
+                  </p-multiSelect>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-mobiliario>
+          <tr>
+            <td>{{ mobiliario.bld_bca }}</td>
+            <td>{{ mobiliario.nombre }}</td>
+            <td>{{ mobiliario.marca }}</td>
+            <td>{{ mobiliario.modelo }}</td>
+            <td>{{ mobiliario.num_serie }}</td>
+            <td>{{ mobiliario.material }}</td>
+            <td>{{ mobiliario.color }}</td>
+            <td>{{ mobiliario.fecha_adquisicion }}</td>
+            <td>{{ mobiliario.estado }}</td>
+            <td>{{ mobiliario.localizacion }}</td>
+            <td>{{ mobiliario.codigoUTA }}</td>
+            <td>{{ mobiliario.valor_contable }}</td>
+            <td>{{ mobiliario.nombre_encargado }}</td>
+            <td>{{ mobiliario.nombre_area }}</td>
+            <td class="flex flex-row ">
+              <button pButton (click)="showDialogEditar(mobiliario)" pRipple type="button" icon="pi pi-pen-to-square"
+                class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>
+              <button pButton (click)="confirm(mobiliario.id_bien_mob)" pRipple type="button" icon="pi pi-trash"
+                class="p-button p-component p-button-text p-button-trash flex align-items-center justify-content-center"></button>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="5">No se encontraron Bienes.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  </div>
+
+<p-dialog [header]="esEdicion ? 'Editar Mobiliarios' : 'Agregar Mobiliarios'" [modal]="true" [(visible)]="visible"
+  [style]="{ width: '37rem', height: '30rem'}">
+  <div class="flex flex-wrap justify-content-between ap-3">
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="encargado" class="font-semibold w-6rem">Encargado</label>
+      <p-dropdown [options]="encargados" dataKey="id_encargado" optionLabel="nombre"
+        placeholder="Seleccione un Encargado" autoWidth="false" [style]="{ width: '15.9rem' }"
+        [(ngModel)]="selectEncargado"></p-dropdown>
+    </div>
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="area" class="font-semibold w-6rem">Area</label>
+      <p-dropdown [options]="areas" dataKey="id_area" optionLabel="nombre" placeholder="Seleccione un Area"
+        autoWidth="false" [style]="{ width: '15.9rem' }" [(ngModel)]="selectArea"></p-dropdown>
+    </div>
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="bld_bca" class="font-semibold w-6rem">Bld_Bca</label>
+      <input pInputText id="bld_bca" class="flex-auto" autocomplete="off" [(ngModel)]="bld_bca" maxlength="10" />
+    </div>
+
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="nombre " class="font-semibold w-6rem">Nombre </label>
+      <input pInputText id="nombre " class="flex-auto" autocomplete="off" [(ngModel)]="nombre" maxlength="25"
+        (input)="handleInput($event)" />
+    </div>
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for=" marca" class="font-semibold w-6rem"> Marca</label>
+      <input pInputText id=" marca" class="flex-auto" autocomplete="off" [(ngModel)]="marca" maxlength="20"
+        (input)="handleInput($event)" />
+    </div>
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="modelo" class="font-semibold w-6rem">Modelo</label>
+      <input pInputText id="modelo" class="flex-auto" autocomplete="off" [(ngModel)]="modelo" maxlength="20"
+        (input)="handleInput($event)" />
+    </div>
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="num_serie" class="font-semibold w-6rem">Num_serie</label>
+      <input pInputText id="num_serie" class="flex-auto" autocomplete="off" [(ngModel)]="num_serie" maxlength="20" />
+    </div>
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="material" class="font-semibold w-6rem">Material</label>
+      <input pInputText id="material" class="flex-auto" autocomplete="off" [(ngModel)]="material" maxlength="15"
+        (input)="handleInput($event)" />
+    </div>
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for=" color" class="font-semibold w-6rem">Color</label>
+      <input pInputText id=" color" class="flex-auto" autocomplete="off" [(ngModel)]="color" maxlength="15"
+        (input)="handleInput($event)" />
+    </div>
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="fecha_adquisicion" class="font-semibold w-6rem">Fecha_de_Adquisición</label>
+      <p-calendar id="fecha_adquisicion" inputId="fecha_adquisicion" [(ngModel)]="fecha_adquisicion" [showIcon]="true"
+        [showOnFocus]="true" dateFormat="dd/mm/yy" placeholder="Seleccione una fecha">
+      </p-calendar>
+    </div>
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="estado" class="font-semibold w-6rem">Estado</label>
+      <p-dropdown [options]="estados" dataKey="code" optionLabel="name"
+        placeholder="Seleccione un Estado" autoWidth="false" [style]="{ width: '15.9rem' }"
+        [(ngModel)]="selectEstado"></p-dropdown>
+    </div>
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="localizacion" class="font-semibold w-6rem">Localizacion</label>
+      <input pInputText id="localizacion" class="flex-auto" autocomplete="off" [(ngModel)]="localizacion" maxlength="20"
+        (input)="handleInput($event)" />
+    </div>
+
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="codigoUTA" class="font-semibold w-6rem">CodigoUTA</label>
+      <input pInputText id="codigoUTA" class="flex-auto" autocomplete="off" [(ngModel)]="codigoUTA" maxlength="15" />
+    </div>
+
+    <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+      <label for="valor_contable" class="font-semibold w-6rem">Valor_contable</label>
+      <input pInputText id="valor_contable" class="flex-auto" autocomplete="off" [(ngModel)]="valor_contable"
+        maxlength="10" />
+    </div>
+  </div>
+  <div class="flex justify-content-end gap-2">
+    <p-button [label]="esEdicion ? 'Editar' : 'Guardar'"
+      (click)="esEdicion ? editarMobiliario() : registrarMobiliario()" (click)="visible = false"
+      [rounded]="true"></p-button>
+  </div>
+</p-dialog>
+
+
+
+<p-toast>p-toast position="bottom-right"></p-toast>
+<p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>

@@ -1,0 +1,40 @@
+
+
+/* En tu archivo de estilos globales o componentes con ::ng-deep */
+::ng-deep .p-datatable .p-datatable-thead > tr > th {
+    background-color: #434343; /* Color de fondo */
+    color: #fafafa;              /* Color del texto */
+    font-weight: bold;        /* Peso de la fuente */
+}
+
+::ng-deep .p-datatable .p-sortable-column:hover {
+    background-color: #ad272e;  /* Rojo Intenso al pasar el ratón */
+    color: #FFFFFF;             /* Mantener el texto blanco para el contraste */
+    cursor: pointer;            /* Indicar que el elemento es interactivo */
+}
+
+/* Asegúrate de que los dropdowns no cambien de tamaño cuando se selecciona un ítem de texto corto */
+::ng-deep .fixed-width-dropdown .p-dropdown {
+    width: 100%;
+    min-width: 200px;
+  }
+
+  .hidden-column {
+    display: none;
+}
+
+
+/* Estilos para el p-dialog */
+@media screen and (max-width: 600px) {
+    ::ng-deep .p-dialog {
+      width: 100% !important;
+      min-width: 300px !important; /* Ajusta el tamaño mínimo según tus necesidades */
+    }
+
+    ::ng-deep .p-dialog .p-dialog-title {
+        font-size: 15px; /* Ajusta el tamaño según tus necesidades */
+      }
+      
+  }
+  
+

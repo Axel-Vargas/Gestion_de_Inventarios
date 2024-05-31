@@ -1,0 +1,124 @@
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="flex encargados justify-content-between flex-wrap mb-5">
+                <span class="flex align-items-center">Encargados</span>
+                <div class="flex align-items-center">
+                    <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar encargado</span>
+                    <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
+                        (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
+                </div>
+            </div>
+            <p-table #dt [value]="encargados" dataKey="id_encargado" [rows]="5" [rowsPerPageOptions]="[5,10, 25, 50]"
+                [paginator]="true" [globalFilterFields]="['cedula', 'nombre', 'apellido', 'telefono', 'direccion']"
+                [tableStyle]="{ 'min-width': '95rem' }">
+                <ng-template pTemplate="caption">
+                    <div class="flex">
+                        <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input pInputText type="text"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                                placeholder="Buscar Encargado" />
+                        </p-iconField>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>
+                            <span class="flex mb-2">CEDULA</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="cedula" placeholder="Buscar por cédula" ariaLabel="Filter Cédula" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">NOMBRE</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="nombre" placeholder="Buscar por nombre" ariaLabel="Filter Nombre" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">APELLIDO</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="apellido" placeholder="Buscar por apellido" ariaLabel="Filter Apellido" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">TELEFONO</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="telefono" placeholder="Buscar por telefono" ariaLabel="Filter Telefono" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">DIRECCION</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="direccion" placeholder="Buscar por direccion" ariaLabel="Filter Direccion" />
+                        </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-encargado>
+                    <tr>
+                        <td>{{ encargado.cedula }}</td>
+                        <td>{{ encargado.nombre }}</td>
+                        <td>{{ encargado.apellido }}</td>
+                        <td>{{ encargado.telefono }}</td>
+                        <td>{{ encargado.direccion }}</td>
+                        <td class="flex flex-row ">
+                            <button pButton (click)="showDialogEditar(encargado)" pRipple type="button"
+                                icon="pi pi-pen-to-square"
+                                class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>
+                            <button pButton (click)="confirm(encargado.id_encargado)" pRipple type="button"
+                                icon="pi pi-trash"
+                                class="p-button p-component p-button-text p-button-trash flex align-items-center justify-content-center"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="5">No se encontraron encargados.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<p-dialog [header]="esEdicion ? 'Editar Encargado' : 'Agregar Encargado'" [modal]="true" [(visible)]="visible"
+    [style]="{ width: '36rem'}">
+    <div class="flex flex-wrap gap-3">
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="cedula" class="font-semibold w-6rem">Cédula</label>
+            <input pInputText id="cedula" class="flex-auto" autocomplete="off" [(ngModel)]="cedula" maxlength="10"
+                (input)="handleInputCedula($event)" />
+            <div class="mensaje-cedula"
+                [ngClass]="{'valido': mensajeValidacionCedula === 'Cédula válida', 'invalido': mensajeValidacionCedula === 'Cédula inválida'}">
+                {{ mensajeValidacionCedula }}
+            </div>
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="nombre" class="font-semibold w-6rem">Nombre</label>
+            <input pInputText id="nombre" autocomplete="off" [(ngModel)]="nombre" maxlength="20"
+                (input)="handleInput($event)" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="apellido" class="font-semibold w-6rem">Apellido</label>
+            <input pInputText id="apellido" class="flex-auto" autocomplete="off" [(ngModel)]="apellido" maxlength="20"
+                (input)="handleInput($event)" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="telefono" class="font-semibold w-6rem">Teléfono</label>
+            <input pInputText id="telefono" class="flex-auto" autocomplete="off" [(ngModel)]="telefono" maxlength="10"
+                (input)="handleInputNumbers($event)" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="direccion" class="font-semibold w-6rem">Dirección</label>
+            <input pInputText id="direccion" class="flex-auto" autocomplete="off" [(ngModel)]="direccion"
+                maxlength="25" />
+        </div>
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button [label]="esEdicion ? 'Editar' : 'Guardar'"
+            (click)="esEdicion ? editarEncargado() : registrarEncargado()" (click)="visible = false"
+            [rounded]="true"></p-button>
+    </div>
+</p-dialog>
+<p-toast position="bottom-right"></p-toast>
+<p-confirmDialog header="Confirmación" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>

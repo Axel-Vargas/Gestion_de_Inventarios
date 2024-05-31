@@ -6,3 +6,20 @@ span{
     font-size: 22px;
     font-weight: bold;
 }
+
+#floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+    width: 3.5rem; /* Tamaño del botón */
+    height: 3.5rem; /* Tamaño del botón */
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+@media (max-width: 768px) {
+    #floating-button {
+        display: flex; /* Mostrar el botón en pantallas pequeñas */
+    }
+}

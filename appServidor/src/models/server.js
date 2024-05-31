@@ -1,6 +1,7 @@
 const express = require('express');
 const connection = require('../db/connection');
 const cors = require('cors');
+const path = require('path');
 
 class Server {
     constructor() {
@@ -18,12 +19,28 @@ class Server {
     }
     
     routes() {
+        this.app.use('/api/mobiliarios', require('../routes/mobiliarioRoutes.js'));
+        this.app.use('/api/areas', require('../routes/areasRoutes.js'));
+        this.app.use('/api/roles', require('../routes/rolRoutes.js'));
         this.app.use('/api/usuarios', require('../routes/userRoutes.js'));
+        this.app.use('/api/encargados', require('../routes/encargadoRoutes.js'));
+        this.app.use('/api/bientecnologico', require('../routes/bienesTecnologicos.routes.js'));
+        this.app.use('/api/componentes', require('../routes/componentes.routes.js'));
+        this.app.use('/api/tipotecnologico', require('../routes/tipoTecnologicoRoutes.js'));
+        this.app.use('/api/bloques', require('../routes/bloquesRoutes.js'));
+        this.app.use('/api/proveedores', require('../routes/proveedoresRoutes.js'));
+         // Configuración para servir archivos estáticos
+         this.app.use('/public', express.static(path.join(__dirname, '..', 'controllers', 'public')));
+
     }
 
     middlewares() {
         this.app.use(express.json());
-        this.app.use(cors());
+        this.app.use(cors({
+            origin: '*',
+            methods: ['GET', 'POST', 'PUT', 'DELETE'],
+            allowedHeaders: ['Content-Type', 'Authorization']
+        }));
     }
 
     conectarDB() {
@@ -40,6 +57,9 @@ class Server {
             });
         });
     }
+  
+
+
 }
 
 module.exports = Server;

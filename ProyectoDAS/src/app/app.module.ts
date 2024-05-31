@@ -7,11 +7,14 @@ import { MessageService } from 'primeng/api';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PanelModule } from './panel/panel.module';
 import { HttpClientModule } from '@angular/common/http';
+//import { withFetch  } from '@angular/common/http/fetch';
+
 
 
 @NgModule({
   declarations: [
     AppComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -19,7 +22,8 @@ import { HttpClientModule } from '@angular/common/http';
     CoreModule,
     BrowserAnimationsModule,
     PanelModule,
-    HttpClientModule
+    HttpClientModule,
+    
   ],
   providers: [
     provideClientHydration(),

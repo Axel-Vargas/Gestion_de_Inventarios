@@ -13,7 +13,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SidebarModule } from 'primeng/sidebar';
 import { CoreModule } from '../core/core.module';
 import { MenubarModule } from 'primeng/menubar';
-
+import { DialogModule } from 'primeng/dialog';
+import { ButtonModule } from 'primeng/button';
+import { ZXingScannerModule } from '@zxing/ngx-scanner';
+import { TagModule } from 'primeng/tag';
+import { Table, TableModule } from 'primeng/table';
 
 @NgModule({
   declarations: [
@@ -24,7 +28,10 @@ import { MenubarModule } from 'primeng/menubar';
     PanelRoutingModule,
     SharedprimeModule,
     CoreModule,
-    MenubarModule
+    MenubarModule,
+    DialogModule, 
+    ButtonModule,
+    ZXingScannerModule
   ],
   exports: [
     LayoutComponent,

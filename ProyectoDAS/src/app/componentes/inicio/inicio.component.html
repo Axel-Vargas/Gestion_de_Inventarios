@@ -59,7 +59,7 @@
     <div class="col-12 xl:col-6">
         <div class="card">
             <h5>Repotenciaciones Recientes</h5>
-            <p-table [value]="products" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+            <p-table [value]="tecnologicos" [paginator]="true" [rows]="5" responsiveLayout="scroll">
                 <ng-template pTemplate="header">
                     <tr>
                         <th>Equipo</th>
@@ -143,4 +143,17 @@
             </ul>
         </div>
     </div>
+
 </div>
+<button
+    id="floating-button"
+    pButton
+    type="button"
+    icon="pi pi-qrcode"
+    class="p-button-rounded p-button-primary"
+    (click)="showQRScanner2()"
+></button>
+<p-dialog header="Escanear QR" [(visible)]="displayQRScanner" [modal]="true" [style]="getDialogStyle()" (onHide)="onModalHide()">
+    <zxing-scanner *ngIf="displayQRScanner" (camerasFound)="camerasFoundHandler($event)" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
+</p-dialog>
+

@@ -1,9 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription, debounceTime } from 'rxjs';
-import { Product } from '../../core/api/product';
-import { ProductService } from '../../core/service/product.service';
+
 import { LayoutService } from '../../panel/service/app.layout.service';
+import { BienestecnologicosService } from '../../services/bienestecnologicos.service';
+import { bienes_Tecnologicos } from '../api/bienesTecnologicos';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-inicio',
@@ -14,7 +16,7 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   items!: MenuItem[];
 
-  products!: Product[];
+  tecnologicos!: bienes_Tecnologicos[];
 
   chartData: any;
 
@@ -22,7 +24,60 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   subscription!: Subscription;
 
-  constructor(private productService: ProductService, public layoutService: LayoutService) {
+  tooltipVisible: boolean = false;
+  displayQRScanner: boolean = false;
+
+
+
+  showQRScanner2(): void {
+    this.displayQRScanner = true;
+  }
+
+  getDialogStyle() {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        return { 'width': '90%' };
+      } else {
+        return { 'width': '40%' };
+      }
+    } else {
+      return { 'width': '50%' };
+    }
+  }
+
+
+  onCodeResult(result: string): void {
+    this.displayQRScanner = false;
+    console.log('QR Code Result:', result);
+    if (this.isValidUrl(result)) {
+      let url = new URL(result);
+      this.route.navigateByUrl(url.pathname + url.search);
+    } else {
+      console.error('El resultado escaneado no es una URL válida:', result);
+    }
+  }
+
+  isValidUrl(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  camerasFoundHandler(devices: MediaDeviceInfo[]): void {
+    console.log(devices);
+  }
+  onModalHide(): void {
+    this.displayQRScanner = false;
+  }
+
+
+
+
+
+  constructor(private route: Router, private productService: BienestecnologicosService, public layoutService: LayoutService) {
       this.subscription = this.layoutService.configUpdate$
       .pipe(debounceTime(25))
       .subscribe((config) => {
@@ -32,7 +87,7 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
       this.initChart();
-      this.productService.getProductsSmall().then(data => this.products = data);
+      //this.productService.getProductsSmall().then(data => this.products = data);
 
       this.items = [
           { label: 'Add New', icon: 'pi pi-fw pi-plus' },
