@@ -1,5 +1,10 @@
-span{
+.programas{
     font-size: 28px;
     color: rgb(105, 105, 105);
     font-weight: bold;
+}
+
+::ng-deep .p-datatable-wrapper {
+    height: 400px;
+    overflow-y: auto;
 }
