@@ -1,46 +1,113 @@
-<div class="card-table mb-0">
-    <div class="flex flex-column mb-3">
-        <div>
-            <span class="flex mb-5">Areas</span>
-        </div>
-        <div class="flex justify-content-between flex-wrap">
-            <div class="floating-button flex align-items-center">
-                <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar area</span>
-                <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()" (mouseleave)="hideTooltip()"></button>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="flex areas justify-content-between flex-wrap mb-5">
+                <span class="flex align-items-center">Areas</span>
+                <div class="flex align-items-center">
+                    <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Area</span>
+                    <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
+                        (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
+                </div>
             </div>
-            <p-iconField class="rounded-icon-field" iconPosition="left">
-                <p-inputIcon styleClass="pi pi-search" />
-                <input type="text" pInputText placeholder="Buscar" />
-            </p-iconField>
+            <p-table #dt [value]="areas" dataKey="id_bloque" [rows]="5" [rowsPerPageOptions]="[5,10, 25, 50]"
+                [paginator]="true" [globalFilterFields]="['nombre','num_piso','nombre_bloque']"
+                [tableStyle]="{ 'min-width': '45rem' }">
+                <ng-template pTemplate="caption">
+                    <div class="flex">
+                        <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input pInputText type="text"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                                placeholder="Buscar Área" />
+                        </p-iconField>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>
+                            <span class="flex mb-2">NOMBRE</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="nombre" placeholder="Buscar por nombre" ariaLabel="Filter Nombre" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">PISO</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="num_piso" placeholder="Buscar por Piso" ariaLabel="Filter Numero" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">BLOQUE</span>
+                            <p-columnFilter field="nombre_bloque" matchMode="in" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                    <p-multiSelect [(ngModel)]="selectedRepresentatives" [options]="representatives"
+                                        placeholder="Buscar Bloque" (onChange)="filter($event.value)" optionLabel="name"
+                                        optionValue="name">
+                                        <ng-template let-option pTemplate="item">
+                                            <div class="inline-block vertical-align-middle">
+                                                <span class="ml-1 mt-1">
+                                                    {{ option.name }}
+                                                </span>
+                                            </div>
+                                        </ng-template>
+                                    </p-multiSelect>
+                                </ng-template>
+                            </p-columnFilter>
+                        </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-area>
+                    <tr>
+                        <td>{{ area.nombre }}</td>
+                        <td>{{ area.num_piso }}</td>
+                        <td>{{ area.nombre_bloque }}</td>
+                        <td class="flex flex-row ">
+                            <button pButton (click)="showDialogEditar(area)" pRipple type="button"
+                                icon="pi pi-pen-to-square"
+                                class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>
+                            <button pButton (click)="confirm(area.id_area)" pRipple type="button" icon="pi pi-trash"
+                                class="p-button p-component p-button-text p-button-trash flex align-items-center justify-content-center"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="5">No se encontraron Áreas.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
     </div>
-    <p-table [value]="[{}]" [tableStyle]="{ 'min-width': '100%' }">
-        <ng-template pTemplate="header" [paginator]="true" [rows]="9" responsiveLayout="scroll">
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Piso</th>
-                <th>Bloque</th>
-                <th>Editar</th>
-                <th>Eliminar</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData>
-            <tr>
-                <td style="width: 45%; min-width: 7rem;">A01</td>
-                <td style="width: 45%; min-width: 15rem;">Decanato</td>
-                <td style="width: 30%; min-width: 15rem;">Primer Piso</td>
-                <td style="width: 45%; min-width: 15rem;">Bloque 1</td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-pen-to-square"
-                        class="p-button p-component p-button-text p-button-icon-only"></button>
-                </td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-trash"
-                        class="p-button p-component p-button-text p-button-trash"></button>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
 </div>
 
+<p-dialog [header]="esEdicion ? 'Editar Área' : 'Agregar Área'" [modal]="true" [(visible)]="visible"
+    [style]="{ 'width': '480px','height': '370px' }">
+    <div class="flex flex-column" style="height: 100%;">
+        <div class="flex-grow-1">
+            <div class="flex flex-wrap gap-3">
+                <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%; ">
+                    <label for="bloque" class="font-semibold w-10rem">Bloque</label>
+                    <p-dropdown [options]="bloques" dataKey="id_bloque" optionLabel="nombre"
+                        placeholder="Seleccione un Bloque" autoWidth="false" [style]="{'width':'15.9rem'}"
+                        [(ngModel)]="selectedBloque"></p-dropdown>
+                </div>
+                <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+                    <label for="piso" class="font-semibold w-6rem">Piso</label>
+                    <p-dropdown [options]="pisos" dataKey="code" optionLabel="name" placeholder="Seleccione un Piso"
+                        autoWidth="false" [style]="{'width':'14rem'}"[(ngModel)]="selectPiso"></p-dropdown>
+                </div>
+                <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+                    <label for="nombre" class="font-semibold w-6rem">Nombre</label>
+                    <input pInputText id="nombre" autocomplete="off" [(ngModel)]="nombre" maxlength="20" />
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-content-end gap-2 mb-3">
+            <p-button [label]="esEdicion ? 'Editar' : 'Guardar'" (click)="esEdicion ? editarArea() : registrarArea()"
+                (click)="visible = false" [rounded]="true"></p-button>
+        </div>
+    </div>
+</p-dialog>
+<p-toast position="bottom-right"></p-toast>
+<p-confirmDialog header="Confirmación" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
