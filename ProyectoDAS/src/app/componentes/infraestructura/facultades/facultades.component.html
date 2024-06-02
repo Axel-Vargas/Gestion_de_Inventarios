@@ -1,41 +1,84 @@
-<div class="card-table mb-0">
-    <div class="flex flex-column mb-3">
-        <div>
-            <span class="flex mb-5">Facultades</span>
-        </div>
-        <div class="flex justify-content-between flex-wrap">
-            <div class="floating-button flex align-items-center">
-                <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar facultad</span>
-                <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()" (mouseleave)="hideTooltip()"></button>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="flex facultades justify-content-between flex-wrap mb-5">
+                <span class="flex align-items-center">Facultades</span>
+                <div class="flex align-items-center">
+                    <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Facultad</span>
+                    <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
+                        (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
+                </div>
             </div>
-            <p-iconField class="rounded-icon-field" iconPosition="left">
-                <p-inputIcon styleClass="pi pi-search" />
-                <input type="text" pInputText placeholder="Buscar" />
-            </p-iconField>
+            <p-table #dt [value]="facultades" dataKey="id_facultad" [rows]="5" [rowsPerPageOptions]="[5,10, 25, 50]"
+                [paginator]="true" [globalFilterFields]="['nombre', 'siglas']"
+                [tableStyle]="{ 'min-width': '45rem' }">
+                <ng-template pTemplate="caption">
+                    <div class="flex">
+                        <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input pInputText type="text"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                                placeholder="Buscar Facultad" />
+                        </p-iconField>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>
+                            <span class="flex mb-2">NOMBRE</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="nombre" placeholder="Buscar por nombre" ariaLabel="Filter Nombre" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">SIGLAS</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="siglas" placeholder="Buscar por siglas" ariaLabel="Filter Siglas" />
+                        </th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-facultad>
+                    <tr>
+                        <td>{{ facultad.nombre }}</td>
+                        <td>{{ facultad.siglas }}</td>
+                        <td class="flex flex-row ">
+                            <button pButton (click)="showDialogEditar(facultad)" pRipple type="button"
+                                icon="pi pi-pen-to-square"
+                                class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="5">No se encontraron facultades.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
     </div>
-    <p-table [value]="[{}]" [tableStyle]="{ 'min-width': '100%' }">
-        <ng-template pTemplate="header" [paginator]="true" [rows]="9" responsiveLayout="scroll">
-            <tr>
-                <th>Código</th>
-                <th>Nombre</th>
-                <th>Editar</th>
-                <th>Eliminar</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData>
-            <tr>
-                <td style="width: 30%; min-width: 7rem;">F05</td>
-                <td style="width: 30%; min-width: 40rem;">Facultad de Ingenieria en Sistemas, Electrónica e Industrial</td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-pen-to-square"
-                        class="p-button p-component p-button-text p-button-icon-only"></button>
-                </td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-trash"
-                        class="p-button p-component p-button-text p-button-trash"></button>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
 </div>
+
+<p-dialog [header]="esEdicion ? 'Editar Facultad' : 'Agregar Facultad'" [modal]="true" [(visible)]="visible"
+    >
+    <div class="flex flex-wrap gap-3">
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="nombre" class="font-semibold w-6rem">Nombre</label>
+            <input pInputText id="nombre" autocomplete="off" [(ngModel)]="nombre" maxlength="50"
+                (input)="handleInput($event)" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="siglas" class="font-semibold w-6rem">Siglas</label>
+            <input pInputText id="siglas" class="flex-auto" autocomplete="off" [(ngModel)]="siglas" maxlength="10"
+                (input)="handleInput($event)" />
+        </div>
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button [label]="esEdicion ? 'Editar' : 'Guardar'"
+            (click)="esEdicion ? editarFacultad() : registrarFacultad()" (click)="visible = false"
+            [rounded]="true"></p-button>
+    </div>
+</p-dialog>
+<p-toast position="bottom-right"></p-toast>
+<p-confirmDialog header="Confirmación" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
