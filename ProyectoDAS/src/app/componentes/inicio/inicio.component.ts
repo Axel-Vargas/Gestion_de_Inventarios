@@ -1,9 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MenuItem } from 'primeng/api';
-import { Subscription, debounceTime } from 'rxjs';
-import { LayoutService } from '../../panel/service/app.layout.service';
-import { BienestecnologicosService } from '../../services/bienestecnologicos.service';
-import { bienes_Tecnologicos } from '../api/bienesTecnologicos';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { InicioService } from '../../services/inicio.service';
 
@@ -13,18 +8,15 @@ import { InicioService } from '../../services/inicio.service';
   styleUrls: ['./inicio.component.css']
 })
 export class InicioComponent implements OnInit {
-
   totalBienes: number = 0;
   totalAreas: number = 0;
   totalProveedores: number = 0;
   totalUsuarios: number = 0;
 
-  tooltipVisible: boolean = false;
   displayQRScanner: boolean = false;
 
   constructor(
-    private route: Router, 
-    public layoutService: LayoutService,
+    private route: Router,
     private inicioService: InicioService
   ) {}
 
@@ -53,8 +45,6 @@ export class InicioComponent implements OnInit {
       (error) => console.error('Error al obtener total de usuarios', error)
     );
   }
-
-  
 
   showQRScanner2(): void {
     this.displayQRScanner = true;

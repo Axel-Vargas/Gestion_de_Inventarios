@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class InicioService {
 
-  API = "http://localhost:4000/api/inicio"
+  API = "http://localhost:4000/api/inicio";
 
   constructor(private http: HttpClient) { }
 
