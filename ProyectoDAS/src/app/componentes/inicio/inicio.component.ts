@@ -1,33 +1,60 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api';
 import { Subscription, debounceTime } from 'rxjs';
-
 import { LayoutService } from '../../panel/service/app.layout.service';
 import { BienestecnologicosService } from '../../services/bienestecnologicos.service';
 import { bienes_Tecnologicos } from '../api/bienesTecnologicos';
 import { Router } from '@angular/router';
+import { InicioService } from '../../services/inicio.service';
 
 @Component({
   selector: 'app-inicio',
   templateUrl: './inicio.component.html',
-  styleUrl: './inicio.component.css'
+  styleUrls: ['./inicio.component.css']
 })
-export class InicioComponent implements OnInit, OnDestroy {
+export class InicioComponent implements OnInit {
 
-  items!: MenuItem[];
-
-  tecnologicos!: bienes_Tecnologicos[];
-
-  chartData: any;
-
-  chartOptions: any;
-
-  subscription!: Subscription;
+  totalBienes: number = 0;
+  totalAreas: number = 0;
+  totalProveedores: number = 0;
+  totalUsuarios: number = 0;
 
   tooltipVisible: boolean = false;
   displayQRScanner: boolean = false;
 
+  constructor(
+    private route: Router, 
+    public layoutService: LayoutService,
+    private inicioService: InicioService
+  ) {}
 
+  ngOnInit() {
+    this.obtenerDatos();
+  }
+
+  obtenerDatos(): void {
+    this.inicioService.obtenerTotalBienes().subscribe(
+      (data) => this.totalBienes = data,
+      (error) => console.error('Error al obtener total de bienes', error)
+    );
+
+    this.inicioService.obtenerTotalAreas().subscribe(
+      (data) => this.totalAreas = data,
+      (error) => console.error('Error al obtener total de áreas', error)
+    );
+
+    this.inicioService.obtenerTotalProveedores().subscribe(
+      (data) => this.totalProveedores = data,
+      (error) => console.error('Error al obtener total de proveedores', error)
+    );
+
+    this.inicioService.obtenerTotalUsuarios().subscribe(
+      (data) => this.totalUsuarios = data,
+      (error) => console.error('Error al obtener total de usuarios', error)
+    );
+  }
+
+  
 
   showQRScanner2(): void {
     this.displayQRScanner = true;
@@ -44,7 +71,6 @@ export class InicioComponent implements OnInit, OnDestroy {
       return { 'width': '50%' };
     }
   }
-
 
   onCodeResult(result: string): void {
     this.displayQRScanner = false;
@@ -69,94 +95,8 @@ export class InicioComponent implements OnInit, OnDestroy {
   camerasFoundHandler(devices: MediaDeviceInfo[]): void {
     console.log(devices);
   }
+
   onModalHide(): void {
     this.displayQRScanner = false;
-  }
-
-
-
-
-
-  constructor(private route: Router, private productService: BienestecnologicosService, public layoutService: LayoutService) {
-      this.subscription = this.layoutService.configUpdate$
-      .pipe(debounceTime(25))
-      .subscribe((config) => {
-          this.initChart();
-      });
-  }
-
-  ngOnInit() {
-      this.initChart();
-      //this.productService.getProductsSmall().then(data => this.products = data);
-
-      this.items = [
-          { label: 'Add New', icon: 'pi pi-fw pi-plus' },
-          { label: 'Remove', icon: 'pi pi-fw pi-minus' }
-      ];
-  }
-
-  initChart() {
-      const documentStyle = getComputedStyle(document.documentElement);
-      const textColor = documentStyle.getPropertyValue('--text-color');
-      const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-      const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
-
-      this.chartData = {
-          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-          datasets: [
-              {
-                  label: 'First Dataset',
-                  data: [65, 59, 80, 81, 56, 55, 40],
-                  fill: false,
-                  backgroundColor: documentStyle.getPropertyValue('--bluegray-700'),
-                  borderColor: documentStyle.getPropertyValue('--bluegray-700'),
-                  tension: .4
-              },
-              {
-                  label: 'Second Dataset',
-                  data: [28, 48, 40, 19, 86, 27, 90],
-                  fill: false,
-                  backgroundColor: documentStyle.getPropertyValue('--green-600'),
-                  borderColor: documentStyle.getPropertyValue('--green-600'),
-                  tension: .4
-              }
-          ]
-      };
-
-      this.chartOptions = {
-          plugins: {
-              legend: {
-                  labels: {
-                      color: textColor
-                  }
-              }
-          },
-          scales: {
-              x: {
-                  ticks: {
-                      color: textColorSecondary
-                  },
-                  grid: {
-                      color: surfaceBorder,
-                      drawBorder: false
-                  }
-              },
-              y: {
-                  ticks: {
-                      color: textColorSecondary
-                  },
-                  grid: {
-                      color: surfaceBorder,
-                      drawBorder: false
-                  }
-              }
-          }
-      };
-  }
-
-  ngOnDestroy() {
-      if (this.subscription) {
-          this.subscription.unsubscribe();
-      }
   }
 }

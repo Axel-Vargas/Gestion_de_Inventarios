@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,19 +11,19 @@ export class InicioService {
 
   constructor(private http: HttpClient) { }
 
-  obtenerProveedores() {
-    return this.http.get(this.API);
+  obtenerTotalBienes(): Observable<number> {
+    return this.http.get<number>(`${this.API}/total-bienes`);
   }
 
-  insertarProveedor(nombre: string, direccion: string, telefono: string ) {
-    return this.http.post(this.API, { nombre, direccion, telefono })
+  obtenerTotalAreas(): Observable<number> {
+    return this.http.get<number>(`${this.API}/total-areas`);
   }
 
-  actualizarProveedor(id: String, nombre: string, direccion: string, telefono: string ) {
-    return this.http.put(`${this.API}/${id}`, { nombre, direccion, telefono  })
+  obtenerTotalProveedores(): Observable<number> {
+    return this.http.get<number>(`${this.API}/total-proveedores`);
   }
 
-  eliminarProveedor(id: string) {
-    return this.http.delete(`${this.API}/${id}`);
+  obtenerTotalUsuarios(): Observable<number> {
+    return this.http.get<number>(`${this.API}/total-usuarios`);
   }
 }
