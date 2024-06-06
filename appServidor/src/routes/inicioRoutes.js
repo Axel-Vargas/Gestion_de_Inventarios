@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { getTotalBienes, getTotalAreas, getTotalProveedores, getTotalUsuarios } = require('../controllers/inicioController.js');
+const { getTotalBienes, getTotalAreas, getTotalProveedores, getTotalUsuarios, getFacultades, getBloques} = require('../controllers/inicioController.js');
 
 router.get('/total-bienes', getTotalBienes);
 router.get('/total-areas', getTotalAreas);
