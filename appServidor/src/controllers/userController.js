@@ -180,7 +180,7 @@ exports.authenticateUser = async (req, res) => {
         return res.status(401).json({ mensaje: 'Credenciales inválidas' });
       }
       
-      res.status(200).json({ id: existingUser.id, usuario: existingUser.correo, contrasena: existingUser.contrasena });
+      res.status(200).json({ id: existingUser.id, usuario: existingUser.correo, contrasena: existingUser.contrasena, rol: existingUser.id_rol_per });
     });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error interno del servidor' });

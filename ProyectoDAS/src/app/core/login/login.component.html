@@ -9,7 +9,7 @@
                 </div>
 
                 <div>
-                    <label for="username" class="block text-900 text-xl font-medium mb-2">Usuario</label>
+                    <label for="username" class="block text-900 text-xl font-medium mb-2">Correo</label>
                     <input id="username" name="username" [(ngModel)]="username" type="text" placeholder="Ingrese el usuario" pInputText class="w-full md:w-30rem mb-5" style="padding:1rem">
 
                     <label for="password" class="block text-900 font-medium text-xl mb-2">Contraseña</label>
@@ -22,7 +22,7 @@
                         </div>
                         <a class="font-medium no-underline ml-2 text-right cursor-pointer" style="color: var(--primary-color)">Olvidé mi contraseña</a>
                     </div>
-                    <button pButton pRipple label="Iniciar sesion" class="w-full p-3 text-xl" routerLink="/panel"></button>
+                    <button pButton pRipple label="Iniciar sesion" class="w-full p-3 text-xl" (click)="login()" [disabled]="!username || !password"></button>
                 </div>
             </div>
         </div>

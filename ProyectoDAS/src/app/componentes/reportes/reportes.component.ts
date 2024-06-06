@@ -5,6 +5,8 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
 import { catchError, forkJoin } from 'rxjs';
 import QRCode from 'qrcode';
+import * as XLSX from 'xlsx';
+
 import { AreaMobiliarioService } from '../../services/area.mobiliario.service';
 
 
@@ -22,7 +24,8 @@ export class ReportesComponent {
   reportesDITIC: any[] = [];
   reportesUPE: any[] = [];
   selectReporte: any;
-  tecnologicos!: bienes_Tecnologicos[];
+  tecnologicosCompleto!: bienes_Tecnologicos[];
+  tecnologicosPorArea!: bienes_Tecnologicos[];
   displayPDFDialog: boolean = false;
   selectedDepartamento = { name: 'DITIC', code: 'DITIC' };
 
@@ -33,7 +36,7 @@ export class ReportesComponent {
 
   computadorasDeEscritorio: bienes_Tecnologicos[] = [];
 
-  constructor(private bienesTecnologicosService: BienestecnologicosService,private areasService: AreaMobiliarioService) { }
+  constructor(private bienesTecnologicosService: BienestecnologicosService, private areasService: AreaMobiliarioService) { }
 
   ngOnInit() {
     this.reportes = [
@@ -101,9 +104,7 @@ export class ReportesComponent {
             }
           }
         });
-        this.tecnologicos = bienesTecnologicos;
-
-        console.log(this.tecnologicos);
+        this.tecnologicosCompleto = bienesTecnologicos;
       });
   }
 
@@ -127,9 +128,7 @@ export class ReportesComponent {
             }
           }
         });
-        this.tecnologicos = bienesTecnologicos;
-
-        console.log(this.tecnologicos);
+        this.tecnologicosPorArea = bienesTecnologicos;
       });
   }
 
@@ -142,11 +141,19 @@ export class ReportesComponent {
     });
   }
 
-  mostrarDialogoPorAreas(tipoReporte: number, tipoReporteStr: string) {
+  mostrarDialogoPDF(tipoReporte: number, tipoReporteStr: string) {
     if (tipoReporte === 2) {
-        this.showDialog(this.selectedArea);
-    }else{
+      this.showDialog(this.selectedArea);
+    } else {
       this.descargarPDFCompleto();
+    }
+  }
+
+  mostrarDialogoEXCEL(tipoReporte: number, tipoReporteStr: string) {
+    if (tipoReporte === 2) {
+      this.showDialog(this.selectedArea);
+    } else {
+      this.descargarExcelCompleto();
     }
   }
 
@@ -154,20 +161,27 @@ export class ReportesComponent {
     const pdf = new jsPDF('landscape');
     pdf.text('Reporte de Computadoras de Escritorio', 10, 10);
 
-    const headers = ['No.', 'QR', 'Nombre', 'Marca', 'Modelo', 'Número de Serie', 'Estado', 'Código UTA', 'Fecha de Adquisición'];
-    const data = this.tecnologicos.map((comp, index) => [
-      index + 1,
-      '',
-      comp.nombre_bien || '',
-      comp.marca || '',
-      comp.modelo || '',
-      comp.num_serie || '',
-      comp.estado || '',
-      comp.codigoUTA || '',
-      comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : ''
-    ]);
+    const headers = ['No.', 'QR', 'Marca', 'Modelo', 'N. Serie', 'Procesador','RAM','ROM','IP','Localización', 'Estado', 'Código UTA', 'Fecha Adquisición'];
+    const data = this.tecnologicosCompleto.map((comp, index) => {
+      
+      return [
+        index + 1,
+        '',
+        comp.marca || '',
+        comp.modelo || '',
+        comp.num_serie || '',
+        comp.atributos.Procesador || '',
+        comp.atributos.Memoria || '',
+        comp.atributos.Disco || '',
+        comp.atributos.IP || '',
+        comp.localizacion || '',
+        comp.estado || '',
+        comp.codigoUTA || '',
+        comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : ''
+      ];
+    });
 
-    const qrImages = await Promise.all(this.tecnologicos.map(async (comp) => {
+    const qrImages = await Promise.all(this.tecnologicosCompleto.map(async (comp) => {
       try {
         const response = await fetch(comp.image || '');
         const blob = await response.blob();
@@ -182,7 +196,7 @@ export class ReportesComponent {
       }
     }));
 
-    if (qrImages.length !== this.tecnologicos.length) {
+    if (qrImages.length !== this.tecnologicosCompleto.length) {
       console.error('El número de imágenes QR no coincide con el número de computadoras.');
       return;
     }
@@ -206,19 +220,20 @@ export class ReportesComponent {
         0: { cellWidth: 10 },
         1: { cellWidth: 40, minCellHeight: 30 }
       },
+      margin: { bottom: 25 },
       didDrawCell: (data) => {
         if (data.section === 'body' && data.column.index === 1 && qrImages[data.row.index]) {
           pdf.addImage(qrImages[data.row.index], 'PNG', data.cell.x + 1, data.cell.y + 1, 28, 28);
         }
       },
       styles: {
-        fontSize: 12,
+        fontSize: 10,
         valign: 'middle'
       }
     }));
 
     pdf.save('Inventario_PC_FISEI.pdf');
-  }
+}
 
   showDialog(area: any) {
     this.visible = true;
@@ -230,16 +245,20 @@ export class ReportesComponent {
     const pdf = new jsPDF('landscape');
     pdf.text('Reporte de Computadoras por Área', 10, 10);
 
-    const headers = ['No.', 'QR', 'Nombre', 'Marca', 'Modelo', 'Número de Serie', 'Estado', 'Código UTA', 'Fecha de Adquisición'];
+    const headers = ['No.', 'QR', 'Marca', 'Modelo', 'N. Serie', 'Procesador','RAM','ROM','IP','Localización', 'Estado', 'Código UTA', 'Fecha Adquisición'];
 
     this.bienesTecnologicosService.getComputadorasPorAreas(this.selectedArea.id_area).subscribe((computadoras) => {
-      const data = computadoras.map((comp, index) => [
+      const data = this.tecnologicosPorArea.map((comp, index) => [
         index + 1,
         '',
-        comp.nombre_bien || '',
         comp.marca || '',
         comp.modelo || '',
         comp.num_serie || '',
+        comp.atributos.Procesador || '',
+        comp.atributos.Memoria || '',
+        comp.atributos.Disco || '',
+        comp.atributos.IP || '',
+        comp.localizacion || '',
         comp.estado || '',
         comp.codigoUTA || '',
         comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : ''
@@ -290,7 +309,7 @@ export class ReportesComponent {
             }
           },
           styles: {
-            fontSize: 12,
+            fontSize: 10,
             valign: 'middle'
           }
         }));
@@ -299,6 +318,61 @@ export class ReportesComponent {
       });
     });
   }
+
+  async descargarExcelCompleto() {
+    const headers = ['No.', 'Nombre', 'Marca', 'Modelo', 'N. Serie', 'Procesador','Memoria','Disco Duro','IP','Localización', 'Estado', 'Código UTA', 'Fecha de Adquisición'];
+    const data = this.tecnologicosCompleto.map((comp, index) => [
+      index + 1,
+      comp.nombre_bien || '',
+      comp.marca || '',
+      comp.modelo || '',
+      comp.num_serie || '',
+      comp.atributos.Procesador || '',
+      comp.atributos.Memoria || '',
+      comp.atributos.Disco || '',
+      comp.atributos.IP || '',
+      comp.localizacion || '',
+      comp.estado || '',
+      comp.codigoUTA || '',
+      comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : ''
+    ]);
+
+    const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte Completo');
+
+    XLSX.writeFile(workbook, 'Inventario_PC_FISEI.xlsx');
+  }
+
+  async descargarExcelPorArea() {
+    this.loadComputadorasPorArea(this.selectedArea.id_area);
+
+    this.bienesTecnologicosService.getComputadorasPorAreas(this.selectedArea.id_area).subscribe((computadoras) => {
+      const headers = ['No.', 'Nombre', 'Marca', 'Modelo', 'N. Serie', 'Procesador','Memoria','Disco Duro','IP','Localización', 'Estado', 'Código UTA', 'Fecha de Adquisición'];
+
+      const data = this.tecnologicosPorArea.map((comp, index) => [
+        index + 1,
+        comp.nombre_bien || '',
+        comp.marca || '',
+        comp.modelo || '',
+        comp.num_serie || '',
+        comp.atributos.Procesador || '',
+        comp.atributos.Memoria || '',
+        comp.atributos.Disco || '',
+        comp.atributos.IP || '',
+        comp.localizacion || '',
+        comp.estado || '',
+        comp.codigoUTA || '',
+        comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : ''
+      ]);
+
+      const worksheet = XLSX.utils.aoa_to_sheet([headers, ...data]);
+
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Reporte por Área');
+
+      XLSX.writeFile(workbook, 'Inventario_PC_FISEI_POR_AREA.xlsx');
+    });
+  }
 }
-
-

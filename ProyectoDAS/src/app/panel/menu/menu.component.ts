@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LayoutService } from '../service/app.layout.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-menu',
@@ -8,9 +10,12 @@ import { LayoutService } from '../service/app.layout.service';
 })
 export class MenuComponent implements OnInit {
     model: any[] = [];
-    constructor(public layoutService: LayoutService) { }
+    userRole: number | null = null;
+
+    constructor(public layoutService: LayoutService, public authService: AuthService, private router: Router) { }
 
     ngOnInit() {
+        this.userRole = this.authService.getUserRole();
         this.model = [
             {
                 label: 'Home',
@@ -25,12 +30,13 @@ export class MenuComponent implements OnInit {
                         label: 'Personal', icon: 'pi pi-id-card',
                         items: [
                             {
-                                label: 'Usuarios', icon: 'pi pi-users', routerLink: ['/panel/personal/usuarios']
+                                label: 'Usuarios', icon: 'pi pi-users', routerLink: ['/panel/personal/usuarios'], visible: this.userRole === 1
                             },
                             {
-                                label: 'Encargados', icon: 'pi pi-user-plus', routerLink: ['/panel/personal/encargados']
+                                label: 'Encargados', icon: 'pi pi-user-plus', routerLink: ['/panel/personal/encargados'], visible: this.userRole === 1
                             }
-                        ]
+                        ],
+                        visible: this.userRole === 1
                     },
                     {
                         label: 'Inventario', icon: 'pi pi-box',
@@ -43,7 +49,8 @@ export class MenuComponent implements OnInit {
                                     return this.icon;
                                 }
                             }
-                        ]
+                        ],
+                        visible: this.userRole === 1 || this.userRole === 2
                     },
                     {
                         label: 'Infraestructura', icon: 'pi pi-hammer',
@@ -59,14 +66,27 @@ export class MenuComponent implements OnInit {
                             {
                                 label: 'Áreas', icon: 'pi pi-map-marker', routerLink: ['/panel/infraestructura/areas']
                             }
-                        ]
+                        ],
+                        visible: this.userRole === 1
                     },
-                    { label: 'Programas', icon: 'pi pi-microsoft', routerLink: ['/panel/programas'] },
-                    { label: 'Proveedores', icon: 'pi pi-truck', routerLink: ['/panel/proveedores'] },
-                    { label: 'Historial', icon: 'pi pi-history', routerLink: ['/panel/historial'] },
-                    { label: 'Reportes', icon: 'pi pi-file', routerLink: ['/panel/reportes']},
+                    { label: 'Programas', icon: 'pi pi-microsoft', routerLink: ['/panel/programas'], visible: this.userRole === 1 || this.userRole === 2},
+                    { label: 'Proveedores', icon: 'pi pi-truck', routerLink: ['/panel/proveedores'], visible: this.userRole === 1 || this.userRole === 2 },
+                    { label: 'Reportes', icon: 'pi pi-file', routerLink: ['/panel/reportes'], visible: this.userRole === 1 || this.userRole === 2 || this.userRole === 3},
+                ]
+            },
+            {
+                label: 'Cerrar sesión',
+                items: [
+                    {
+                        label: 'Cerrar sesión', icon: 'pi pi-sign-out', command: () => this.logout()
+                    }
                 ]
             }
         ];
+    }
+
+    logout() {
+        this.authService.removeUser();
+        this.router.navigate(['']);
     }
 }
