@@ -86,6 +86,33 @@
     <div class="col-12 xl:col-6">
         <div class="card">
             <h5>Sales Overview</h5>
+            <h2>Gráfico de Bienes</h2>
+
+            <div class="p-field">
+              <label for="facultad">Seleccione Facultad:</label>
+              <p-dropdown 
+                [options]="facultades" 
+                [(ngModel)]="selectedFacultad" 
+                optionLabel="nombre" 
+                placeholder="Seleccione una facultad" 
+                (onChange)="onFacultadChange()">
+              </p-dropdown>
+            </div>
+          
+            <div class="p-field" *ngIf="selectedFacultad">
+              <label for="bloque">Seleccione Bloque:</label>
+              <p-dropdown 
+                [options]="bloques" 
+                [(ngModel)]="selectedBloque" 
+                optionLabel="nombre" 
+                placeholder="Seleccione un bloque" 
+                (onChange)="onBloqueChange()">
+              </p-dropdown>
+            </div>
+          
+            <div *ngIf="chartData">
+              <p-chart type="pie" [data]="chartData" [options]="chartOptions"></p-chart>
+            </div>
             
             
         </div>

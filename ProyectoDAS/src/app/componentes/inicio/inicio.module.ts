@@ -6,11 +6,16 @@ import { InicioComponent } from './inicio.component';
 
 import { MenuModule } from 'primeng/menu';
 import { TableModule } from 'primeng/table';
+import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { DialogModule } from 'primeng/dialog';
-//import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { DropdownModule } from 'primeng/dropdown';
+import { ChartModule } from 'primeng/chart';
+import { HttpClientModule } from '@angular/common/http';
+import { InicioService } from '../../services/inicio.service';
+
 
 @NgModule({
   declarations: [
@@ -24,6 +29,10 @@ import { DialogModule } from 'primeng/dialog';
     ButtonModule,
     ZXingScannerModule,
     DialogModule,
+    HttpClientModule,
+    FormsModule,
+    DropdownModule,
+    ChartModule
   ],
   exports: [
     InicioComponent
