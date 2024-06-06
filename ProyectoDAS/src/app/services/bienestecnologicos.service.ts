@@ -27,7 +27,7 @@ export class BienestecnologicosService {
     }
 
     getBienTecnologico(id: number): Observable<bienes_Tecnologicos> {
-        return this.http.get<bienes_Tecnologicos>(`${this.myAppUrl}${this.myApyUrl}${id}`);
+        return this.http.get<bienes_Tecnologicos>(`${this.myAppUrl}${this.myApyUrl}/${id}`);
     }
 
     agregarBienTecnologico(bien: any): Observable<any> {
