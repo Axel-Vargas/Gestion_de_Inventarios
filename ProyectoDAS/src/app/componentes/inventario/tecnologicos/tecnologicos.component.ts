@@ -19,6 +19,7 @@ import { TipoTecnologicoService } from '../../../services/tipotecnologico.servic
 import { TipoTecnologico } from '../../api/tipoTecnologico';
 import { EncargadosService } from '../../../services/encargados.service';
 import { Encargados } from '../../api/Encargados';
+import { ScannerService } from '../../../services/scanner.service';
 
 @Component({
   selector: 'app-tecnologicos',
@@ -77,6 +78,7 @@ export class TecnologicosComponent implements OnInit {
   showDetailsModal: boolean = false;
 
   marcas!: any[];
+  scannedCode: string = '';
 
   constructor(
     private tecnologicosService: BienestecnologicosService,
@@ -90,6 +92,7 @@ export class TecnologicosComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private tipoTecnologicoService:TipoTecnologicoService,
     private encargadosService:EncargadosService,
+    private scannerService: ScannerService
   ) {
     this.cargarBloques();
     this.cargarProveedores();
@@ -106,7 +109,16 @@ export class TecnologicosComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.cargarBienesTecnologicos();
+    this.scannerService.scannedCode$.subscribe(code => {
+      this.scannedCode = code;
+      const scnnaerNumer = Number(this.scannedCode)
+        if(!this.scannedCode){
+          this.cargarBienesTecnologicos();
+        }else{
+          this.cargarBienesTecnologicosPorId(scnnaerNumer)
+        }
+    });
+
     this.obtenerMarcas();
     this.obtenerTipoTecnologico()
     this.obtenerEncargados()
@@ -139,6 +151,63 @@ export class TecnologicosComponent implements OnInit {
     });
   }
 
+  cargarBienesTecnologicos(): void {
+    forkJoin({
+      bienesTecnologicos: this.tecnologicosService.getBienesTecnologicos(),
+      componentes: this.componente_service.getComponentes(),
+    })
+      .pipe(
+        catchError((error) => {
+          console.error('Error al cargar datos', error);
+          return [];
+        })
+      )
+      .subscribe(({ bienesTecnologicos, componentes }) => {
+        bienesTecnologicos.forEach((t) => {
+          if (t.atributos && typeof t.atributos === 'string') {
+            try {
+              t.atributos = JSON.parse(t.atributos);
+            } catch (error) {
+              console.error('Error parsing JSON for product:', t);
+            }
+          }
+          t.componentes = componentes.filter(
+            (c) => c.id_bien_per === t.id_bien_tec
+          );
+        });
+        this.tecnologicos = bienesTecnologicos;
+      });
+  }
+
+  cargarBienesTecnologicosPorId(id: number): void {
+    forkJoin({
+      bienesTecnologicos: this.tecnologicosService.getBienTecnologico(id),
+      componentes: this.componente_service.getComponentes(),
+    }).pipe(
+      catchError((error) => {
+        console.error('Error al cargar datos', error);
+        return [];
+      })
+    ).subscribe(({ bienesTecnologicos, componentes }) => {
+      const arrayBienesTecnologicos = Array.isArray(bienesTecnologicos) ? bienesTecnologicos : [bienesTecnologicos];
+      arrayBienesTecnologicos.forEach((t) => {
+        if (t.atributos && typeof t.atributos === 'string') {
+          try {
+            t.atributos = JSON.parse(t.atributos);
+          } catch (error) {
+            console.error('Error parsing JSON for product:', t);
+          }
+        }
+        t.componentes = componentes.filter(
+          (c) => c.id_bien_per === t.id_bien_tec
+        );
+      });
+      this.tecnologicos = arrayBienesTecnologicos;
+    });
+  }
+  
+  
+  
   showQRCode(imageUrl: string, altText: string) {
     this.qrCodeImageUrl = imageUrl;
     this.qrCodeAltText = altText;
@@ -441,35 +510,7 @@ agregarAtributo(): void {
   }
   
 
-  cargarBienesTecnologicos(): void {
-    forkJoin({
-      bienesTecnologicos: this.tecnologicosService.getBienesTecnologicos(),
-      componentes: this.componente_service.getComponentes(),
-    })
-      .pipe(
-        catchError((error) => {
-          console.error('Error al cargar datos', error);
-          return [];
-        })
-      )
-      .subscribe(({ bienesTecnologicos, componentes }) => {
-        bienesTecnologicos.forEach((t) => {
-          if (t.atributos && typeof t.atributos === 'string') {
-            try {
-              t.atributos = JSON.parse(t.atributos);
-            } catch (error) {
-              console.error('Error parsing JSON for product:', t);
-            }
-          }
-          t.componentes = componentes.filter(
-            (c) => c.id_bien_per === t.id_bien_tec
-          );
-        });
-        this.tecnologicos = bienesTecnologicos;
-        
-        console.log(this.tecnologicos);
-      });
-  }
+ 
 
   editarBienTecnologico(bien: any): void {
     this.selectedBienTecnologico = bien;

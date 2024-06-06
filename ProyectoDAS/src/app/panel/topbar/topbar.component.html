@@ -1,27 +1,41 @@
-<div class="layout-topbar cla flex">
+<div class="layout-topbar">
     <a class="layout-topbar-logo">
         <img src="assets/layout/images/logo.png" alt="Image">
-        <span class="logo pl-1">GESTIONTEC</span>
-        <button #menubutton class="p-link layout-menu-button layout-topbar-button ml-6" (click)="layoutService.onMenuToggle()">
-            <i class="pi pi-bars"></i>
-        </button>
-        
+        <span class="logo">GESTIONTEC</span>
     </a>
-    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button" (click)="layoutService.showProfileSidebar()">
+
+    <button #menubutton class="p-link layout-menu-button layout-topbar-button-head" (click)="layoutService.onMenuToggle()">
+        <i class="pi pi-bars"></i>
+    </button>
+
+    <button #topbarmenubutton class="p-link layout-topbar-menu-button layout-topbar-button-head" (click)="layoutService.showProfileSidebar()">
         <i class="pi pi-ellipsis-v"></i>
     </button>
-    <div #topbarmenu class="layout-topbar-menu">
-
-        <button class="flex p-link layout-topbar-button align-items-center" (click)="showQRScanner()">
-            <i class="pi pi-camera"></i>
+    
+    <div #topbarmenu class="layout-topbar-menu" [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
+        
+        <button (click)="sidebarVisible = true" class="p-link layout-topbar-button">
+            <i class="pi pi-user"></i>
+            <span>Perfil</span>
         </button>
- 
-        <p-menubar [model]="items" [style]="{ 'background-color': 'transparent', 'border': 'none','font-size': '18px','color':'white'}" [autoDisplay]="false" styleClass="custom-menubar"></p-menubar>
-        <span *ngIf="usuario" class="username-span" style="margin-left: 20px; color: white;">
-            {{ usuario.usuario }}
-        </span>
     </div>
+    
 </div>
-<p-dialog header="Escanear QR" [(visible)]="displayQRScanner" [modal]="true" [style]="getDialogStyle()" (onHide)="onModalHide()">
-    <zxing-scanner *ngIf="displayQRScanner" (camerasFound)="camerasFoundHandler($event)" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
-</p-dialog>
+
+<div class="p-col-12 p-md-4 p-lg-3"> 
+    <p-sidebar [(visible)]="sidebarVisible" position="right" [blockScroll]="true" class="profile-sidebar">
+        <div class="profile-header">
+            <p-avatar size="large" shape="circle" class="profile-picture"></p-avatar>
+            <div class="profile-info">
+                <h2>Axel Vargas Villafuerte</h2>
+                <p>Correo electrónico</p>
+            </div>
+        </div>
+        <div class="profile-menu">
+            <p-menu [model]="profileMenuModel" styleClass="custom-menu"></p-menu>
+        </div>
+    </p-sidebar>
+    
+    
+    
+</div>

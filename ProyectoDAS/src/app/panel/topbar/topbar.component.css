@@ -1,34 +1,9 @@
 .logo{
-    font-size: 25px;
     color: white;
 }
 
-.custom-icon-size .pi{
-    font-size: 24px !important; 
+.profile-menu {
+    width: 100%; /* Ajusta el ancho del menú al 100% del contenedor */
 }
-.layout-topbar-button {
-    display: flex;
-    align-items: center; /* Asegura alineación vertical al centro */
-    justify-content: center; /* Centra el contenido horizontalmente si es necesario */
-    height: 100%; 
-    margin: 0;
-    padding: 0;/* Asegúrate de que el botón tenga altura completa del contenedor padre */
-}
-.flex {
-    display: flex;
-    align-items: center;  
-    justify-content: space-between;  
-}
-.layout-topbar-menu {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;  
-}
-.layout-topbar-menu-button {
-    display: none;
-}
-
-/* Muestra el botón solo en pantallas pequeñas */
 
 

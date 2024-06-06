@@ -6,10 +6,22 @@
     </div>
     <div class="layout-main-container">
         <div class="layout-main">
+            <button id="floating-button" pButton type="button" icon="pi pi-camera" class="p-button-rounded p-button-primary large-icon"
+            (click)="showQRScanner2()"></button>
+
             <router-outlet></router-outlet>
         </div>
         <app-footer></app-footer>
     </div>
     </section>
     <div class="layout-mask"></div>
+
+    <p-dialog header="Escanear QR" [(visible)]="displayQRScanner" [modal]="true" [style]="getDialogStyle()" (onHide)="onModalHide()">
+        <div *ngIf="permissionError">
+            <p>Permiso denegado para acceder a la cámara. Por favor, habilite el acceso a la cámara en la configuración del navegador.</p>
+            <button pButton type="button" label="Reintentar" (click)="retryPermission()"></button>
+        </div>
+        <zxing-scanner *ngIf="!permissionError && displayQRScanner" (camerasFound)="camerasFoundHandler($event)" (scanSuccess)="onCodeResult($event)" (permissionError)="onPermissionError($event)"></zxing-scanner>
+    </p-dialog>
+
 </div>
