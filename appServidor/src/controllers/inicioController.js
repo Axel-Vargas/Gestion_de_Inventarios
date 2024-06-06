@@ -2,13 +2,15 @@ const connection = require('../db/connection');
 
 const getTotalBienes = (req, res) => {
     try {
-        const sql = 'SELECT COUNT(*) FROM bien_tecnologico;';
+        console.log('Ejecutando getTotalBienes');
+        const sql = 'SELECT COUNT(*) AS total FROM bien_tecnologico;';
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                res.json(data);
+                console.log('Resultado de la consulta:', data);
+                res.json(data[0].total);
             }
         });
     } catch (error) {
@@ -19,13 +21,15 @@ const getTotalBienes = (req, res) => {
 
 const getTotalAreas = (req, res) => {
     try {
-        const sql = 'SELECT COUNT(*) FROM areas';
+        console.log('Ejecutando getTotalAreas');
+        const sql = 'SELECT COUNT(*) AS total FROM areas;';
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                res.json(data);
+                console.log('Resultado de la consulta:', data);
+                res.json(data[0].total);
             }
         });
     } catch (error) {
@@ -36,13 +40,15 @@ const getTotalAreas = (req, res) => {
 
 const getTotalProveedores = (req, res) => {
     try {
-        const sql = 'SELECT COUNT(*) FROM proveedores';
+        console.log('Ejecutando getTotalProveedores');
+        const sql = 'SELECT COUNT(*) AS total FROM proveedores;';
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                res.json(data);
+                console.log('Resultado de la consulta:', data);
+                res.json(data[0].total);
             }
         });
     } catch (error) {
@@ -53,13 +59,15 @@ const getTotalProveedores = (req, res) => {
 
 const getTotalUsuarios = (req, res) => {
     try {
-        const sql = 'SELECT COUNT(*) FROM usuarios';
+        console.log('Ejecutando getTotalUsuarios');
+        const sql = 'SELECT COUNT(*) AS total FROM usuarios;';
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                res.json(data);
+                console.log('Resultado de la consulta:', data);
+                res.json(data[0].total);
             }
         });
     } catch (error) {
