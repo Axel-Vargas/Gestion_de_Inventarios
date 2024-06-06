@@ -6,6 +6,8 @@ import { LayoutService } from '../../panel/service/app.layout.service';
 import { BienestecnologicosService } from '../../services/bienestecnologicos.service';
 import { bienes_Tecnologicos } from '../api/bienesTecnologicos';
 import { Router } from '@angular/router';
+import { Historial } from '../api/Historial';
+import { HistorialService } from '../../services/historial.service';
 
 @Component({
   selector: 'app-inicio',
@@ -13,6 +15,9 @@ import { Router } from '@angular/router';
   styleUrl: './inicio.component.css'
 })
 export class InicioComponent implements OnInit, OnDestroy {
+
+
+  historial: Historial[] = [];
 
   items!: MenuItem[];
 
@@ -27,7 +32,35 @@ export class InicioComponent implements OnInit, OnDestroy {
   tooltipVisible: boolean = false;
   displayQRScanner: boolean = false;
 
+  constructor(private route: Router, private historialService: HistorialService, private productService: BienestecnologicosService, public layoutService: LayoutService) {
+    this.subscription = this.layoutService.configUpdate$
+    .pipe(debounceTime(25))
+    .subscribe((config) => {
+        this.initChart();
+    });
+}
 
+ngOnInit() {
+  this.cargarHistorial();
+    this.initChart();
+    //this.productService.getProductsSmall().then(data => this.products = data);
+
+    this.items = [
+        { label: 'Add New', icon: 'pi pi-fw pi-plus' },
+        { label: 'Remove', icon: 'pi pi-fw pi-minus' }
+    ];
+}
+
+cargarHistorial(): void {
+  this.historialService.getHistorial().subscribe(
+      (data: Historial[]) => {
+          this.historial = data;
+      },
+      error => {
+          console.error('Error al cargar el historial:', error);
+      }
+  );
+}
 
   showQRScanner2(): void {
     this.displayQRScanner = true;
@@ -77,23 +110,9 @@ export class InicioComponent implements OnInit, OnDestroy {
 
 
 
-  constructor(private route: Router, private productService: BienestecnologicosService, public layoutService: LayoutService) {
-      this.subscription = this.layoutService.configUpdate$
-      .pipe(debounceTime(25))
-      .subscribe((config) => {
-          this.initChart();
-      });
-  }
+ 
 
-  ngOnInit() {
-      this.initChart();
-      //this.productService.getProductsSmall().then(data => this.products = data);
-
-      this.items = [
-          { label: 'Add New', icon: 'pi pi-fw pi-plus' },
-          { label: 'Remove', icon: 'pi pi-fw pi-minus' }
-      ];
-  }
+  
 
   initChart() {
       const documentStyle = getComputedStyle(document.documentElement);

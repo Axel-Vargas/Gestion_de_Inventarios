@@ -16,10 +16,10 @@
             <i class="pi pi-camera"></i>
         </button>
  
-        <div #topbarmenu class="layout-topbar-menu"
-            [ngClass]="{'layout-topbar-menu-mobile-active': layoutService.state.profileSidebarVisible}">
-            <p-menubar [model]="items" [style]="{ 'background-color': 'transparent', 'border': 'none','font-size': '18px','color':'white'}" [autoDisplay]="false" styleClass="custom-menubar"></p-menubar>
-        </div>
+        <p-menubar [model]="items" [style]="{ 'background-color': 'transparent', 'border': 'none','font-size': '18px','color':'white'}" [autoDisplay]="false" styleClass="custom-menubar"></p-menubar>
+        <span *ngIf="usuario" class="username-span" style="margin-left: 20px; color: white;">
+            {{ usuario }}
+        </span>
     </div>
 </div>
 <p-dialog header="Escanear QR" [(visible)]="displayQRScanner" [modal]="true" [style]="getDialogStyle()" (onHide)="onModalHide()">
