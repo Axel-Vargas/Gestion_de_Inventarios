@@ -1,9 +1,10 @@
-import { Component, OnDestroy, Renderer2, ViewChild } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import { Component, OnInit, Renderer2, ViewChild } from '@angular/core';
+import { NavigationEnd, Router, Event } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { TopbarComponent } from '../topbar/topbar.component';
 import { LayoutService } from '../service/app.layout.service';
 import { SidebarComponent } from '../sidebar/sidebar.component';
+import { ScannerService } from '../../services/scanner.service';
 
 
 @Component({
@@ -12,17 +13,19 @@ import { SidebarComponent } from '../sidebar/sidebar.component';
   styleUrl: './layout.component.css'
 })
 
-export class LayoutComponent  {
-  
-  overlayMenuOpenSubscription: Subscription;
+export class LayoutComponent   {
+  displayQRScanner: boolean = false;
+  permissionError: boolean = false;
+  permissionRequested: boolean = false;
 
+  overlayMenuOpenSubscription: Subscription;
   menuOutsideClickListener: any;
 
   profileMenuOutsideClickListener: any;
   @ViewChild(SidebarComponent) appSidebar!: SidebarComponent;
   @ViewChild(TopbarComponent) appTopbar!: TopbarComponent;
 
-  constructor(public layoutService: LayoutService, public renderer: Renderer2, public router: Router) {
+  constructor(public layoutService: LayoutService, public renderer: Renderer2, public router: Router, private scannerService: ScannerService) {
       this.overlayMenuOpenSubscription = this.layoutService.overlayOpen$.subscribe(() => {
           if (!this.menuOutsideClickListener) {
               this.menuOutsideClickListener = this.renderer.listen('document', 'click', event => {
@@ -56,6 +59,62 @@ export class LayoutComponent  {
               this.hideMenu();
               this.hideProfileMenu();
           });
+  }
+
+  showQRScanner2(): void {
+    this.displayQRScanner = true;
+    this.permissionError = false; // Reinicia el estado de permiso denegado
+    this.permissionRequested = true; // Se establece que se ha solicitado el permiso
+  }
+
+  getDialogStyle() {
+    if (typeof window !== 'undefined' && window.matchMedia) {
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        return { 'width': '90%' };
+      } else {
+        return { 'width': '40%' };
+      }
+    } else {
+      return { 'width': '50%' };
+    }
+  }
+
+  onCodeResult(result: string): void {
+    this.displayQRScanner = false;
+    console.log('QR Code Result:', result);
+    const regex = /id_bien_tec:\s*(\d+)/; 
+    const match = result.match(regex);
+    if (match && match.length > 1) {
+      const id = match[1];
+      this.scannerService.setScannedCode(id); 
+      this.router.navigateByUrl('/panel/inventarios/tecnologicos');
+    } else {
+      //console.error('No se pudo extraer el ID del resultado del escaneo:', result);
+    }
+  }
+
+  camerasFoundHandler(devices: MediaDeviceInfo[]): void {
+    console.log(devices);
+  }
+
+  onModalHide(): void {
+    this.displayQRScanner = false;
+  }
+
+  onPermissionError(err: any): void {
+    console.error('Error al solicitar permisos de cámara:', err);
+    if (!this.permissionRequested) {
+      this.permissionRequested = true; 
+      this.showQRScanner2(); 
+    } else {
+      this.permissionError = true; 
+      this.displayQRScanner = false;
+    }
+  }
+
+  retryPermission(): void {
+    this.permissionError = false;
+    this.showQRScanner2();
   }
 
   hideMenu() {

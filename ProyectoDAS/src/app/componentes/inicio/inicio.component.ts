@@ -62,57 +62,9 @@ cargarHistorial(): void {
   );
 }
 
-  showQRScanner2(): void {
-    this.displayQRScanner = true;
-  }
-
-  getDialogStyle() {
-    if (typeof window !== 'undefined' && window.matchMedia) {
-      if (window.matchMedia("(max-width: 768px)").matches) {
-        return { 'width': '90%' };
-      } else {
-        return { 'width': '40%' };
-      }
-    } else {
-      return { 'width': '50%' };
-    }
-  }
-
-
-  onCodeResult(result: string): void {
-    this.displayQRScanner = false;
-    console.log('QR Code Result:', result);
-    if (this.isValidUrl(result)) {
-      let url = new URL(result);
-      this.route.navigateByUrl(url.pathname + url.search);
-    } else {
-      console.error('El resultado escaneado no es una URL válida:', result);
-    }
-  }
-
-  isValidUrl(url: string): boolean {
-    try {
-      new URL(url);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  camerasFoundHandler(devices: MediaDeviceInfo[]): void {
-    console.log(devices);
-  }
-  onModalHide(): void {
-    this.displayQRScanner = false;
-  }
-
-
-
-
-
  
-
   
+
 
   initChart() {
       const documentStyle = getComputedStyle(document.documentElement);

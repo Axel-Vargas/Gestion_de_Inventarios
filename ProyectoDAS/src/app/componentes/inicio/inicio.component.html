@@ -143,15 +143,5 @@
     </div>
 
 </div>
-<button
-    id="floating-button"
-    pButton
-    type="button"
-    icon="pi pi-qrcode"
-    class="p-button-rounded p-button-primary"
-    (click)="showQRScanner2()"
-></button>
-<p-dialog header="Escanear QR" [(visible)]="displayQRScanner" [modal]="true" [style]="getDialogStyle()" (onHide)="onModalHide()">
-    <zxing-scanner *ngIf="displayQRScanner" (camerasFound)="camerasFoundHandler($event)" (scanSuccess)="onCodeResult($event)"></zxing-scanner>
-</p-dialog>
+
 
