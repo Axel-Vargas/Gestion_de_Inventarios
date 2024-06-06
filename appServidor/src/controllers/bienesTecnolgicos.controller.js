@@ -43,6 +43,24 @@ const getBienesTecnologicos = (req, res) => {
     }
 };
 
+const getBienesTecnologicosPorArea = (req, res) => {
+    try {
+        const { id } = req.params;
+        const sql = 'SELECT * FROM Bien_Tecnologico WHERE id_area_per = ?';
+        connection.query(sql, [id], (err, data) => {
+            if (err) {
+                console.error('Error en la consulta SQL:', err);
+                res.status(500).json({ error: 'Error en el servidor' });
+            } else {
+                res.json(data);
+            }
+        });
+    } catch (error) {
+        console.error('Error en la función getBienesTecnologicosPorArea:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+};
+
 const obtenerBienesPorBloqueYArea = (req, res) => {
     const { nombreBloque, nombreArea } = req.params;
 
@@ -173,5 +191,6 @@ module.exports = {
     getBienTecnologicoById,
     updateBienTecnologico,
     deleteBienTecnologico,
-    obtenerBienesPorBloqueYArea
+    obtenerBienesPorBloqueYArea,
+    getBienesTecnologicosPorArea
 };
