@@ -12,7 +12,8 @@ export interface bienes_Tecnologicos {
     modelo?: string;
     num_serie?: string;
     fecha_adquisicion?: Date;
-    estado?: Estado;
+    //repotenciado?: Repotenciado;
+    estado?: string;
     encargado?:string;
     codigoUTA?: string;
     image?: string;

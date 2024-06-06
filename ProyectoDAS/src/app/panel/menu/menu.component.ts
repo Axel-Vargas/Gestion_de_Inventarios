@@ -64,21 +64,7 @@ export class MenuComponent implements OnInit {
                     { label: 'Programas', icon: 'pi pi-microsoft', routerLink: ['/panel/programas'] },
                     { label: 'Proveedores', icon: 'pi pi-truck', routerLink: ['/panel/proveedores'] },
                     { label: 'Historial', icon: 'pi pi-history', routerLink: ['/panel/historial'] },
-                    {
-                        label: 'Reportes', icon: 'pi pi-file',
-                        items: [
-                            {
-                                label: 'Reporte General',
-                                icon: 'pi pi-file-pdf',
-                                routerLink: ['/auth/error']
-                            },
-                            {
-                                label: 'Reporte por Laboratorios',
-                                icon: 'pi pi-file-pdf',
-                                routerLink: ['/auth/access']
-                            }
-                        ]
-                    },
+                    { label: 'Reportes', icon: 'pi pi-file', routerLink: ['/panel/reportes']},
                 ]
             }
         ];
