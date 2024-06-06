@@ -13,6 +13,14 @@ export class InicioComponent implements OnInit {
   totalProveedores: number = 0;
   totalUsuarios: number = 0;
 
+  //variables del grafico de pastel 
+  facultades: any[] = [];
+  bloques: any[] = [];
+  selectedFacultad: any;
+  selectedBloque: any;
+  chartData: any;
+  chartOptions: any;
+
   displayQRScanner: boolean = false;
 
   constructor(
@@ -22,7 +30,44 @@ export class InicioComponent implements OnInit {
 
   ngOnInit() {
     this.obtenerDatos();
+    this.inicioService.obtenerFacultades().subscribe(data => {
+      this.facultades = data;
+    });
+
+    this.chartOptions = {
+      plugins: {
+        legend: {
+          display: true,
+          position: 'bottom'
+        }
+      }
+    };
   }
+  onFacultadChange(): void {
+    if (this.selectedFacultad) {
+      this.inicioService.obtenerBloques(this.selectedFacultad.id).subscribe(data => {
+        this.bloques = data;
+      });
+    }
+  }
+
+  onBloqueChange(): void {
+    if (this.selectedFacultad && this.selectedBloque) {
+      this.inicioService.obtenerBienesPorBloque(this.selectedFacultad.id, this.selectedBloque.id).subscribe(data => {
+        this.chartData = {
+          labels: ['Bienes Tecnológicos', 'Bienes Inmobiliarios'],
+          datasets: [
+            {
+              data: [data.bienesTecnologicos, data.bienesInmobiliarios],
+              backgroundColor: ['#42A5F5', '#66BB6A'],
+              hoverBackgroundColor: ['#64B5F6', '#81C784']
+            }
+          ]
+        };
+      });
+    }
+  }
+
 
   obtenerDatos(): void {
     this.inicioService.obtenerTotalBienes().subscribe(
