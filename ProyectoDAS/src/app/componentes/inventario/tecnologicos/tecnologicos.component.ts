@@ -1,27 +1,24 @@
 import { Component, OnInit } from '@angular/core';
-import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { BienestecnologicosService } from '../../../services/bienestecnologicos.service';
 import { bienes_Tecnologicos } from '../../api/bienesTecnologicos';
 import { componentesService } from '../../../services/componentes.service';
 import { catchError, forkJoin } from 'rxjs';
 import { DialogService } from 'primeng/dynamicdialog';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  Validators,
-} from '@angular/forms';
+import {FormBuilder,FormControl,FormGroup,Validators} from '@angular/forms';
 import { AreasService } from '../../../services/area.service';
 import { BloquesService } from '../../../services/bloques.service';
 import { Bloque } from '../../api/bloques';
 import { Area } from '../../api/Areas';
-import { TipoTecnologicoService } from '../../../services/tipotecnologico.service';
-import { TipoTecnologico } from '../../api/tipoTecnologico';
 import { ProveedorService } from '../../../services/provedor.service';
 import { Proveedor } from '../../api/Proveedores';
 import { Table } from 'primeng/table';
-
-
+import { MarcasService} from '../../../services/marcas.service';
+import { Marcas } from '../../api/Marcas';
+import { TipoTecnologicoService } from '../../../services/tipotecnologico.service';
+import { TipoTecnologico } from '../../api/tipoTecnologico';
+import { EncargadosService } from '../../../services/encargados.service';
+import { Encargados } from '../../api/Encargados';
 
 @Component({
   selector: 'app-tecnologicos',
@@ -29,6 +26,7 @@ import { Table } from 'primeng/table';
   styleUrl: './tecnologicos.component.css',
   providers: [DialogService],
 })
+
 export class TecnologicosComponent implements OnInit {
   tooltipVisible: boolean = false;
   visible: boolean = false;
@@ -40,14 +38,19 @@ export class TecnologicosComponent implements OnInit {
   display: boolean = false;
   componentes: boolean = false;
   inventoryForm!: FormGroup;
+
   categories: { name: string; code: number }[] = [];
   area: { name: string; code: number }[] = [];
   tipoBien: { name: string; code: number }[] = [];
   proveedor: { name: string; code: number }[] = [];
+  marca: { name: string; code: number }[] = [];
   repotenciado: { name: string; code: number }[] = [];
   estado: { name: string; code: number }[] = [];
-  bloques!: Bloque[];
-  areas!: Area[];
+  encargado: { name: string; code: number }[] = [];
+  tipoTecnologico: { name: string; code: number; attributes:any }[] = [];
+
+  //bloques!: Bloque[];
+  //areas!: Area[];
 
   selectedBienTecnologico: any = null;
   isEditMode: boolean = false;
@@ -64,23 +67,35 @@ export class TecnologicosComponent implements OnInit {
   temporalClave: string = '';
   temporalValor: string = '';
 
+  qrCodeImageUrl: string = '';
+  qrCodeAltText: string = '';
+  showQRCodeModal: boolean = false;
+
+  // Aquí para detalles de bienes
+  products: bienes_Tecnologicos[] = []; 
+  selectedProduct: bienes_Tecnologicos | null = null;
+  showDetailsModal: boolean = false;
+
+  marcas!: any[];
+
   constructor(
     private tecnologicosService: BienestecnologicosService,
     private componente_service: componentesService,
     private areasService: AreasService,
     private bloquesService: BloquesService,
-    private tipoTecnologiaService: TipoTecnologicoService,
     private proveedorservice: ProveedorService,
     private messageService: MessageService,
     private fb: FormBuilder,
-    private confirmationService: ConfirmationService
+    private marcasService: MarcasService,
+    private confirmationService: ConfirmationService,
+    private tipoTecnologicoService:TipoTecnologicoService,
+    private encargadosService:EncargadosService,
   ) {
     this.cargarBloques();
-    this.cargarTipoTecnologico();
     this.cargarProveedores();
 
     this.estado = [
-      { name: 'Operativo', code: 1 },
+      { name: 'Funcional', code: 1 },
       { name: 'No Funcional', code: 2 },
     ];
 
@@ -89,8 +104,13 @@ export class TecnologicosComponent implements OnInit {
       { name: 'NO', code: 2 },
     ];
   }
+
   ngOnInit() {
     this.cargarBienesTecnologicos();
+    this.obtenerMarcas();
+    this.obtenerTipoTecnologico()
+    this.obtenerEncargados()
+
     this.inventoryForm = new FormGroup({
       id_proveedor_per: new FormControl('', Validators.required),
       id_bloque_per: new FormControl(''),
@@ -103,8 +123,8 @@ export class TecnologicosComponent implements OnInit {
       modelo: new FormControl(''),
       codigoUTA: new FormControl(''),
       marca: new FormControl(''),
+      encargado: new FormControl(''),
       localizacion: new FormControl(''),
-      ip_tecnologico: new FormControl(''),
     });
 
     this.componentForm = this.fb.group({
@@ -119,6 +139,84 @@ export class TecnologicosComponent implements OnInit {
     });
   }
 
+  showQRCode(imageUrl: string, altText: string) {
+    this.qrCodeImageUrl = imageUrl;
+    this.qrCodeAltText = altText;
+    this.showQRCodeModal = true;
+  }
+
+  showBienesDetails(product: bienes_Tecnologicos) {
+    this.selectedProduct = product;
+    this.showDetailsModal = true;
+  }
+
+  obtenerEncargados() {
+    this.encargadosService.getEncargados().subscribe((data: Encargados | Encargados[]) => {
+        if (Array.isArray(data)) {this.encargado = data.filter((encargados) =>
+          encargados.nombre !== undefined && encargados.id_encargado !== undefined).map((encargados) => ({
+              name: `${encargados.nombre} ${encargados.apellido}`,
+              code: encargados.id_encargado!,
+            }));
+        } else if (data.nombre !== undefined && data.id_encargado !== undefined) {
+          this.encargado = [{ name:  data.nombre, code: data.id_encargado! }];
+        }
+      },
+      (error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  obtenerMarcas() {
+    this.marcasService.getMarcas().subscribe((data: Marcas | Marcas[]) => {
+        console.log(data);
+        if (Array.isArray(data)) {this.marca = data.filter((marcas) =>
+                marcas.nom_marca !== undefined &&
+                marcas.id !== undefined).map((marcas) => ({
+                name: marcas.nom_marca!,
+                code: marcas.id!,}));
+        } else if (data.nom_marca !== undefined && data.id !== undefined) {
+          this.marca = [{ name: data.nom_marca!, code: data.id! }];
+        }
+      },(error) => {
+        console.error(error);
+      }
+    );
+  }
+
+  obtenerTipoTecnologico() {
+    this.tipoTecnologicoService.getTiposTecnologicos().subscribe((data: TipoTecnologico | TipoTecnologico[]) => {
+        if (Array.isArray(data)) {
+            this.tipoTecnologico = data.map((tipoTecnologico) => ({
+                name: tipoTecnologico.nom_tecnologico!,
+                code: tipoTecnologico.id!,
+                attributes: tipoTecnologico.atributos 
+            }));
+        } else if (data.nom_tecnologico !== undefined && data.id !== undefined) {
+            this.tipoTecnologico = [{
+                name: data.nom_tecnologico!,
+                code: data.id!,
+                attributes: data.atributos 
+            }];
+        }
+
+    },
+    (error) => {
+        console.error(error);
+    });
+}
+
+actualizarAtributos(valorSeleccionado: any) {
+  if (valorSeleccionado && valorSeleccionado.attributes) {
+    console.log('Atributos:', valorSeleccionado.attributes);
+    this.inventoryForm.patchValue({
+      atributos: valorSeleccionado.attributes,
+    });
+  } else {
+    console.log('No hay atributos disponibles');
+  }
+}
+
 onGlobalFilter(table: Table, event: Event) {
     table.filterGlobal((event.target as HTMLInputElement).value, 'contains');
 }
@@ -132,7 +230,7 @@ cerrarDialogo(): void {
   this.temporalClave = '';
   this.temporalValor = '';
 }
-atributosVisuales: any[] = [];
+
 
 agregarAtributo(): void {
   if (this.temporalClave && this.temporalValor) {
@@ -189,23 +287,6 @@ agregarAtributo(): void {
             }));
         } else if (data.nombre !== undefined && data.id_bloque !== undefined) {
           this.categories = [{ name: data.nombre!, code: data.id_bloque! }];
-        }
-      },
-      (error) => {}
-    );
-  }
-
-  cargarTipoTecnologico() {
-    this.tipoTecnologiaService.getTiposTecnologicos().subscribe(
-      (data: TipoTecnologico | TipoTecnologico[]) => {
-        if (Array.isArray(data)) {
-          this.tipoBien = data
-            .filter(
-              (bien) => bien.nombre !== undefined && bien.id_tipo !== undefined
-            )
-            .map((bien) => ({ name: bien.nombre!, code: bien.id_tipo! }));
-        } else if (data.nombre !== undefined && data.id_tipo !== undefined) {
-          this.tipoBien = [{ name: data.nombre!, code: data.id_tipo! }];
         }
       },
       (error) => {}
@@ -287,6 +368,7 @@ agregarAtributo(): void {
   abrirModalTecnologico(){
     this.inventoryForm.reset();
     this.display =  true
+    this.isEditMode = false;
   }
 
   
@@ -294,21 +376,23 @@ agregarAtributo(): void {
     const idProveedor = this.inventoryForm.value.id_proveedor_per.code;
     const idArea = this.inventoryForm.value.id_area_per.code;
     const estado = this.inventoryForm.value.estado.name.toUpperCase();
-  
+    const marca = this.inventoryForm.value.marca.name;
+    const nombre = this.inventoryForm.value.nombre_bien.name;
+    const encargado = this.inventoryForm.value.encargado.name;
     // Convertir atributos de string JSON a objeto, si no es un objeto ya.
     const atributosObj = typeof this.inventoryForm.value.atributos === 'string' ?
       JSON.parse(this.inventoryForm.value.atributos) : this.inventoryForm.value.atributos;
   
     const nuevoBienTecnologico = {
-      marca: this.inventoryForm.value.marca.toUpperCase(),
+      marca: marca,
       modelo: this.inventoryForm.value.modelo.toUpperCase(),
       num_serie: this.inventoryForm.value.num_serie.toUpperCase(),
       fecha_adquisicion: this.inventoryForm.value.fecha_adquisicion,
       estado: estado,
       codigoUTA: this.inventoryForm.value.codigoUTA.toUpperCase(),
       localizacion: this.inventoryForm.value.localizacion.toUpperCase(),
-      ip_tecnologico: this.inventoryForm.value.ip_tecnologico.toUpperCase(),
-      nombre_bien: this.inventoryForm.value.nombre_bien.toUpperCase(),
+      nombre_bien: nombre,
+      encargado: encargado,
       atributos: atributosObj, // Asegurarse de que esto es un objeto
       id_area_per: idArea,
       id_proveedor_per: idProveedor,
@@ -392,45 +476,46 @@ agregarAtributo(): void {
     this.isEditMode = true;
     this.display = true;
     const fecha = new Date(bien.fecha_adquisicion);
-    const proveedorSeleccionado = this.proveedor.find(
-      (p) => p.code === bien.id_proveedor_per
-    );
-    const tipoSeleccionado = this.tipoBien.find(
-      (t) => t.code === bien.id_tipo_per
-    );
-    const estadoSeleccionado = this.estado.find(
-      (e) => e.name.toLowerCase().trim() === bien.estado.toLowerCase().trim()
-    );
-    this.cargarAreas(bien.id_area_per)
-      .then(() => {
-        const areaSeleccionada = this.area.find(
-          (a) => a.code === bien.id_area_per
-        );
-        if (areaSeleccionada) {
+    const proveedorSeleccionado = this.proveedor.find((p) => p.code === bien.id_proveedor_per);
+    const tipoSeleccionado = this.tipoBien.find((t) => t.code === bien.id_tipo_per);
+    const estadoSeleccionado = this.estado.find((e) => e.name.toLowerCase().trim() === bien.estado.toLowerCase().trim());
+    const marcaSeleccionado = this.marca.find((m) => m.name.toLowerCase().trim() === bien.marca.toLowerCase().trim());
+    const nombre = this.tipoTecnologico.find((tb) => tb.name.toLowerCase().trim() === bien.nombre_bien.toLowerCase().trim());
+    const encargado = this.encargado.find((en) => en.name.toLowerCase().trim() === bien.encargado.toLowerCase().trim());
+  
+    this.cargarAreas(bien.id_area_per).then(() => {
+      const areaSeleccionada = this.area.find((a) => a.code === bien.id_area_per);
+      if (areaSeleccionada) {
+        const bloqueAsociado = this.categories.find((bloque) => bloque.code === areaSeleccionada.code);
+        if (bloqueAsociado) {
           this.inventoryForm.patchValue({
             id_proveedor_per: proveedorSeleccionado || null,
             id_area_per: areaSeleccionada || null,
             id_tipo_per: tipoSeleccionado || null,
+            id_bloque_per: bloqueAsociado || null,
             fecha_adquisicion: fecha,
             estado: estadoSeleccionado || null,
             num_serie: bien.num_serie,
-            nombre_bien: bien.nombre_bien,
+            nombre_bien: nombre,
             atributos: JSON.stringify(bien.atributos, null, 2),
             modelo: bien.modelo,
             codigoUTA: bien.codigoUTA,
-            marca: bien.marca,
+            marca: marcaSeleccionado,
+            encargado: encargado,
             localizacion: bien.localizacion,
-            ip_tecnologico: bien.ip_tecnologico,
           });
         } else {
-          console.error('Área no encontrada para el ID:', bien.id_area_per);
+          console.error('Bloque no encontrado para el área ID:', bien.id_area_per);
         }
-      })
-      .catch((error) => {
-        console.error('Error al cargar y seleccionar el área:', error);
-      });
+      } else {
+        console.error('Área no encontrada para el ID:', bien.id_area_per);
+      }
+    })
+    .catch((error) => {
+      console.error('Error al cargar y seleccionar el área:', error);
+    });
   }
-
+  
   eliminar(id: number): void {
     this.confirmationService.confirm({
       message: 'Estas seguro de eliminar este bien tecnológico?',
@@ -463,15 +548,17 @@ agregarAtributo(): void {
   guardarComponentes() {
     if (this.componentForm.valid) {
       const formData = this.componentForm.value;
+
       if(!this.isEditModeComponentes){
         formData.id_bien_per = this.selectedBienTecnologico.id_bien_tec;
       }else{
         formData.id_bien_per = this.selectedComponente.id_bien_per;
       }
-
       formData.id_proveedor_per = this.componentForm.value.id_proveedor_per.code;
       formData.estado = this.componentForm.value.estado.name;
       formData.repotenciado = this.componentForm.value.repotenciado.name;
+      formData.marca = this.componentForm.value.marca.name;
+     //const marca = this.inventoryForm.value.marca.name;
       console.log(this.componentForm.value);
       if (this.isEditModeComponentes) {
         this.componente_service.actualizarComponente(this.selectedComponente.id_componente,formData).subscribe({
@@ -528,6 +615,8 @@ agregarAtributo(): void {
     this.componentes = true;
 
     const proveedorSeleccionado = this.proveedor.find((p) => p.code === componente.id_proveedor_per);
+    const marcaSeleccionado = this.marca.find((m) => m.name.toLowerCase().trim() === componente.marca.toLowerCase().trim());
+
     const tipoSeleccionado = this.tipoBien.find((t) => t.code === componente.id_tipo_per);
     const estadoSeleccionado = this.estado.find((e) =>e.name.toLowerCase().trim() === componente.estado.toLowerCase().trim());
     const repotenciado = this.repotenciado.find((r) => r.name.toLowerCase().trim() ===componente.repotenciado.toLowerCase().trim());
@@ -540,13 +629,14 @@ agregarAtributo(): void {
       nombre: componente.nombre,
       modelo: componente.modelo,
       codigoUTA: componente.codigoUTA,
-      marca: componente.marca,
+      marca: marcaSeleccionado,
     });
   }
 
   abrirModalComponente(bien: any) {
     this.componentes = true;
     this.selectedBienTecnologico = bien;
+    this.isEditModeComponentes = false;
     this.componentForm.reset();
   }
 

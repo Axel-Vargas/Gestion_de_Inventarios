@@ -98,9 +98,10 @@ const deleteComponente = (req, res) => {
     }
 };
 
-const deleteBienTecnologico = (req, res) => {
+/*const deleteBienTecnologico = (req, res) => {
     
-};
+};*/ 
+
 
 module.exports = {
     getComponentes,
