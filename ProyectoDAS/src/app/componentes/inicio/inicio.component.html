@@ -58,30 +58,28 @@
 
     <div class="col-12 xl:col-6">
         <div class="card">
-            <h5>Repotenciaciones Recientes</h5>
-            <p-table [value]="tecnologicos" [paginator]="true" [rows]="5" responsiveLayout="scroll">
+            <h5>Historial de Actividades</h5>
+            <p-table [value]="historial" [paginator]="true" [rows]="5" responsiveLayout="scroll">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Equipo</th>
-                        <th pSortableColumn="name">Componente</th>
-                        <th pSortableColumn="price">Fecha <p-sortIcon field="price"></p-sortIcon></th>
-                        <th>Revisión</th>
+                        <th>Fecha</th>
+                        <th>Tipo de Actividad</th>
+                        <th>Usuario</th>
+                        <th>Detalle</th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-product>
+                <ng-template pTemplate="body" let-actividad>
                     <tr>
-                        <td style="width: 35%; min-width: 7rem;">{{product.name}}</td>
-                        <td style="width: 35%; min-width: 7rem;">{{product.name}}</td>
-                        <td style="width: 35%; min-width: 8rem;">{{product.price | currency:'USD'}}</td>
-                        <td style="width: 15%;">
-                            <button pButton pRipple type="button" icon="pi pi-search"
-                                class="p-button p-component p-button-text p-button-icon-only"></button>
-                        </td>
+                        <td>{{ actividad.fecha_hora }}</td>
+                        <td>{{ actividad.tipo_actividad }}</td>
+                        <td>{{ actividad.usuario }}</td>
+                        <td>{{ actividad.detalle }}</td>
                     </tr>
                 </ng-template>
             </p-table>
         </div>
     </div>
+    
 
     <div class="col-12 xl:col-6">
         <div class="card">

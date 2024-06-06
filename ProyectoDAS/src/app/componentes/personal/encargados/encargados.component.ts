@@ -47,8 +47,8 @@ export class EncargadosComponent {
   listarEncargados(): void {
     this.encargadosService.obtenerEncargados().subscribe(
       (response: any) => {
-        if (response && response.encargados) {
-          this.encargados = response.encargados;
+        if (response) {
+          this.encargados = response;
         } else {
           this.encargados = [];
         }
