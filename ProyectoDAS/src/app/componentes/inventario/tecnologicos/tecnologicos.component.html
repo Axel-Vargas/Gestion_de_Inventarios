@@ -6,7 +6,7 @@
                 <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
                     (mouseleave)="hideTooltip()" (click)="abrirModalTecnologico()"></button>
             </div>
-            <h5>BIENES TECNOLÓGICOS</h5>
+            <span class="flex mobiliarios align-items-center">Bienes Tecnológicos</span>
             <p-toast></p-toast>
             <p-table  #dt1 [value]="tecnologicos" dataKey="id_bien_tec" [tableStyle]="{ 'min-width': '60rem' }"
                 scrollDirection="both" [scrollable]="true" scrollHeight="450px" [rowHover]="true" [rows]="10"
@@ -25,7 +25,7 @@
 
                             <p-button label="Cargar" icon="pi pi-search" [loading]="loading[0]"
                                 (onClick)="load(0)" [disabled]="isFiltrarDisabled"></p-button>
-                        </div>
+                            </div>
 
                         <span class="p-input-icon-left mb-2">
                             <i class="pi pi-search"></i>

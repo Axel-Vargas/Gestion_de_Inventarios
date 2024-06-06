@@ -23,6 +23,12 @@
     display: none;
 }
 
+.mobiliarios {
+  font-size: 28px;
+  color: rgb(105, 105, 105);
+  font-weight: bold;
+}
+
 
 /* Estilos para el p-dialog */
 @media screen and (max-width: 600px) {
