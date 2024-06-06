@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { Encargados } from '../componentes/api/Encargados';
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +16,9 @@ export class EncargadosService {
     return this.http.get(this.API);
   }
 
+  getEncargados(): Observable<Encargados[]> {
+    return this.http.get<Encargados[]>(`${this.API}`);
+  }
   insertarEncargado(cedula: string, nombre: string, apellido: string, telefono: string, direccion: string) {
     return this.http.post(this.API, { cedula, nombre, apellido, telefono, direccion})
   }

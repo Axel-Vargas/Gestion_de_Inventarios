@@ -14,11 +14,10 @@ export interface bienes_Tecnologicos {
     fecha_adquisicion?: Date;
     //repotenciado?: Repotenciado;
     estado?: string;
+    encargado?:string;
     codigoUTA?: string;
     image?: string;
     localizacion?: string;
-    ip_tecnologico?: string;
-    id_tipo_per?: number;
     id_area_per?: number;
     id_proveedor_per?: number;
     componentes: Componentes[];

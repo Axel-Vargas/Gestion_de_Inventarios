@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const { getTipoBienesTecnologicos, createTipoBienTecnologico, getTipoBienTecnologicoById, updateTipoBienTecnologico, deleteTipoBienTecnologico } = require('../controllers/tipotecnologicoController');
+const { getBienesTecnologicos, createBienTecnologico, getBienTecnologicoById, updateBienTecnologico, deleteBienTecnologico } = require('../controllers/tipotecnologicoController');
 
-router.get('/', getTipoBienesTecnologicos);
-router.post('/', createTipoBienTecnologico);
-router.get('/:id', getTipoBienTecnologicoById);
-router.put('/:id', updateTipoBienTecnologico);
-router.delete('/:id', deleteTipoBienTecnologico);
+router.get('/', getBienesTecnologicos);
+router.post('/', createBienTecnologico);
+router.get('/:id', getBienTecnologicoById);
+router.put('/:id', updateBienTecnologico);
+router.delete('/:id', deleteBienTecnologico);
 
 module.exports = router;

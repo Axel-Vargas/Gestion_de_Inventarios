@@ -36,12 +36,52 @@
         justify-content: center;
         align-items: center;
         position: relative;
-        color: white;
+        color: rgb(253, 253, 253);
         border-radius: 50%;
         width: 3rem;
         height: 3rem;
         cursor: pointer;
         transition: background-color $transitionDuration;
+
+        &:hover {
+            color: var(--text-color);
+        }
+
+        &:focus {
+            @include focused();
+        }
+
+        i {
+            font-size: 1.5rem;
+        }
+
+        span {
+            font-size: 1rem;
+            display: none;
+        }
+    }
+    
+
+    .layout-topbar-button-head{
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        color: white !important;
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+        cursor: pointer;
+        transition: background-color $transitionDuration;
+
+        &:hover {
+            color: var(--text-color);
+            background-color: #AD272E
+        }
+
+        &:focus {
+            @include focused();
+        }
 
         i {
             font-size: 1.5rem;
@@ -78,6 +118,37 @@
 }
 
 @media (max-width: 991px) {
+    .layout-topbar-button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        color: var(--text-color-secondary)!important;
+        border-radius: 50%;
+        width: 3rem;
+        height: 3rem;
+        cursor: pointer;
+        transition: background-color $transitionDuration;
+
+        &:hover {
+            color: var(--text-color);
+            background-color: var(--surface-hover);
+        }
+
+        &:focus {
+            @include focused();
+        }
+
+        i {
+            font-size: 1.5rem;
+        }
+
+        span {
+            font-size: 1rem;
+            display: none;
+        }
+    }
+    
     .layout-topbar {
         justify-content: space-between;
 
@@ -85,7 +156,8 @@
             width: auto;
             order: 2;
         }
-
+        
+        
         .layout-menu-button {
             margin-left: 0;
             order: 1;

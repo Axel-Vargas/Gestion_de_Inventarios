@@ -6,6 +6,8 @@ import { LayoutService } from '../../panel/service/app.layout.service';
 import { BienestecnologicosService } from '../../services/bienestecnologicos.service';
 import { bienes_Tecnologicos } from '../api/bienesTecnologicos';
 import { Router } from '@angular/router';
+import { Historial } from '../api/Historial';
+import { HistorialService } from '../../services/historial.service';
 
 @Component({
   selector: 'app-inicio',
@@ -13,6 +15,9 @@ import { Router } from '@angular/router';
   styleUrl: './inicio.component.css'
 })
 export class InicioComponent implements OnInit, OnDestroy {
+
+
+  historial: Historial[] = [];
 
   items!: MenuItem[];
 
@@ -27,73 +32,39 @@ export class InicioComponent implements OnInit, OnDestroy {
   tooltipVisible: boolean = false;
   displayQRScanner: boolean = false;
 
+  constructor(private route: Router, private historialService: HistorialService, private productService: BienestecnologicosService, public layoutService: LayoutService) {
+    this.subscription = this.layoutService.configUpdate$
+    .pipe(debounceTime(25))
+    .subscribe((config) => {
+        this.initChart();
+    });
+}
 
+ngOnInit() {
+  this.cargarHistorial();
+    this.initChart();
+    //this.productService.getProductsSmall().then(data => this.products = data);
 
-  showQRScanner2(): void {
-    this.displayQRScanner = true;
-  }
+    this.items = [
+        { label: 'Add New', icon: 'pi pi-fw pi-plus' },
+        { label: 'Remove', icon: 'pi pi-fw pi-minus' }
+    ];
+}
 
-  getDialogStyle() {
-    if (typeof window !== 'undefined' && window.matchMedia) {
-      if (window.matchMedia("(max-width: 768px)").matches) {
-        return { 'width': '90%' };
-      } else {
-        return { 'width': '40%' };
+cargarHistorial(): void {
+  this.historialService.getHistorial().subscribe(
+      (data: Historial[]) => {
+          this.historial = data;
+      },
+      error => {
+          console.error('Error al cargar el historial:', error);
       }
-    } else {
-      return { 'width': '50%' };
-    }
-  }
+  );
+}
 
+ 
+  
 
-  onCodeResult(result: string): void {
-    this.displayQRScanner = false;
-    console.log('QR Code Result:', result);
-    if (this.isValidUrl(result)) {
-      let url = new URL(result);
-      this.route.navigateByUrl(url.pathname + url.search);
-    } else {
-      console.error('El resultado escaneado no es una URL válida:', result);
-    }
-  }
-
-  isValidUrl(url: string): boolean {
-    try {
-      new URL(url);
-      return true;
-    } catch (_) {
-      return false;
-    }
-  }
-
-  camerasFoundHandler(devices: MediaDeviceInfo[]): void {
-    console.log(devices);
-  }
-  onModalHide(): void {
-    this.displayQRScanner = false;
-  }
-
-
-
-
-
-  constructor(private route: Router, private productService: BienestecnologicosService, public layoutService: LayoutService) {
-      this.subscription = this.layoutService.configUpdate$
-      .pipe(debounceTime(25))
-      .subscribe((config) => {
-          this.initChart();
-      });
-  }
-
-  ngOnInit() {
-      this.initChart();
-      //this.productService.getProductsSmall().then(data => this.products = data);
-
-      this.items = [
-          { label: 'Add New', icon: 'pi pi-fw pi-plus' },
-          { label: 'Remove', icon: 'pi pi-fw pi-minus' }
-      ];
-  }
 
   initChart() {
       const documentStyle = getComputedStyle(document.documentElement);

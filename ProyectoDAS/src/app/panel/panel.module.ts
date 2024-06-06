@@ -8,17 +8,12 @@ import { MenuComponent } from './menu/menu.component';
 import { TopbarComponent } from './topbar/topbar.component';
 import { AppMenuitemComponent } from './app.menuitem.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { RouterModule } from '@angular/router';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SidebarModule } from 'primeng/sidebar';
 import { CoreModule } from '../core/core.module';
 import { MenubarModule } from 'primeng/menubar';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
-import { TagModule } from 'primeng/tag';
-import { Table, TableModule } from 'primeng/table';
-
+import { TieredMenuModule } from 'primeng/tieredmenu';
 @NgModule({
   declarations: [
     LayoutComponent, MenuComponent, TopbarComponent, AppMenuitemComponent, SidebarComponent
@@ -31,7 +26,8 @@ import { Table, TableModule } from 'primeng/table';
     MenubarModule,
     DialogModule, 
     ButtonModule,
-    ZXingScannerModule
+    ZXingScannerModule,
+    TieredMenuModule
   ],
   exports: [
     LayoutComponent,
