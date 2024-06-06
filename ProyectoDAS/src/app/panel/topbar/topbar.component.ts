@@ -40,19 +40,21 @@ export class TopbarComponent {
   ngOnInit() {
     this.usuario = this.authService.getUser();
     this.isAdmin = this.authService.isUserAdmin();
-
-    this.items = [
-      {
-        label: this.usuario.usuario.toUpperCase(), icon: 'pi pi-user',
-        items: [
-          { label: 'Cerrar Sesión', icon: 'pi pi-sign-out', command: () => this.cerrarSesion() }
-        ]
-      },
-    ];
   }
 
+<<<<<<< HEAD
+  @ViewChild('menubutton') menuButton!: ElementRef;
+
+  @ViewChild('topbarmenubutton') topbarMenuButton!: ElementRef;
+
+  @ViewChild('topbarmenu') menu!: ElementRef;
+
+  constructor(private route: Router, public layoutService: LayoutService, public authService: AuthService) { }
+
+=======
   cerrarSesion() {
     this.authService.removeUser();
     this.route.navigate(['']);
   }
+>>>>>>> ad5413877857f156a0271d7ae9a275c673bb9af5
 }

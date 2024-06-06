@@ -24,8 +24,14 @@ export class BienestecnologicosService {
     }
 
     getPorBloqueYArea(bloque: string, area: string): Observable<bienes_Tecnologicos[]> {
+<<<<<<< HEAD
+
+    const url = `${this.myAppUrl}${this.myApyUrls}/${bloque}/${area}`;
+    return this.http.get<bienes_Tecnologicos[]>(url);
+=======
         const url = `${this.myAppUrl}${this.myApyUrls}/${bloque}/${area}`;
         return this.http.get<bienes_Tecnologicos[]>(url);
+>>>>>>> ad5413877857f156a0271d7ae9a275c673bb9af5
     }
 
     getBienTecnologico(id: number): Observable<bienes_Tecnologicos> {
