@@ -1,25 +1,29 @@
 const connection = require('../db/connection');
 
-exports.getAllModelos = async (req, res) => {
+exports.getAllMarcas = async (req, res) => {
   try {
-    const selectQuery ='SELECT * FROM modelos';
-    connection.query(selectQuery, (error, results) => {
-      if (error) {
-        return res.status(500).json({ mensaje: 'Error interno del servidor' });
-      }
-
-      res.status(200).json({ modelos: results });
+    const sql = 'SELECT * FROM marcas';
+    connection.query(sql, (err, data) => {
+        if (err) {
+            console.error('Error en la consulta SQL:', err);
+            res.status(500).json({ error: 'Error en el servidor' });
+        } else {
+            res.json(data);
+        }
     });
-  } catch (error) {
-    res.status(500).json({ mensaje: 'Error interno del servidor' });
-  }
+} catch (error) {
+    console.error('Error en la función getMarcas:', error);
+    res.status(500).json({ error: 'Error en el servidor' });
+}
+
 };
 
-exports.createModelo = async (req, res) => {
+
+exports.createMarcas = async (req, res) => {
   try {
     const { nom_modelo } = req.body;
 
-    const insertQuery = 'INSERT INTO modelos (nom_modelo) VALUES (?)';
+    const insertQuery = 'INSERT INTO marcas (nom_marca) VALUES (?)';
     connection.query(insertQuery, [nom_modelo], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -33,11 +37,11 @@ exports.createModelo = async (req, res) => {
   }
 };
 
-exports.getModeloById = async (req, res) => {
+exports.getMarcasById = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const selectQuery = 'SELECT * FROM modelos WHERE id = ?';
+    const selectQuery = 'SELECT * FROM marcas WHERE id = ?';
     connection.query(selectQuery, [id], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -47,7 +51,7 @@ exports.getModeloById = async (req, res) => {
         return res.status(404).json({ mensaje: 'Modelo no encontrado' });
       }
 
-      res.status(200).json({ modelo: results[0] });
+      res.status(200).json({ marcas: results[0] });
     });
 
   } catch (error) {
@@ -55,12 +59,12 @@ exports.getModeloById = async (req, res) => {
   }
 };
 
-exports.updateModelo = async (req, res) => {
+exports.updateMarcas = async (req, res) => {
   try {
     const id = req.params.id;
     const { nom_modelo } = req.body;
 
-    const updateQuery = 'UPDATE modelos SET nom_modelo = ? WHERE id = ?';
+    const updateQuery = 'UPDATE marcas  SET nom_marca = ? WHERE id = ?';
     connection.query(updateQuery, [nom_modelo, id], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -74,11 +78,11 @@ exports.updateModelo = async (req, res) => {
   }
 };
 
-exports.deleteModelo = async (req, res) => {
+exports.deleteMarcas = async (req, res) => {
   try {
     const id = req.params.id;
 
-    const deleteQuery = 'DELETE FROM modelos WHERE id = ?';
+    const deleteQuery = 'DELETE FROM marcas WHERE id = ?';
     connection.query(deleteQuery, [id], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });

@@ -1,8 +1,8 @@
-const connection = require('../db/connection'); 
+const connection = require('../db/connection');
 
-const getTipoBienesTecnologicos = (req, res) => {
+const getBienesTecnologicos = (req, res) => {
     try {
-        const sql = 'SELECT * FROM tipo_bien_tecnologico';
+        const sql = 'SELECT * FROM tipo_tecnologicos';
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -17,10 +17,10 @@ const getTipoBienesTecnologicos = (req, res) => {
     }
 };
 
-const getTipoBienTecnologicoById = (req, res) => {
+const getBienTecnologicoById = (req, res) => {
     const { id } = req.params;
     try {
-        const sql = 'SELECT * FROM tipo_bien_tecnologico WHERE id_tipo = ?';
+        const sql = 'SELECT * FROM tipo_tecnologicos WHERE id = ?';
         connection.query(sql, [id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -37,10 +37,10 @@ const getTipoBienTecnologicoById = (req, res) => {
     }
 };
 
-const createTipoBienTecnologico = (req, res) => {
+const createBienTecnologico = (req, res) => {
     const { nombre, atributos } = req.body;
     try {
-        const sql = 'INSERT INTO tipo_bien_tecnologico (nombre, atributos) VALUES (?, ?)';
+        const sql = 'INSERT INTO tipo_tecnologicos (nom_tecnologico, atributos) VALUES (?, ?)';
         connection.query(sql, [nombre, JSON.stringify(atributos)], (err, result) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -55,11 +55,11 @@ const createTipoBienTecnologico = (req, res) => {
     }
 };
 
-const updateTipoBienTecnologico = (req, res) => {
+const updateBienTecnologico = (req, res) => {
     const { id } = req.params;
     const { nombre, atributos } = req.body;
     try {
-        const sql = 'UPDATE tipo_bien_tecnologico SET nombre = ?, atributos = ? WHERE id_tipo = ?';
+        const sql = 'UPDATE tipo_tecnologicos SET nom_tecnologico = ?, atributos = ? WHERE id = ?';
         connection.query(sql, [nombre, JSON.stringify(atributos), id], (err, result) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -76,10 +76,10 @@ const updateTipoBienTecnologico = (req, res) => {
     }
 };
 
-const deleteTipoBienTecnologico = (req, res) => {
+const deleteBienTecnologico = (req, res) => {
     const { id } = req.params;
     try {
-        const sql = 'DELETE FROM tipo_bien_tecnologico WHERE id_tipo = ?';
+        const sql = 'DELETE FROM tipo_tecnologicos WHERE id = ?';
         connection.query(sql, [id], (err, result) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -97,9 +97,9 @@ const deleteTipoBienTecnologico = (req, res) => {
 };
 
 module.exports = {
-    getTipoBienesTecnologicos,
-    createTipoBienTecnologico,
-    getTipoBienTecnologicoById,
-    updateTipoBienTecnologico,
-    deleteTipoBienTecnologico
+    getBienesTecnologicos,
+    createBienTecnologico,
+    getBienTecnologicoById,
+    updateBienTecnologico,
+    deleteBienTecnologico
 };
