@@ -8,6 +8,7 @@ import { bienes_Tecnologicos } from '../api/bienesTecnologicos';
 import { Router } from '@angular/router';
 import { Historial } from '../api/Historial';
 import { HistorialService } from '../../services/historial.service';
+import { InicioService } from '../../services/inicio.service';
 
 @Component({
   selector: 'app-inicio',
@@ -31,16 +32,42 @@ export class InicioComponent implements OnInit, OnDestroy {
 
   tooltipVisible: boolean = false;
   displayQRScanner: boolean = false;
+  totalBienes: number = 0;
+  totalAreas: number = 0;
+  totalProveedores: number = 0;
+  totalUsuarios: number = 0;
 
-  constructor(private route: Router, private historialService: HistorialService, private productService: BienestecnologicosService, public layoutService: LayoutService) {
+  constructor(private inicioService: InicioService, private historialService: HistorialService, private productService: BienestecnologicosService, public layoutService: LayoutService) {
     this.subscription = this.layoutService.configUpdate$
     .pipe(debounceTime(25))
     .subscribe((config) => {
         this.initChart();
     });
 }
+obtenerDatos(): void {
+    this.inicioService.obtenerTotalBienes().subscribe(
+      (data) => this.totalBienes = data,
+      (error) => console.error('Error al obtener total de bienes', error)
+    );
+
+    this.inicioService.obtenerTotalAreas().subscribe(
+      (data) => this.totalAreas = data,
+      (error) => console.error('Error al obtener total de áreas', error)
+    );
+
+    this.inicioService.obtenerTotalProveedores().subscribe(
+      (data) => this.totalProveedores = data,
+      (error) => console.error('Error al obtener total de proveedores', error)
+    );
+
+    this.inicioService.obtenerTotalUsuarios().subscribe(
+      (data) => this.totalUsuarios = data,
+      (error) => console.error('Error al obtener total de usuarios', error)
+    );
+  }
 
 ngOnInit() {
+    this.obtenerDatos();
   this.cargarHistorial();
     this.initChart();
     //this.productService.getProductsSmall().then(data => this.products = data);
@@ -61,9 +88,6 @@ cargarHistorial(): void {
       }
   );
 }
-
- 
-  
 
 
   initChart() {
