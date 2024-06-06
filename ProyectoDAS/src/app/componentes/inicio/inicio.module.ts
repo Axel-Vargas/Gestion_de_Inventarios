@@ -15,6 +15,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ChartModule } from 'primeng/chart';
 import { HttpClientModule } from '@angular/common/http';
 import { InicioService } from '../../services/inicio.service';
+import { BrowserModule } from '@angular/platform-browser';
 
 
 @NgModule({
@@ -22,6 +23,7 @@ import { InicioService } from '../../services/inicio.service';
     InicioComponent
   ],
   imports: [
+    BrowserModule,
     CommonModule,
     InicioRoutingModule,
     MenuModule,
@@ -37,8 +39,7 @@ import { InicioService } from '../../services/inicio.service';
   exports: [
     InicioComponent
   ],
-  providers: [
-    
-  ],
+  providers: [InicioService],
+  bootstrap: [InicioComponent]
 })
 export class InicioModule { }

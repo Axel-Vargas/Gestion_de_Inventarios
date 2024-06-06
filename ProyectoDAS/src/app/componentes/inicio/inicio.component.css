@@ -23,3 +23,6 @@ span{
         display: flex; /* Mostrar el botón en pantallas pequeñas */
     }
 }
+.p-field {
+    margin-bottom: 1rem;
+  }
