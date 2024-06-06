@@ -26,4 +26,25 @@ export class InicioService {
   obtenerTotalUsuarios(): Observable<number> {
     return this.http.get<number>(`${this.API}/total-usuarios`);
   }
+
+  obtenerBienesPorBloque(idFacultad: number, idBloque: number): Observable<any> {
+    return this.http.get<any>(`${this.API}/bienes-por-bloque`, {
+      params: {
+        idFacultad: idFacultad.toString(),
+        idBloque: idBloque.toString()
+      }
+    });
+  }
+
+  obtenerBloques(idFacultad: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API}/bloques`, {
+      params: {
+        idFacultad: idFacultad.toString()
+      }
+    });
+  }
+
+  obtenerFacultades(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API}/facultades`);
+  }
 }

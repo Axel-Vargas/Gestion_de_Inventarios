@@ -86,30 +86,33 @@ const getBienesPorBloque = (req, res) => {
 
     const sql = `
         SELECT 
-            b.nombre AS tipo_bien, COUNT(*) AS total 
-        FROM 
-            bien_tecnologico bt
-        JOIN
-            areas a ON bt.id_area_per = a.id_area
-        JOIN
-            bloques b ON a.id_bloque_per = b.id_bloque
-        WHERE 
-            b.id_facultad_per = ? AND a.id_bloque_per = ?
-        GROUP BY 
-            tipo_bien
-        UNION
-        SELECT 
-            'bien_mobiliario' AS tipo_bien, COUNT(*) AS total 
-        FROM 
-            bien_mobiliario bm
-        JOIN
-            areas a ON bm.id_area_per = a.id_area
-        JOIN
-            bloques b ON a.id_bloque_per = b.id_bloque
-        WHERE 
-            b.id_facultad_per = ? AND a.id_bloque_per = ?
-        GROUP BY 
-            tipo_bien;
+        'bien_tecnologico' AS tipo_bien, COUNT(*) AS total 
+    FROM 
+        bien_tecnologico bt
+    JOIN
+        areas a ON bt.id_area_per = a.id_area
+    JOIN
+        bloques b ON a.id_bloque_per = b.id_bloque
+    WHERE 
+        b.id_facu_per = ? AND b.id_bloque = ?
+    GROUP BY 
+        tipo_bien
+
+    UNION
+
+    SELECT 
+        'bien_mobiliario' AS tipo_bien, COUNT(*) AS total 
+    FROM 
+        bien_mobiliario bm
+    JOIN
+        areas a ON bm.id_area_per = a.id_area
+    JOIN
+        bloques b ON a.id_bloque_per = b.id_bloque
+    WHERE 
+        b.id_facu_per = ? AND b.id_bloque = ?
+    GROUP BY 
+        tipo_bien;
+
     `;
 
     connection.query(sql, [idFacultad, idBloque, idFacultad, idBloque], (err, data) => {
@@ -123,7 +126,7 @@ const getBienesPorBloque = (req, res) => {
 };
 
 const getFacultades = (req, res) => {
-    const sql = 'SELECT id_facultad, nombre FROM facultades';
+    const sql = 'SELECT id_facultad, nombre FROM facultad';
     connection.query(sql, (err, data) => {
         if (err) {
             console.error('Error en la consulta SQL:', err);
@@ -136,7 +139,7 @@ const getFacultades = (req, res) => {
 
 const getBloques = (req, res) => {
     const idFacultad = req.query.idFacultad;
-    const sql = 'SELECT id_bloque, nombre FROM bloques WHERE id_facultad_per = ?';
+    const sql = 'SELECT id_bloque, nombre FROM bloques WHERE id_facu_per = ?';
     connection.query(sql, [idFacultad], (err, data) => {
         if (err) {
             console.error('Error en la consulta SQL:', err);

@@ -89,4 +89,5 @@ export class InicioComponent implements OnInit {
   onModalHide(): void {
     this.displayQRScanner = false;
   }
+  
 }

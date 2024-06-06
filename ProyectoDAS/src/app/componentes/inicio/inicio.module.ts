@@ -10,6 +10,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { DialogModule } from 'primeng/dialog';
+//import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
