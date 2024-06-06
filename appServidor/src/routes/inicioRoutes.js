@@ -6,6 +6,8 @@ router.get('/total-bienes', getTotalBienes);
 router.get('/total-areas', getTotalAreas);
 router.get('/total-proveedores', getTotalProveedores);
 router.get('/total-usuarios', getTotalUsuarios);
+router.get('/facultades', getFacultades);
+router.get('/bloques', getBloques);
 
 module.exports = router;
 
