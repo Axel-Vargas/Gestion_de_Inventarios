@@ -2,7 +2,7 @@
 
 /* En tu archivo de estilos globales o componentes con ::ng-deep */
 ::ng-deep .p-datatable .p-datatable-thead > tr > th {
-    background-color: #434343; /* Color de fondo */
+    background-color: #918989; /* Color de fondo */
     color: #fafafa;              /* Color del texto */
     font-weight: bold;        /* Peso de la fuente */
 }
