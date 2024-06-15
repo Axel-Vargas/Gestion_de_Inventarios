@@ -179,10 +179,15 @@ validarCedula(cedula: string): boolean {
   return digitoEsperado === digitoVerificador;
 }
 
-validarCorreo() {
+validarCorreo(event: any) {
   const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const input = event.target;
+  
+  input.value = input.value.replace(/\s+/g, '');
 
-  if (regexCorreo.test(this.correo)) {
+  const correo = input.value;
+  
+  if (regexCorreo.test(correo) || correo === '') {
     this.mensajeValidacionCorreo = '';
   } else {
     this.mensajeValidacionCorreo = 'Correo inválido';
@@ -261,7 +266,7 @@ confirm(id: string) {
 handleInput(event: any) {
   const inputValue = event.target.value;
   if (!this.soloLetrasRegex.test(inputValue)) {
-    event.target.value = inputValue.replace(/[^a-zA-Z]/g, '');
+    event.target.value = inputValue.replace(/[^a-zA-Z\s]/g, '');
   }
 }
 
