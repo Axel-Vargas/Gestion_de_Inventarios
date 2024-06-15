@@ -125,15 +125,15 @@
         <div *ngIf="!esEdicionContra" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
             <label for="correo" class="font-semibold w-6rem">Correo</label>
             <input pInputText id="correo" class="flex-auto" autocomplete="off" [(ngModel)]="correo" maxlength="20"
-                (input)="validarCorreo()" />
+                (input)="validarCorreo($event)" />
             <div class="mensaje-correo"
                 [ngClass]="{'valido': mensajeValidacionCorreo === 'Correo válido', 'invalido': mensajeValidacionCorreo === 'Correo inválido'}">
                 {{ mensajeValidacionCorreo }}
             </div>
         </div>
-        <div *ngIf="!esEdicion" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+        <div *ngIf="!esEdicion" class="flex align-items-left gap-3 mb-3 flex-column" style="min-width: 100px;">
             <label for="contrasena" class="font-semibold w-6rem">Contraseña</label>
-            <p-password id="contrasena" class="flex-auto" [(ngModel)]="contrasena" maxlength="20"></p-password>
+            <p-password id="contrasena"  [(ngModel)]="contrasena" [toggleMask]="true" maxlength="20"></p-password>
         </div>
         <div *ngIf="esEdicionContra" class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
             <label for="newcontrasena" class="font-semibold w-12rem">Nueva Contraseña</label>
