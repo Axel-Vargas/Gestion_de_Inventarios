@@ -163,26 +163,51 @@ exports.deleteUser = async (req, res) => {
 
 exports.authenticateUser = async (req, res) => {
   try {
-    const { usuario, contrasena } = req.body;
+    const { correo, contrasena } = req.body;
 
-    const query = `SELECT * FROM usuarios WHERE correo = ? AND contrasena = ?`;
-    connection.query(query, [usuario, contrasena], (error, results) => {
+    if (!correo || !contrasena) {
+      return res.status(400).json({ mensaje: 'Usuario y contraseña son requeridos' });
+    }
+
+    // Buscar al usuario por su correo electrónico
+    const query = `SELECT * FROM usuarios WHERE correo = ?`;
+    connection.query(query, [correo], async (error, results) => {
       if (error) {
+        console.error('Error al buscar el usuario:', error);
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
       }
 
       if (results.length === 0) {
+        console.log('Usuario no encontrado');
         return res.status(401).json({ mensaje: 'Credenciales inválidas' });
       }
 
       const existingUser = results[0];
-      if (existingUser.contrasena !== contrasena) {
+
+      if (!existingUser.contrasena) {
+        console.log('No se encontró la contraseña en la base de datos');
         return res.status(401).json({ mensaje: 'Credenciales inválidas' });
       }
-      
-      res.status(200).json({ id: existingUser.id, usuario: existingUser.correo, contrasena: existingUser.contrasena, rol: existingUser.id_rol_per });
+
+      try {
+        // Comparar la contraseña proporcionada con el hash almacenado
+        const isMatch = await bcrypt.compare(contrasena, existingUser.contrasena);
+
+        if (!isMatch) {
+          console.log('Contraseña incorrecta');
+          return res.status(401).json({ mensaje: 'Credenciales inválidas' });
+        }
+
+        console.log('Autenticación exitosa');
+        res.status(200).json({usuario: existingUser.correo,contrasena: existingUser.contrasena,rol: existingUser.id_rol_per
+        });
+      } catch (error) {
+        console.error('Error al comparar la contraseña:', error);
+        res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
     });
   } catch (error) {
+    console.error('Error en el servidor:', error);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 };
