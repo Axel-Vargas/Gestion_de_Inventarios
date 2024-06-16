@@ -5,6 +5,7 @@ exports.getAllBienes = async (req, res) => {
     const selectQuery = `
       SELECT bm.*, 
              e.nombre AS nombre_encargado, 
+             e.apellido AS apellido_encargado,
              a.nombre AS nombre_area 
       FROM bien_mobiliario bm
       LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
@@ -21,9 +22,6 @@ exports.getAllBienes = async (req, res) => {
     res.status(500).json({ mensaje: 'Error interno del servidor' });
 }
 };
-
-
-  
 
 exports.addBienes = async (req, res) => {
   try {

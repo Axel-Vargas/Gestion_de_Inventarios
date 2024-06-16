@@ -18,7 +18,12 @@ export interface bienes_Tecnologicos {
     codigoUTA?: string;
     image?: string;
     localizacion?: string;
+    nombre_area?: string;
+    nombre_encargado_completo?: string;
     id_area_per?: number;
+    id_encargado_per?:string;
     id_proveedor_per?: number;
     componentes: Componentes[];
+    material?: string;
+    color?: string;
 }

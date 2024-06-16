@@ -11,6 +11,7 @@
                     [style]="{'width':'15.9rem'}" [(ngModel)]="selectedDepartamento"
                     (onChange)="onDepartamentoChange($event)"></p-dropdown>
             </div>
+            
             <p-table [value]="reportes" [rows]="5" [rowsPerPageOptions]="[5,10, 25, 50]"
                 [tableStyle]="{ 'min-width': '45rem' }">
                 <ng-template pTemplate="header">
@@ -25,18 +26,40 @@
                         <td>{{ reporte.tipo }}</td>
                         <td>{{ reporte.descripcion }}</td>
                         <td class="flex flex-row justify-content-center gap-2">
-                            <button *ngIf="reporte.tipo === 'Reporte Completo'" pButton pRipple type="button"
-                                icon="pi pi-file-pdf" (click)="mostrarDialogoPDF(reporte.code, reporte.tipo)"
-                                class="p-button p-component p-button-text p-button-lg flex align-items-center justify-content-center"
-                                style="color:red"></button>
+                            <ng-container *ngIf="selectedDepartamento && selectedDepartamento.name === 'DITIC'; else UPEActions">
+                                <button *ngIf="reporte.tipo === 'Reporte Completo'" pButton pRipple type="button"
+                                    icon="pi pi-file-pdf" (click)="mostrarDialogoPDFDITIC(reporte.code, reporte.tipo)"
+                                    class="p-button p-component p-button-text p-button-lg flex align-items-center justify-content-center"
+                                    style="color:red"></button>
 
-                            <button *ngIf="reporte.tipo === 'Reporte Completo'" pButton pRipple type="button"
-                                icon="pi pi-file-excel" (click)="mostrarDialogoEXCEL(reporte.code, reporte.tipo)"
-                                class="p-button p-component p-button-text flex p-button-lg align-items-center justify-content-center"
-                                style="color:green"></button>
+                                <button *ngIf="reporte.tipo === 'Reporte Completo'" pButton pRipple type="button"
+                                    icon="pi pi-file-excel" (click)="mostrarDialogoEXCELDITIC(reporte.code, reporte.tipo)"
+                                    class="p-button p-component p-button-text flex p-button-lg align-items-center justify-content-center"
+                                    style="color:green"></button>
 
-                            <p-button *ngIf="reporte.tipo !== 'Reporte Completo'" label="Seleccionar" (click)="mostrarDialogoPDF(reporte.code, reporte.tipo)"
-                                [rounded]="true"></p-button>
+                                <p-button *ngIf="reporte.tipo !== 'Reporte Completo'" label="Seleccionar" (click)="mostrarDialogoPDFDITIC(reporte.code, reporte.tipo)"
+                                    [rounded]="true"></p-button>
+                            </ng-container>
+                            <ng-template #UPEActions>
+                                <ng-container *ngIf="selectedDepartamento && selectedDepartamento.name === 'UPE'; else REDESActions">
+                                    <button *ngIf="reporte.tipo !== 'Reporte por Áreas'" pButton pRipple type="button"
+                                        icon="pi pi-file-pdf" (click)="mostrarDialogoPDFUPE(reporte.code, reporte.tipo)"
+                                        class="p-button p-component p-button-text p-button-lg flex align-items-center justify-content-center"
+                                        style="color:red"></button>
+    
+                                    <button *ngIf="reporte.tipo !== 'Reporte por Áreas'" pButton pRipple type="button"
+                                        icon="pi pi-file-excel" (click)="mostrarDialogoEXCELUPE(reporte.code, reporte.tipo)"
+                                        class="p-button p-component p-button-text flex p-button-lg align-items-center justify-content-center"
+                                        style="color:green"></button>
+    
+                                    <p-button *ngIf="reporte.tipo === 'Reporte por Áreas'" label="Seleccionar" (click)="mostrarDialogoPDFUPE(reporte.code, reporte.tipo)"
+                                        [rounded]="true"></p-button>
+                                </ng-container>
+                                <ng-template #REDESActions>
+                                    
+                                    <p-button label="Seleccionar" [rounded]="true"></p-button>
+                                </ng-template>
+                            </ng-template>
                         </td>
                     </tr>
                 </ng-template>
@@ -44,20 +67,19 @@
         </div>
     </div>
 </div>
-<p-dialog header="Reporte por Área" [modal]="true" [(visible)]="visible"
-    [style]="{ width: '25rem', 'min-height': '310px' }">
+<p-dialog header="Reporte por Área" [modal]="true" [(visible)]="visible" [style]="{ width: '26rem', 'min-height': '320px' }">
     <div class="flex justify-content-between">
         <div class="flex align-items-center justify-content-center gap-3 mb-3">
             <p-dropdown [options]="areas" [(ngModel)]="selectedArea" dataKey="id_area" optionLabel="nombre"
                 placeholder="Seleccione un área"></p-dropdown>
         </div>
         <div class="flex flex-row flex-wrap align-items-center justify-content-center">
-            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarPDFPorArea()"
+            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarPDFPorAreaDITIC()"
                 class="p-button p-component p-button-text p-button-lg flex align-items-center justify-content-center"
-                style="color:red"></button>
-            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarExcelPorArea()"
+                [disabled]="!selectedArea" style="color:red"></button>
+            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarExcelPorAreaDITIC()"
                 class="p-button p-component p-button-text p-button-lg flex align-items-center justify-content-center"
-                style="color:green"></button>
+                [disabled]="!selectedArea" style="color:green"></button>
         </div>
     </div>
 </p-dialog>

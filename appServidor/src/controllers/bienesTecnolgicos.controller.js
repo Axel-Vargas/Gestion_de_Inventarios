@@ -28,25 +28,35 @@ function generateQR(data) {
 }
 const getBienesTecnologicos = (req, res) => {
     try {
-        const sql = 'SELECT * FROM bien_tecnologico WHERE estado != "BODEGA"';
-        connection.query(sql, (err, data) => {
-            if (err) {
-                console.error('Error en la consulta SQL:', err);
-                res.status(500).json({ error: 'Error en el servidor' });
-            } else {
-                res.json(data);
-            }
-        });
+      const sql = `
+        SELECT 
+          bt.*, 
+          a.nombre AS nombre_area 
+        FROM 
+          bien_tecnologico bt
+        LEFT JOIN 
+          areas a ON bt.id_area_per = a.id_area
+        WHERE 
+          bt.estado != 'BODEGA'
+      `;
+      connection.query(sql, (err, data) => {
+        if (err) {
+          console.error('Error en la consulta SQL:', err);
+          res.status(500).json({ error: 'Error en el servidor' });
+        } else {
+          res.json(data);
+        }
+      });
     } catch (error) {
-        console.error('Error en la función getBienesTecnologicos:', error);
-        res.status(500).json({ error: 'Error en el servidor' });
+      console.error('Error en la función getBienesTecnologicos:', error);
+      res.status(500).json({ error: 'Error en el servidor' });
     }
-};
+  };
 
 const getBienesTecnologicosPorArea = (req, res) => {
     try {
         const { id } = req.params;
-        const sql = 'SELECT * FROM Bien_Tecnologico WHERE nombre_bien = \'COMPUTADORA DE ESCRITORIO\' AND id_area_per = ?';
+        const sql = "SELECT * FROM Bien_Tecnologico WHERE nombre_bien = \'COMPUTADORA DE ESCRITORIO\' AND id_area_per = ? AND estado != \'BODEGA\'";
         connection.query(sql, [id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
