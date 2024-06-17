@@ -24,7 +24,7 @@ export class UsuariosService {
     return this.http.get<any[]>(`${this.API}/${id}`);
   }
 
-  insertarUsuario(cedula: string, nombre: string, apellido: string, correo: string, telefono: string, contrasena: string, rol: string) {
+  insertarUsuario(cedula: string, nombre: string, apellido: string, correo: string, telefono: string, contrasena: string, estado: number,rol: string) {
     return this.http.post(this.API, { cedula, nombre, apellido, correo, telefono, contrasena, rol})
   }
 

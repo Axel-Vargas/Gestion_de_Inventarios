@@ -98,7 +98,7 @@ export class UsuariosComponent {
     if (!this.selectedRole || this.cedula == '' || this.nombre == '' || this.apellido == '' || this.telefono == '' || this.correo == '' || this.contrasena == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      this.usuariosService.insertarUsuario(this.cedula, this.nombre, this.apellido, this.correo, this.telefono, this.contrasena, this.selectedRole.id_rol).subscribe(
+      this.usuariosService.insertarUsuario(this.cedula, this.nombre, this.apellido, this.correo, this.telefono, this.contrasena,1,this.selectedRole.id_rol).subscribe(
         (response) => {
           this.mostrarMensaje("Usuario registrado con éxito", true);
           this.limpiarFormulario();
