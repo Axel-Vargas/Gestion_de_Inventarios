@@ -40,8 +40,8 @@ export class UsuariosService {
     return this.http.delete(`${this.API}/${id}`);
   }
 
-  autenticarUsuario(usuario: string, contrasena: string): Observable<any> {
-    const body = { usuario, contrasena };
+  autenticarUsuario(correo: string, contrasena: string): Observable<any> {
+    const body = { correo, contrasena };
     return this.http.post(`${this.API}/auth`, body).pipe(
       tap((response) => {
         this.authService.setUser(response);
