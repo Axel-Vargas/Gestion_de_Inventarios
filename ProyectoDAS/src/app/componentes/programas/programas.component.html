@@ -2,9 +2,9 @@
     <div class="col-12">
         <div class="card">
             <div class="flex programas justify-content-between flex-wrap mb-5">
-                <span class="flex align-items-center">Programas</span>
+                <span class="flex align-items-center">Softwares</span>
                 <div class="flex align-items-center">
-                    <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Programa</span>
+                    <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Software</span>
                     <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
                         (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
                 </div>
@@ -21,7 +21,7 @@
                             </p-inputIcon>
                             <input pInputText type="text"
                                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                                placeholder="Buscar Programa" />
+                                placeholder="Buscar Software" />
                         </p-iconField>
                     </div>
                 </ng-template>
@@ -117,7 +117,7 @@
                 autoWidth="false" [style]="{ width: '15.9rem' }" [(ngModel)]="selectLicencia"></p-dropdown>
         </div>
         <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
-            <label for="direccion" class="font-semibold w-6rem">Laboratorio</label>
+            <label for="direccion" class="font-semibold w-10rem">Tipo de Laboratorio</label>
             <p-dropdown [options]="laboratorios" dataKey="code" optionLabel="name" placeholder="Seleccione un Laboratorio"
                 autoWidth="false" [style]="{ width: '15.9rem' }" [(ngModel)]="selectLaboratorio"></p-dropdown>
         </div>
