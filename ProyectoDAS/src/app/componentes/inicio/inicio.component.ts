@@ -46,24 +46,44 @@ export class InicioComponent implements OnInit, OnDestroy {
 }
 obtenerDatos(): void {
     this.inicioService.obtenerTotalBienes().subscribe(
-      (data) => this.totalBienes = data,
-      (error) => console.error('Error al obtener total de bienes', error)
-    );
-
-    this.inicioService.obtenerTotalAreas().subscribe(
-      (data) => this.totalAreas = data,
-      (error) => console.error('Error al obtener total de áreas', error)
-    );
-
-    this.inicioService.obtenerTotalProveedores().subscribe(
-      (data) => this.totalProveedores = data,
-      (error) => console.error('Error al obtener total de proveedores', error)
-    );
-
-    this.inicioService.obtenerTotalUsuarios().subscribe(
-      (data) => this.totalUsuarios = data,
-      (error) => console.error('Error al obtener total de usuarios', error)
-    );
+        (data) => this.totalBienes = data,
+        (error) => console.error('Error al obtener total de bienes', error)
+      );
+  
+      this.inicioService.obtenerTotalAreas().subscribe(
+        (data) => this.totalAreas = data,
+        (error) => console.error('Error al obtener total de áreas', error)
+      );
+  
+      this.inicioService.obtenerTotalProveedores().subscribe(
+        (data) => this.totalProveedores = data,
+        (error) => console.error('Error al obtener total de proveedores', error)
+      );
+  
+      this.inicioService.obtenerTotalUsuarios().subscribe(
+        (data) => this.totalUsuarios = data,
+        (error) => console.error('Error al obtener total de usuarios', error)
+      );
+  
+      this.inicioService.obtenerComponentesLibres().subscribe(
+          (data) => this.componentesLibres = data,
+          (error) => console.error('Error al obtener total de usuarios', error)
+      );
+  
+      this.inicioService.obtenerTotalBienesMobiliarios().subscribe(
+          (data) => this.bienesMobiliarios = data,
+          (error) => console.error('Error al obtener total de usuarios', error)
+      );
+  
+      this.inicioService.obtenerTotalTecnologicosBodega().subscribe(
+          (data) => this.tecnologicosBodega = data,
+          (error) => console.error('Error al obtener total de usuarios', error)
+      );
+  
+      this.inicioService.obtenerTotalRepotencias().subscribe(
+          (data) => this.totalRepotencias = data,
+          (error) => console.error('Error al obtener total de usuarios', error)
+      );
   }
 
 ngOnInit() {
