@@ -18,24 +18,30 @@ import { InicioService } from '../../services/inicio.service';
 export class InicioComponent implements OnInit, OnDestroy {
 
 
-  historial: Historial[] = [];
+    historial: Historial[] = [];
 
-  items!: MenuItem[];
+    items!: MenuItem[];
+  
+    tecnologicos!: bienes_Tecnologicos[];
+  
+    chartData: any;
+  
+    chartOptions: any;
+  
+    subscription!: Subscription;
+  
+    tooltipVisible: boolean = false;
+    displayQRScanner: boolean = false;
+    totalBienes: number = 0;
+    totalAreas: number = 0;
+    totalProveedores: number = 0;
+    totalUsuarios: number = 0;
+    componentesLibres:number = 0;
+    bienesMobiliarios:number = 0
+    tecnologicosBodega: number = 0
+    totalRepotencias:number = 0
 
-  tecnologicos!: bienes_Tecnologicos[];
 
-  chartData: any;
-
-  chartOptions: any;
-
-  subscription!: Subscription;
-
-  tooltipVisible: boolean = false;
-  displayQRScanner: boolean = false;
-  totalBienes: number = 0;
-  totalAreas: number = 0;
-  totalProveedores: number = 0;
-  totalUsuarios: number = 0;
 
   constructor(private inicioService: InicioService, private historialService: HistorialService, private productService: BienestecnologicosService, public layoutService: LayoutService) {
     this.subscription = this.layoutService.configUpdate$
