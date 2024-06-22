@@ -171,7 +171,7 @@
 </div>
 
 <!--producto detalles-->
-<p-dialog header="Detalles " modal="modal" draggable="false" [(visible)]="showDetailsModal" [style]="{ width: '70rem' }">
+<p-dialog header="Detalles " modal="modal" draggable="false" [(visible)]="showDetailsModal" [style]="{ width: '90rem' }">
     <ng-template pTemplate="content">
         <p-table [value]="selectedProduct ? [selectedProduct] : []">
             <ng-template pTemplate="header">
@@ -193,6 +193,14 @@
                         ENCARGADO
                         <p-sortIcon field="encargado"></p-sortIcon>
                     </th>
+                    <th pSortableColumn="prestado">
+                        PRESTADO
+                        <p-sortIcon field="prestado"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="nombre_dependencia">
+                        DEPENDENCIA
+                        <p-sortIcon field="nombre_dependencia"></p-sortIcon>
+                    </th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-product>
@@ -208,11 +216,12 @@
                     <td>{{ product.modelo }}</td>
                     <td>{{ product.fecha_adquisicion | date : "yyyy-MM-dd" }}</td>
                     <td>{{ product.nombre_encargado}}</td>
+                    <td>{{ product.prestado}}</td>
+                    <td>{{ product.nombre_dependencia}}</td>
                 </tr>
             </ng-template>
         </p-table>
     </ng-template>
-   
 </p-dialog>
 
 
@@ -231,7 +240,6 @@
         <img [src]="qrCodeImageUrl" [alt]="qrCodeAltText" width="100%">
     </div>
 </p-dialog>
-
 
 
 <!-- Form para agregar bien -->
@@ -314,6 +322,7 @@
                     class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
             </div>
         </div>
+        
         <div class="formgrid grid">
             <div class="field col">
                 <label for="atributos">Atributos</label>
