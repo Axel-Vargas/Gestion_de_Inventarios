@@ -18,18 +18,51 @@ exports.getAllMarcas = async (req, res) => {
 
 };
 
+exports.geMarcasTecnologicos = async (req, res) => {
+  try {
+    const sql = 'SELECT * FROM marcas WHERE tipo_marca = "TECNOLOGICO"';
+    connection.query(sql, (err, data) => {
+        if (err) {
+            console.error('Error en la consulta SQL:', err);
+            res.status(500).json({ error: 'Error en el servidor' });
+        } else {
+            res.json(data);
+        }
+    });
+} catch (error) {
+    console.error('Error en la función getMarcas:', error);
+    res.status(500).json({ error: 'Error en el servidor' });
+}
+};
+
+exports.geMarcasMobiliarios = async (req, res) => {
+  try {
+    const sql = 'SELECT * FROM marcas WHERE tipo_marca = "MOBILIARIOS"';
+    connection.query(sql, (err, data) => {
+        if (err) {
+            console.error('Error en la consulta SQL:', err);
+            res.status(500).json({ error: 'Error en el servidor' });
+        } else {
+            res.json(data);
+        }
+    });
+} catch (error) {
+    console.error('Error en la función getMarcas:', error);
+    res.status(500).json({ error: 'Error en el servidor' });
+}
+};
 
 exports.createMarcas = async (req, res) => {
   try {
-    const { nom_modelo } = req.body;
+    const { nom_marca,tipo_marca } = req.body;
 
-    const insertQuery = 'INSERT INTO marcas (nom_marca) VALUES (?)';
-    connection.query(insertQuery, [nom_modelo], (error, results) => {
+    const insertQuery = 'INSERT INTO marcas (nom_marca, tipo_marca) VALUES (?,?)';
+    connection.query(insertQuery, [nom_marca, tipo_marca ], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
       }
 
-      res.status(201).json({ mensaje: 'Modelo creado exitosamente', id: results.insertId });
+      res.status(201).json({ mensaje: 'Marca creado exitosamente', id: results.insertId });
     });
 
   } catch (error) {
@@ -48,7 +81,7 @@ exports.getMarcasById = async (req, res) => {
       }
 
       if (results.length === 0) {
-        return res.status(404).json({ mensaje: 'Modelo no encontrado' });
+        return res.status(404).json({ mensaje: 'Marca no encontrado' });
       }
 
       res.status(200).json({ marcas: results[0] });
@@ -62,15 +95,15 @@ exports.getMarcasById = async (req, res) => {
 exports.updateMarcas = async (req, res) => {
   try {
     const id = req.params.id;
-    const { nom_modelo } = req.body;
+    const { nom_marca, tipo_marca } = req.body;
 
-    const updateQuery = 'UPDATE marcas  SET nom_marca = ? WHERE id = ?';
-    connection.query(updateQuery, [nom_modelo, id], (error, results) => {
+    const updateQuery = 'UPDATE marcas  SET nom_marca = ?, tipo_marca = ? WHERE id = ?';
+    connection.query(updateQuery, [nom_marca, tipo_marca, id], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
       }
 
-      res.status(200).json({ mensaje: 'Modelo actualizado exitosamente' });
+      res.status(200).json({ mensaje: 'Marca actualizado exitosamente' });
     });
 
   } catch (error) {
