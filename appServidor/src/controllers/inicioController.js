@@ -180,7 +180,7 @@ const getTotalUsuarios = (req, res) => {
 //cuantos bienes por area
 //repotencias por area 
 
-/*const getBienesPorArea = (req, res) => {
+const getBienesPorArea = (req, res) => {
     try {
         const sql = `
         SELECT A.NOMBRE, COUNT(*) AS total_bienes
@@ -206,10 +206,10 @@ const getTotalUsuarios = (req, res) => {
         console.error('Error en la función getTop5BienesPorArea:', error);
         res.status(500).json({ error: 'Error en el servidor' });
     }
-};*/
+};
 
-//CAMBIO PARA DAVID
-/*const getRepotenciadosPorArea = (req, res) => {
+
+const getRepotenciadosPorArea = (req, res) => {
     try {
         const sql = `
         SELECT A.NOMBRE, COUNT(*) AS total_bienes
@@ -238,7 +238,7 @@ const getTotalUsuarios = (req, res) => {
         console.error('Error en la función getTop5BienesRepotenciadosPorArea:', error);
         res.status(500).json({ error: 'Error en el servidor' });
     }
-};*/
+};
 
 
 const getFacultades = (req, res) => {
@@ -272,7 +272,7 @@ module.exports = {
     getTotalAreas, 
     getTotalProveedores, 
     getTotalUsuarios,
-    //getBienesPorArea,
+    getBienesPorArea,
     getFacultades,
     getBloques,
 
@@ -282,5 +282,5 @@ module.exports = {
     getTotalRepotencias,
     getTotalBienesTecnologicosBodega,
     getTotalBienesTecnologicosNoFuncional,
-    //getRepotenciadosPorArea
+    getRepotenciadosPorArea
 };
