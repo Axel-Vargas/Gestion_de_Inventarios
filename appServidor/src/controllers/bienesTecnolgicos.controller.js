@@ -106,11 +106,11 @@ const obtenerBienesPorBloqueYArea = (req, res) => {
 
 
 const createBienTecnologico = async (req, res) => {
-    const { nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per } = req.body;
+    const { nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, prestado, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per, id_dependencia_per } = req.body;
 
     try {
-    const sqlInsert = 'INSERT INTO Bien_Tecnologico (nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        connection.query(sqlInsert, [nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, JSON.stringify(atributos), id_area_per, id_proveedor_per, id_encargado_per], async (err, result) => {
+    const sqlInsert = 'INSERT INTO Bien_Tecnologico (nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA,prestado, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per, id_dependencia_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        connection.query(sqlInsert, [nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, prestado, localizacion, JSON.stringify(atributos), id_area_per, id_proveedor_per, id_encargado_per, id_dependencia_per], async (err, result) => {
 
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -163,10 +163,10 @@ const getBienTecnologicoById = (req, res) => {
 
 const updateBienTecnologico = (req, res) => {
     const { id } = req.params;
-    const { nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per } = req.body;
+    const {  nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, prestado, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per, id_dependencia_per } = req.body;
     try {
-        const sql = 'UPDATE Bien_Tecnologico SET nombre = ?, marca = ?, modelo = ?, num_serie = ?, fecha_adquisicion = ?, estado = ?, codigoUTA = ?, localizacion = ?, atributos = ?, id_area_per = ?, id_proveedor_per = ?, id_encargado_per = ? WHERE id_bien = ?';
-        connection.query(sql, [nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, JSON.stringify(atributos), id_area_per, id_proveedor_per, id_encargado_per, id], (err, data) => {
+        const sql = 'UPDATE Bien_Tecnologico SET nombre = ?, marca = ?, modelo = ?, num_serie = ?, fecha_adquisicion = ?, estado = ?, codigoUTA = ?, prestado = ?, localizacion = ?, atributos = ?, id_area_per = ?, id_proveedor_per = ?, id_encargado_per = ?, id_dependencia_per = ? WHERE id_bien = ?';
+        connection.query(sql, [nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA,prestado, localizacion, JSON.stringify(atributos), id_area_per, id_proveedor_per, id_encargado_per,id_dependencia_per, id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
