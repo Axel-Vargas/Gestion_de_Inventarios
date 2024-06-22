@@ -29,6 +29,7 @@ function generateQR(data) {
 
 const getBienesTecnologicos = (req, res) => {
     try {
+
         const sql = `
             SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado 
             FROM bien_tecnologico bt
@@ -43,16 +44,18 @@ const getBienesTecnologicos = (req, res) => {
                 res.json(data);
             }
         });
+
     } catch (error) {
-        console.error('Error en la función getBienesTecnologicos:', error);
-        res.status(500).json({ error: 'Error en el servidor' });
+      console.error('Error en la función getBienesTecnologicos:', error);
+      res.status(500).json({ error: 'Error en el servidor' });
     }
-};
+  };
 
 const getBienesTecnologicosPorArea = (req, res) => {
     try {
         const { id } = req.params;
         const sql = 'SELECT * FROM Bien_Tecnologico WHERE nombre = \'COMPUTADORA DE ESCRITORIO\' AND id_area_per = ?';
+
         connection.query(sql, [id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
