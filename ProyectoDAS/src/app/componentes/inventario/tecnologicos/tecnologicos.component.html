@@ -322,7 +322,19 @@
                     class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
             </div>
         </div>
-        
+
+        <div class="formgrid grid">
+            <div class="field col">
+                <label for="id_dependencia_per">Selecciona la Dependencia</label>
+                <p-dropdown formControlName="id_dependencia_per" [options]="dependencia" optionLabel="name" placeholder="Selecciona"
+                    filter="true" class="focus:border-primary fixed-width-dropdown"  ></p-dropdown>
+            </div>
+            <div class="field col">
+                <label for="prestado">Selecciona Prestado</label>
+                <p-dropdown formControlName="prestado" [options]="prestado" optionLabel="name" placeholder="Selecciona"
+                    filter="true" class="focus:border-primary fixed-width-dropdown"  ></p-dropdown>
+            </div>
+        </div>
         <div class="formgrid grid">
             <div class="field col">
                 <label for="atributos">Atributos</label>

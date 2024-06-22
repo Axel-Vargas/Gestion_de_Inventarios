@@ -13,7 +13,7 @@ export class DependenciaService {
 
   constructor(private http: HttpClient) {
     this.myAppUrl = environment.endpoint;
-    this.myApiUrl = 'api/dependencias';
+    this.myApiUrl = 'api/dependencia';
   }
 
   getDependencias(): Observable<Dependencia[]> {
