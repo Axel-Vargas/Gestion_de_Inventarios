@@ -434,12 +434,13 @@ agregarAtributo(): void {
     setTimeout(() => (this.loading[index] = false), 1000);
   }
 
-  abrirModalTecnologico(){
-    this.inventoryForm.reset();
-    this.display =  true
+  showDialogAgregar(){
     this.isEditMode = false;
+    this.display =  true
+    this.inventoryForm.reset();
+    
+    
   }
-
   
   guardarBienesTecnologicos(): void {
     const idProveedor = this.inventoryForm.value.id_proveedor_per.code;
