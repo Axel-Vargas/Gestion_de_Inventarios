@@ -32,9 +32,7 @@ import { ConfirmationService } from 'primeng/api';
     MessagesModule,
     ConfirmDialogModule
   ],
-  exports: [
-    MarcasComponent
-  ],
+ 
   providers: [
     DialogService,
     ConfirmationService,

@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Marcas } from '../api/Marcas';
 import { MarcasService } from '../../services/marcas.service';
-import { MessageService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-marcas',
   templateUrl: './marcas.component.html',
   styleUrl: './marcas.component.css'
 })
-export class MarcasComponent implements OnInit{
+export class MarcasComponent implements OnInit {
   tooltipVisible: boolean = false;
   marcas!: Marcas[];
   marca!: Marcas;

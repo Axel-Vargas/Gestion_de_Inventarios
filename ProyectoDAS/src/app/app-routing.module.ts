@@ -18,6 +18,7 @@ const routes: Routes = [
       { path: 'programas', loadChildren: () => import('./componentes/programas/programas.module').then(m => m.ProgramasModule), canActivate: [AuthGuard] },
       { path: 'proveedores', loadChildren: () => import('./componentes/proveedores/proveedores.module').then(m => m.ProveedoresModule), canActivate: [AuthGuard] },
       { path: 'reportes', loadChildren: () => import('./componentes/reportes/reportes.module').then(m => m.ReportesModule), canActivate: [AuthGuard]},
+      { path: 'marcas', loadChildren: () => import('./componentes/marcas/marcas.module').then(m => m.MarcasModule), canActivate: [AuthGuard]},
     ]
   },
 ];
