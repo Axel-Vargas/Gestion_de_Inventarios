@@ -72,13 +72,23 @@ const obtenerBienesPorBloqueYArea = (req, res) => {
 
     try {
         const sql = `
-            SELECT BT.*
-            FROM BLOQUES B
-            JOIN AREAS A ON B.ID_BLOQUE = A.ID_BLOQUE_PER
-            JOIN BIEN_TECNOLOGICO BT ON A.ID_AREA = BT.ID_AREA_PER
-            WHERE B.NOMBRE = ?
-            AND A.NOMBRE = ?
-            AND BT.ESTADO != "BODEGA";
+            SELECT 
+                BT.*, 
+                CONCAT(E.nombre, ' ', E.apellido) AS nombre_encargado 
+            FROM 
+                BLOQUES B
+            JOIN 
+                AREAS A ON B.ID_BLOQUE = A.ID_BLOQUE_PER
+            JOIN 
+                BIEN_TECNOLOGICO BT ON A.ID_AREA = BT.ID_AREA_PER
+            JOIN 
+                ENCARGADOS E ON BT.ID_ENCARGADO_PER = E.ID_ENCARGADO
+            WHERE 
+                B.NOMBRE = ?
+            AND 
+                A.NOMBRE = ?
+            AND 
+                BT.ESTADO != 'BODEGA';
         `;
         connection.query(sql, [nombreBloque, nombreArea], (err, data) => {
             if (err) {

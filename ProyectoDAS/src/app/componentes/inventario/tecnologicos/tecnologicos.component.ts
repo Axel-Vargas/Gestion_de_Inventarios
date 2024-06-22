@@ -237,20 +237,20 @@ export class TecnologicosComponent implements OnInit {
   }
 
   obtenerMarcas() {
-    this.marcasService.getMarcas().subscribe((data: Marcas | Marcas[]) => {
-        console.log(data);
-        if (Array.isArray(data)) {this.marca = data.filter((marcas) =>
-                marcas.nom_marca !== undefined &&
-                marcas.id !== undefined).map((marcas) => ({
-                name: marcas.nom_marca!,
-                code: marcas.id!,}));
-        } else if (data.nom_marca !== undefined && data.id !== undefined) {
-          this.marca = [{ name: data.nom_marca!, code: data.id! }];
-        }
-      },(error) => {
-        console.error(error);
+    this.marcasService.getMarcasTecnologicos().subscribe((data: Marcas | Marcas[]) => {
+      console.log(data);
+      if (Array.isArray(data)) {this.marca = data.filter((marcas) =>
+              marcas.nom_marca !== undefined &&
+              marcas.id !== undefined).map((marcas) => ({
+              name: marcas.nom_marca!,
+              code: marcas.id!,}));
+      } else if (data.nom_marca !== undefined && data.id !== undefined) {
+        this.marca = [{ name: data.nom_marca!, code: data.id! }];
       }
-    );
+    },(error) => {
+      console.error(error);
+    }
+  );
   }
 
   obtenerTipoTecnologico() {
@@ -510,10 +510,9 @@ agregarAtributo(): void {
   }
   
 
- 
-
   editarBienTecnologico(bien: any): void {
     this.selectedBienTecnologico = bien;
+    console.log(this.selectedBienTecnologico)
     this.isEditMode = true;
     this.display = true;
     const fecha = new Date(bien.fecha_adquisicion);
@@ -524,37 +523,45 @@ agregarAtributo(): void {
     const nombre = this.tipoTecnologico.find((tb) => tb.name.toLowerCase().trim() === bien.nombre.toLowerCase().trim());
     const encargado = this.encargado.find((en) => en.code === bien.id_encargado_per);
   
-    this.cargarAreas(bien.id_area_per).then(() => {
-      const areaSeleccionada = this.area.find((a) => a.code === bien.id_area_per);
-      if (areaSeleccionada) {
-        const bloqueAsociado = this.categories.find((bloque) => bloque.code === areaSeleccionada.code);
-        if (bloqueAsociado) {
-          this.inventoryForm.patchValue({
-            id_proveedor_per: proveedorSeleccionado || null,
-            id_area_per: areaSeleccionada || null,
-            id_tipo_per: tipoSeleccionado || null,
-            id_bloque_per: bloqueAsociado || null,
-            fecha_adquisicion: fecha,
-            estado: estadoSeleccionado || null,
-            num_serie: bien.num_serie,
-            nombre: nombre,
-            atributos: JSON.stringify(bien.atributos, null, 2),
-            modelo: bien.modelo,
-            codigoUTA: bien.codigoUTA,
-            marca: marcaSeleccionado,
-            encargado: encargado,
-            localizacion: bien.localizacion,
+    this.areasService.getArea(bien.id_area_per).subscribe(
+      (data: Area) => {
+        const id_bloque: number | undefined = data.id_bloque_per
+        if(id_bloque !== undefined){
+          this.cargarAreas(id_bloque).then(() => {
+            const areaSeleccionada = this.area.find((a) => a.code === bien.id_area_per);
+            if (areaSeleccionada) {
+              const bloqueAsociado = this.categories.find((bloque) => bloque.code === id_bloque);
+              if (bloqueAsociado) {
+                this.inventoryForm.patchValue({
+                  id_proveedor_per: proveedorSeleccionado || null,
+                  id_area_per: areaSeleccionada || null,
+                  id_tipo_per: tipoSeleccionado || null,
+                  id_bloque_per: bloqueAsociado || null,
+                  fecha_adquisicion: fecha,
+                  estado: estadoSeleccionado || null,
+                  num_serie: bien.num_serie,
+                  nombre: nombre,
+                  atributos: JSON.stringify(bien.atributos, null, 2),
+                  modelo: bien.modelo,
+                  codigoUTA: bien.codigoUTA,
+                  marca: marcaSeleccionado,
+                  encargado: encargado,
+                  localizacion: bien.localizacion,
+                });
+              } else {
+                console.error('Bloque no encontrado para el área ID:', bien.id_area_per);
+              }
+            } else {
+              console.error('Área no encontrada para el ID:', bien.id_area_per);
+            }
+          })
+          .catch((error) => {
+            console.error('Error al cargar y seleccionar el área:', error);
           });
-        } else {
-          console.error('Bloque no encontrado para el área ID:', bien.id_area_per);
         }
-      } else {
-        console.error('Área no encontrada para el ID:', bien.id_area_per);
-      }
-    })
-    .catch((error) => {
-      console.error('Error al cargar y seleccionar el área:', error);
-    });
+        
+      },
+    );
   }
   
   eliminar(id: number): void {
