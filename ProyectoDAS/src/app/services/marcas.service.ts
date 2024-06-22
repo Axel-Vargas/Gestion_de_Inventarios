@@ -11,28 +11,36 @@ export class MarcasService {
     private myAppUrl: string;
     private myApiUrl: string;
 
-    constructor(private http: HttpClient) {
-        this.myAppUrl = environment.endpoint;
-        this.myApiUrl = 'api/marcas';
-    }
+constructor(private http: HttpClient) {
+    this.myAppUrl = environment.endpoint;
+    this.myApiUrl = 'api/marcas';
+}
 
-    getMarcas(): Observable<Marcas[]> {
-        return this.http.get<Marcas[]>(`${this.myAppUrl}${this.myApiUrl}`);
-    }
+  getMarcas(): Observable<Marcas[]> {
+    return this.http.get<Marcas[]>(`${this.myAppUrl}${this.myApiUrl}`);
+  }
 
-    getMarca(id: number): Observable<Marcas> {
-        return this.http.get<Marcas>(`${this.myAppUrl}${this.myApiUrl}${id}`);
-    }
+  getMarca(id: number): Observable<Marcas> {
+    return this.http.get<Marcas>(`${this.myAppUrl}${this.myApiUrl}/${id}`);
+  }
 
-    agregarMarca(marcas: Marcas): Observable<Marcas> {
-        return this.http.post<Marcas>(`${this.myAppUrl}${this.myApiUrl}`, marcas);
-    }
+  agregarMarca(marca: Marcas): Observable<Marcas> {
+    return this.http.post<Marcas>(`${this.myAppUrl}${this.myApiUrl}`, marca);
+  }
 
-    actualizarMarca(id: number, marcas: Marcas): Observable<any> {
-        return this.http.put(`${this.myAppUrl}${this.myApiUrl}${id}`, marcas);
-    }
+  actualizarMarca(marca: Marcas): Observable<any> {
+    return this.http.put(`${this.myAppUrl}${this.myApiUrl}/${marca.id}`, marca);
+  }
 
-    eliminarMarca(id: number): Observable<any> {
-        return this.http.delete(`${this.myAppUrl}${this.myApiUrl}${id}`);
-    }
+  eliminarMarca(id: number): Observable<any> {
+    return this.http.delete(`${this.myAppUrl}${this.myApiUrl}/${id}`);
+  }
+
+  getMarcasTecnologicos(): Observable<Marcas[]> {
+    return this.http.get<Marcas[]>(`${this.myAppUrl}${this.myApiUrl}/tecnologicos`);
+  }
+
+  getMarcasMobiliarios(): Observable<Marcas[]> {
+    return this.http.get<Marcas[]>(`${this.myAppUrl}${this.myApiUrl}/mobiliarios`);
+  }
 }
