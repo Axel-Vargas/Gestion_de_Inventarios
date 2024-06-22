@@ -77,6 +77,7 @@ export class MenuComponent implements OnInit {
                     },
                     { label: 'Softwares', icon: 'pi pi-microsoft', routerLink: ['/panel/programas'], visible: this.userRole === 1 || this.userRole === 2},
                     { label: 'Proveedores', icon: 'pi pi-truck', routerLink: ['/panel/proveedores'], visible: this.userRole === 1 || this.userRole === 2 },
+                    { label: 'Marcas', icon: 'pi pi-truck', routerLink: ['/panel/marcas'], visible: this.userRole === 1 || this.userRole === 2 },
                     { label: 'Reportes', icon: 'pi pi-file', routerLink: ['/panel/reportes'], visible: this.userRole === 1 || this.userRole === 2 || this.userRole === 3},
                 ]
             },
