@@ -2,7 +2,17 @@ const connection = require('../db/connection');
 
 const getComponentes = (req, res) => {
     try {
-        const sql = 'SELECT * FROM Componentes WHERE estado != "BODEGA"';
+        const sql = `
+            SELECT 
+                C.*, 
+                CONCAT(D.nombre_dep) AS nombre_dependencia
+            FROM 
+                Componentes C
+            JOIN 
+                DEPENDENCIA D ON C.id_dependencia_per = D.id_dep
+            WHERE 
+                C.estado != 'BODEGA';
+        `;
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -20,11 +30,18 @@ const getComponentes = (req, res) => {
 const getComponentesLibres = (req, res) => {
     try {
         const sql = `
-                SELECT C.*
-                FROM BIEN_TECNOLOGICO BT, COMPONENTES C
-                WHERE BT.ID_BIEN = C.ID_BIEN_PER
-                AND BT.ESTADO = 'BODEGA'
-                AND C.ESTADO != 'BODEGA'
+               SELECT 
+                    C.*,
+                    CONCAT(D.nombre_dep) AS nombre_dependencia
+                FROM 
+                    BIEN_TECNOLOGICO BT,
+                    COMPONENTES C
+                JOIN 
+                    DEPENDENCIA D ON C.id_dependencia_per = D.id_dep
+                WHERE 
+                    BT.ID_BIEN = C.ID_BIEN_PER
+                    AND BT.ESTADO = 'BODEGA'
+                    AND C.ESTADO != 'BODEGA';
                 `;
 
         connection.query(sql, (err, data) => {

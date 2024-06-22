@@ -163,6 +163,7 @@ export class TecnologicosComponent implements OnInit {
       codigoUTA: ['', Validators.required],
       estado: ['', Validators.required],
       repotenciado: ['', Validators.required],
+      id_dependencia_per: new FormControl(''),
       id_proveedor_per: new FormControl('', Validators.required),
     });
   }
@@ -644,11 +645,13 @@ agregarAtributo(): void {
       }else{
         formData.id_bien_per = this.selectedComponente.id_bien_per;
       }
+
       formData.id_proveedor_per = this.componentForm.value.id_proveedor_per.code;
       formData.estado = this.componentForm.value.estado.name;
       formData.repotenciado = this.componentForm.value.repotenciado.name;
       formData.marca = this.componentForm.value.marca.name;
-     //const marca = this.inventoryForm.value.marca.name;
+      formData.id_dependencia_per = this.componentForm.value.id_dependencia_per.code
+
       console.log(this.componentForm.value);
       if (this.isEditModeComponentes) {
         this.componente_service.actualizarComponente(this.selectedComponente.id_componente,formData).subscribe({
@@ -706,7 +709,7 @@ agregarAtributo(): void {
 
     const proveedorSeleccionado = this.proveedor.find((p) => p.code === componente.id_proveedor_per);
     const marcaSeleccionado = this.marca.find((m) => m.name.toLowerCase().trim() === componente.marca.toLowerCase().trim());
-
+    const dependencia = this.dependencia.find((de) => de.code === componente.id_dependencia_per);
     const tipoSeleccionado = this.tipoBien.find((t) => t.code === componente.id_tipo_per);
     const estadoSeleccionado = this.estado.find((e) =>e.name.toLowerCase().trim() === componente.estado.toLowerCase().trim());
     const repotenciado = this.repotenciado.find((r) => r.name.toLowerCase().trim() ===componente.repotenciado.toLowerCase().trim());
@@ -720,6 +723,7 @@ agregarAtributo(): void {
       modelo: componente.modelo,
       codigoUTA: componente.codigoUTA,
       marca: marcaSeleccionado,
+      id_dependencia_per: dependencia
     });
   }
 

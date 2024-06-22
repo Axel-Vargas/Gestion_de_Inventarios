@@ -126,6 +126,10 @@
                             REPOTENCIADO
                             <p-sortIcon field="repotenciado"></p-sortIcon>
                         </th>
+                        <th pSortableColumn="dependencia">
+                            DEPENDENCIA
+                            <p-sortIcon field="dependencia"></p-sortIcon>
+                        </th>
                         <th pSortableColumn="acciones">ACCIONES</th>
                     </tr>
                 </ng-template>
@@ -149,6 +153,7 @@
                                 ">{{ order.repotenciado }}
                             </span>
                         </td>
+                        <td>{{ order.nombre_dependencia }}</td>
                         <td class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
                             <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"   (click)="openEditComponentModal(order)"></p-button>
                             <p-button type="button" icon="pi pi-trash" class="p-button-rounded" (click)="eliminarComponente(order.id_componente)"></p-button>
@@ -417,16 +422,16 @@
             <div class="field col">
                 <label for="id_proveedor_per">Proveedor</label>
                 <p-dropdown inputId="dropdown" formControlName="id_proveedor_per"  [autoDisplayFirst]="false" [options]="proveedor" optionLabel="name" placeholder="Selecciona"
-                     class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                class="focus:border-primary fixed-width-dropdown"></p-dropdown>
                 
             </div>
         </div>
         
         <div class="formgrid grid">
             <div class="field col">
-                <label for="codigoUTA">Código UTA</label>
-                <input formControlName="codigoUTA" type="text"
-                    class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+                <label for="id_dependencia_per">Selecciona la Dependencia</label>
+                    <p-dropdown formControlName="id_dependencia_per" [options]="dependencia" optionLabel="name" placeholder="Selecciona"
+                        filter="true" class="focus:border-primary fixed-width-dropdown"  ></p-dropdown>
             </div>
             <div class="field col">
                 <label for="estado">Estado</label>
@@ -434,7 +439,15 @@
                      class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
         </div>
-       
+        <div class="formgrid grid">
+            <div class="field col">
+                <label for="codigoUTA">Código UTA</label>
+                <input formControlName="codigoUTA" type="text"
+                    class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+            </div> 
+            <div class="field col"></div>
+        </div>
+        
         <p-footer class="flex justify-content-end gap-3">
             <button pButton type="submit" label="Guardar" class="p-button-success" [disabled]="componentForm.invalid"></button>
             <button pButton type="button" label="Cancelar" class="p-button-secondary"
