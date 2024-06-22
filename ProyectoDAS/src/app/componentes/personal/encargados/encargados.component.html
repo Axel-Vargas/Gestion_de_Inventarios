@@ -68,6 +68,9 @@
                             <button pButton (click)="confirm(encargado.id_encargado)" pRipple type="button"
                                 icon="pi pi-trash"
                                 class="p-button p-component p-button-text p-button-trash flex align-items-center justify-content-center"></button>
+                            <button pButton (click)="showDialogPasoDeBien(encargado)" pRipple type="button"
+                                icon="pi pi-arrow-right-arrow-left"
+                                class="p-button p-component p-button-text p-button-trash flex align-items-center justify-content-center"></button>
                         </td>
                     </tr>
                 </ng-template>
@@ -118,6 +121,48 @@
         <p-button [label]="esEdicion ? 'Editar' : 'Guardar'"
             (click)="esEdicion ? editarEncargado() : registrarEncargado()" (click)="visible = false"
             [rounded]="true"></p-button>
+    </div>
+</p-dialog>
+
+<p-dialog header="Traspaso de Bienes" [(visible)]="displayModalBienes" modal="true" [style]="{width: '600px', height: '500px'}">
+    <div class="flex flex-column gap-2" [style]="{ height: '85%'}">
+        <div class="flex align-items-center flex-row">
+            <p-dropdown [options]="encargados" dataKey="id_encargado" [(ngModel)]="selectedEncargado" optionLabel="nombreCompleto" placeholder="Seleccione un nuevo encargado"  [style]="{width: '100%'}"></p-dropdown>
+        </div>
+        <div class="flex flex-row gap-2" [style]="{ height: 'calc(100% - 2rem)'}">
+            <div class="flex flex-column flex-1 overflow-auto" style="max-height: calc(100% - 2rem);">
+                <p-button class="mb-2 small-rounded-button" [style]="{width: '100%'}" label="Mover Todos" icon="pi pi-angle-double-right" (click)="moveAllToTarget()" [disabled]="!selectedEncargado"></p-button>
+                <div class="p-2 border-1 surface-border border-round flex-1 overflow-auto">
+                    <ul class="list-none flex flex-column gap-2 p-0 m-0">
+                        <li 
+                            *ngFor="let bien of sourceBienes"
+                            class="p-2 border-round shadow-1" 
+                            pDraggable 
+                            (onDragStart)="dragStart(bien)" 
+                            (onDragEnd)="dragEnd()">
+                            {{bien.nombre}}/{{bien.codigoUTA}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="flex flex-column flex-1 overflow-auto" style="max-height: calc(100% - 2rem);">
+                <p-button class="mb-2 small-rounded-button" [style]="{width: '100%'}" label="Mover Todos" icon="pi pi-angle-double-left" (click)="moveAllToSource()" [disabled]="!selectedEncargado"></p-button>
+                <div class="p-2 border-1 surface-border border-round flex-1 overflow-auto" pDroppable (onDrop)="drop()">
+                    <ul class="list-none flex flex-column gap-2 p-0 m-0">
+                        <li 
+                            *ngFor="let bien of targetBienes" 
+                            class="p-2 border-round shadow-1" 
+                            pDraggable >
+                            {{bien.nombre}}/{{bien.codigoUTA}}
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="flex justify-content-end gap-2 mt-auto">
+            <p-button label="Cancelar" icon="pi pi-times" (click)="displayModalBienes = false" class="small-rounded-button"></p-button>
+            <p-button label="Confirmar" icon="pi pi-check" class="small-rounded-button"></p-button>
+        </div>
     </div>
 </p-dialog>
 <p-toast position="bottom-right"></p-toast>

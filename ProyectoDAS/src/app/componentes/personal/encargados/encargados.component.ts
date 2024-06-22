@@ -1,8 +1,7 @@
 import { Component, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { EncargadosService } from '../../../services/encargados.service';
-import { Encargados } from '../../api/Encargados';
-import { Table } from 'primeng/table';
+import { catchError, forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-encargados',
@@ -13,7 +12,10 @@ import { Table } from 'primeng/table';
 
 export class EncargadosComponent {
   encargados: any = [];
+  selectedEncargado: any;
   filterOptions: any = [];
+  bienesMobiliarios: any[] = [];
+  bienesTecnologicos: any[] = [];
 
   id: string = '';
   cedulaBuscada: string = '';
@@ -23,12 +25,17 @@ export class EncargadosComponent {
   telefono = '';
   direccion = '';
   mensajeValidacionCedula: string = '';
+  displayModalBienes: boolean = false;
 
   tooltipVisible: boolean = false;
   visible: boolean = false;
   esEdicion: boolean = false;
   soloLetrasRegex = /^[a-zA-Z]*$/;
   soloNumerosRegex = /^[0-9]*$/;
+  draggedEncargado: any = null;
+  sourceBienes: any[] = [];
+  targetBienes: any[] = [];
+  draggedBien: any;
 
   constructor(private confirmationService: ConfirmationService, private encargadosService: EncargadosService, private messageService: MessageService) { }
 
@@ -44,11 +51,15 @@ export class EncargadosComponent {
     this.listarEncargados();
   }
 
+
   listarEncargados(): void {
     this.encargadosService.obtenerEncargados().subscribe(
       (response: any) => {
         if (response) {
-          this.encargados = response;
+          this.encargados = response.map((encargado: any) => ({
+            ...encargado,
+            nombreCompleto: `${encargado.nombre} ${encargado.apellido}`
+          }));
         } else {
           this.encargados = [];
         }
@@ -57,13 +68,13 @@ export class EncargadosComponent {
         console.error('Error al obtener encargados:', error);
       }
     );
-  }
+}
 
   registrarEncargado() {
     if (this.cedula == '' || this.nombre == '' || this.apellido == '' || this.telefono == '' || this.direccion == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      this.encargadosService.insertarEncargado(this.cedula, this.nombre, this.apellido, this.telefono, this.direccion).subscribe(
+      this.encargadosService.insertarEncargado(this.cedula, this.nombre, this.apellido, this.telefono, this.direccion, 1).subscribe(
         (response) => {
           this.mostrarMensaje("Encargado registrado con éxito", true);
           this.limpiarFormulario();
@@ -145,6 +156,26 @@ export class EncargadosComponent {
     this.tooltipVisible = false;
   }
 
+  showDialogPasoDeBien(encargado: any) {
+    let nombre = encargado.nombre + ' ' + encargado.apellido;
+
+    forkJoin({
+      bienesMobiliarios: this.encargadosService.obtenerBienesMobiliariosAsignados(encargado.id_encargado),
+      bienesTecnologicos: this.encargadosService.obtenerBienesTecnologicosAsignados(nombre)
+    }).subscribe(
+      (response: any) => {
+        const { bienesMobiliarios, bienesTecnologicos } = response;
+        this.sourceBienes = [...bienesMobiliarios, ...bienesTecnologicos];
+      },
+      (error) => {
+        console.error('Error al obtener bienes asignados:', error);
+      }
+    );
+
+    this.displayModalBienes = true;
+  }
+
+
   showDialogAgregar() {
     this.esEdicion = false;
     this.visible = true;
@@ -214,6 +245,76 @@ export class EncargadosComponent {
       this.mensajeValidacionCedula = esCedulaValida ? '' : 'Cédula inválida';
     }
 
+  }
+
+  dragStart(bien: any) {
+    this.draggedBien = bien;
+  }
+
+  drop() {
+    if (this.draggedBien) {
+      let draggedBienesIndex = this.findIndex(this.draggedBien);
+      this.targetBienes = [...this.targetBienes, this.draggedBien];
+      this.sourceBienes = this.sourceBienes?.filter((val, i) => i != draggedBienesIndex);
+      this.draggedBien = null;
+    }
+  }
+
+  dragEnd() {
+    this.draggedBien = null;
+  }
+
+  findIndex(bien: any) {
+    let index = -1;
+    for (let i = 0; i < this.sourceBienes.length; i++) {
+      if (bien.id_bien === this.sourceBienes[i].id_bien) {
+        index = i;
+        break;
+      }
+    }
+    return index;
+  }
+/*
+  confirmTransfer() {
+    if (this.selectedEncargado && this.targetBienes.length > 0) {
+      const bienesMobiliario = this.targetBienes.filter(bien => bien.tipo === 'mobiliario');
+      const bienesTecnologico = this.targetBienes.filter(bien => bien.tipo === 'tecnologico');
+
+      if (bienesMobiliario.length > 0) {
+        this.bienesService.updateBienesEncargadoMobiliario(bienesMobiliario, this.selectedEncargado.id).subscribe(
+          response => {
+            console.log('Bienes Mobiliario actualizados:', response);
+          },
+          error => {
+            console.error('Error al actualizar bienes mobiliario:', error);
+          }
+        );
+      }
+
+      if (bienesTecnologico.length > 0) {
+        this.bienesService.updateBienesEncargadoTecnologico(bienesTecnologico, this.selectedEncargado.id).subscribe(
+          response => {
+            console.log('Bienes Tecnológicos actualizados:', response);
+          },
+          error => {
+            console.error('Error al actualizar bienes tecnológicos:', error);
+          }
+        );
+      }
+
+      this.displayModalBienes = false;
+    }
+  }
+*/
+
+  moveAllToTarget() {
+    this.targetBienes = this.targetBienes.concat(this.sourceBienes);
+    this.sourceBienes = [];
+  }
+
+  moveAllToSource() {
+    this.sourceBienes = this.sourceBienes.concat(this.targetBienes);
+    this.targetBienes = [];
   }
 
   limpiarFormulario() {

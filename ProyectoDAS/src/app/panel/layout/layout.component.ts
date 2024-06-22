@@ -82,7 +82,7 @@ export class LayoutComponent   {
   onCodeResult(result: string): void {
     this.displayQRScanner = false;
     console.log('QR Code Result:', result);
-    const regex = /id_bien_tec:\s*(\d+)/; 
+    const regex = /id_bien:\s*(\d+)/; 
     const match = result.match(regex);
     if (match && match.length > 1) {
       const id = match[1];
