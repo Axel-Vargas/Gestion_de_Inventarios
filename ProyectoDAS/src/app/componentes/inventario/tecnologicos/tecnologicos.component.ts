@@ -437,9 +437,7 @@ agregarAtributo(): void {
   showDialogAgregar(){
     this.isEditMode = false;
     this.display =  true
-    this.inventoryForm.reset();
-    
-    
+    this.inventoryForm.reset(); 
   }
   
   guardarBienesTecnologicos(): void {
