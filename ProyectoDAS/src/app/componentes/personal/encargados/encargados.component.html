@@ -13,17 +13,18 @@
                 [paginator]="true" [globalFilterFields]="['cedula', 'nombre', 'apellido', 'telefono', 'direccion']"
                 [tableStyle]="{ 'min-width': '95rem' }">
                 <ng-template pTemplate="caption">
-                    <div class="flex">
-                        <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
-                            <p-inputIcon>
-                                <i class="pi pi-search"></i>
-                            </p-inputIcon>
-                            <input pInputText type="text"
-                                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                                placeholder="Buscar Encargado" />
-                        </p-iconField>
+                    <div class="flex align-items-center justify-content-between">
+                      <p-button label="Traspasar Bienes Libres" icon="pi pi-arrow-right" class="mr-2"
+                                (click)="openTransferModalForNullEncargados()"></p-button>
+                      <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+                        <p-inputIcon>
+                          <i class="pi pi-search ml-2"></i>
+                        </p-inputIcon>
+                        <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                               placeholder="Buscar Encargado" class="ml-2"/>
+                      </p-iconField>
                     </div>
-                </ng-template>
+                  </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
                         <th>
@@ -160,8 +161,8 @@
             </div>
         </div>
         <div class="flex justify-content-end gap-2 mt-auto">
-            <p-button label="Cancelar" icon="pi pi-times" (click)="displayModalBienes = false" class="small-rounded-button"></p-button>
-            <p-button label="Confirmar" icon="pi pi-check" class="small-rounded-button"></p-button>
+            <p-button label="Cancelar" icon="pi pi-times" (click)="cancelTransfer()" class="small-rounded-button"></p-button>
+            <p-button label="Confirmar" icon="pi pi-check" (click)="confirmTransfer()" [disabled]="targetBienes.length === 0 || !selectedEncargado" class="small-rounded-button"></p-button>
         </div>
     </div>
 </p-dialog>

@@ -29,8 +29,8 @@ exports.addBienes = async (req, res) => {
   try {
     const {bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per} = req.body;
 
-      const insertQuery = `INSERT INTO bien_mobiliario (bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      connection.query(insertQuery, [bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per], (error, results) => {
+      const insertQuery = `INSERT INTO bien_mobiliario (nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      connection.query(insertQuery, [nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error interno del servidor' });
         }
@@ -44,12 +44,12 @@ exports.addBienes = async (req, res) => {
 };
 exports.editBienes = async (req, res) => {
     try {
-      const id_bien = req.params.id; // Recibir el ID del bien desde la URL
-      const {bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per} = req.body;
+      const id_bien = req.params.id;
+      const { nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per} = req.body;
   
-      const updateQuery = `UPDATE bien_mobiliario SET bld_bca = ?, nombre = ?, marca = ?, modelo = ?, num_serie = ?, material = ?, color = ?, fecha_adquisicion = ?, estado = ?, localizacion = ?, codigoUTA = ?, valor_contable = ?, id_encargado_per = ?, id_area_per = ? WHERE id_bien = ?`;
+      const updateQuery = `UPDATE bien_mobiliario SET nombre = ?, marca = ?, modelo = ?, num_serie = ?, material = ?, color = ?, fecha_adquisicion = ?, estado = ?, localizacion = ?, codigoUTA = ?, id_encargado_per = ?, id_area_per = ? WHERE id_bien = ?`;
   
-      connection.query(updateQuery, [bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per, id_bien], (error, results) => {
+      connection.query(updateQuery, [ nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per, id_bien], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error al actualizar el bien' });
         }
@@ -67,7 +67,7 @@ exports.editBienes = async (req, res) => {
 
   exports.deleteBienes = async (req, res) => {
     try {
-      const id_bien = req.params.id; // Recibir el ID del bien desde la URL
+      const id_bien = req.params.id;
   
       const deleteQuery = `DELETE FROM bien_mobiliario WHERE id_bien = ?`;
   
@@ -92,11 +92,8 @@ exports.editBienes = async (req, res) => {
   exports.getBuscarBienPorId = async (req, res) => {
     try {
         const { id_bien } = req.params;
+        const selectQuery = `SELECT id_bien, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per FROM bien_mobiliario WHERE id_bien = ?`;
 
-        // La consulta SQL para buscar por id_bien
-        const selectQuery = `SELECT id_bien, bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per FROM bien_mobiliario WHERE id_bien = ?`;
-
-        // Ejecutar la consulta SQL
         connection.query(selectQuery, [id_bien], (error, results) => {
             if (error) {
                 return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -133,3 +130,5 @@ exports.getMobiliarioByName = async (req, res) => {
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 };
+
+

@@ -20,7 +20,7 @@ export class EncargadosService {
     return this.http.get<Encargados[]>(`${this.API}`);
   }
   insertarEncargado(cedula: string, nombre: string, apellido: string, telefono: string, direccion: string, estado: number) {
-    return this.http.post(this.API, { cedula, nombre, apellido, telefono, direccion, estado})
+    return this.http.post(this.API, { cedula, nombre, apellido, telefono, direccion, estado })
   }
 
   actualizarEncargado(id: String, cedula: string, nombre: string, apellido: string, telefono: string, direccion: string) {
@@ -39,13 +39,15 @@ export class EncargadosService {
     return this.http.get<any>(`${this.API}/${idEncargado}/bienes-tecnologicos`);
   }
 
-  updateBienesEncargadoMobiliario(bienes: any[], encargadoId: number): Observable<any> {
-    const body = { bienes, encargadoId };
-    return this.http.put(`${this.API}/bienes/updateEncargadoMobiliario`, body);
+  updateBienesEncargadoMobiliario(id: string, id_encargado_per: string): Observable<any> {
+    return this.http.put(`${this.API}/updateEncargadoMobiliario/${id}`,{ id_encargado_per});
   }
 
-  updateBienesEncargadoTecnologico(bienes: any[], encargadoId: number): Observable<any> {
-    const body = { bienes, encargadoId };
-    return this.http.put(`${this.API}/bienes/updateEncargadoTecnologico`, body);
+  updateBienesEncargadoTecnologico(id: string, id_encargado_per: string): Observable<any> {
+    return this.http.put(`${this.API}/updateEncargadoTecnologico/${id}`, { id_encargado_per});
+  }
+
+  getBienesDisponibles(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.API}/getBienesDisponibles`);
   }
 }
