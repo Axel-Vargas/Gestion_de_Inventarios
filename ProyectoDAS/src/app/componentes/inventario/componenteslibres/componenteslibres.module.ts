@@ -32,9 +32,8 @@ import { ConfirmationService } from 'primeng/api';
     DropdownModule
   ],
   exports: [
-    ComponenteslibresComponent
+    //ComponenteslibresComponent
   ],
-  ,
   providers: [
     DialogService, 
     ConfirmationService

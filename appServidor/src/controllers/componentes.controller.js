@@ -22,7 +22,7 @@ const getComponentesLibres = (req, res) => {
         const sql = `
                 SELECT C.*
                 FROM BIEN_TECNOLOGICO BT, COMPONENTES C
-                WHERE BT.ID_BIEN_TEC = C.ID_BIEN_PER
+                WHERE BT.ID_BIEN = C.ID_BIEN_PER
                 AND BT.ESTADO = 'BODEGA'
                 AND C.ESTADO != 'BODEGA'
                 `;
