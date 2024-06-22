@@ -50,7 +50,7 @@ export class MobiliariosComponent {
 
   constructor(private confirmationService: ConfirmationService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService, private messageService: MessageService) {}
 
-  id_bien_mob = '';
+  id_bien = '';
   id_encargado_per = '';
   id_area_per = '';
 
@@ -288,7 +288,7 @@ export class MobiliariosComponent {
     this.valor_contable = mobiliario.valor_contable;
     this.selectEncargado = this.encargados.find(encargado => encargado.id_encargado === mobiliario.id_encargado_per);
     this.selectArea = this.areas.find(area => area.id_area === mobiliario.id_area_per);
-    this.id = mobiliario.id_bien_mob;
+    this.id = mobiliario.id_bien;
     this.visible = true;
   }
 
@@ -316,7 +316,7 @@ export class MobiliariosComponent {
   }
 
   limpiarFormulario() {
-    this.id_bien_mob = '';
+    this.id_bien = '';
     this.bld_bca = '';
     this.nombre = '';
     this.marca = '';

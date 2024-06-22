@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TagModule } from 'primeng/tag';
 import { Table, TableModule } from 'primeng/table';
+import { DragDropModule } from 'primeng/dragdrop';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { Table, TableModule } from 'primeng/table';
     ToastModule,
     FormsModule,
     ConfirmDialogModule,
-    TagModule
+    TagModule,
+    DragDropModule
   ],
   providers:[
     MessageService,
