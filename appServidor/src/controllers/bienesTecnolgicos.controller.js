@@ -30,10 +30,14 @@ function generateQR(data) {
 const getBienesTecnologicos = (req, res) => {
     try {
         const sql = `
-            SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado 
+            SELECT 
+            bt.*,
+            CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado,
+            CONCAT(d.nombre_dep) AS nombre_dependencia
             FROM bien_tecnologico bt
             LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
-            WHERE bt.estado != 'BODEGA'
+            LEFT JOIN dependencia d ON bt.id_dependencia_per = d.id_dep
+            WHERE bt.estado != 'BODEGA';
         `;
         connection.query(sql, (err, data) => {
             if (err) {
@@ -74,7 +78,8 @@ const obtenerBienesPorBloqueYArea = (req, res) => {
         const sql = `
             SELECT 
                 BT.*, 
-                CONCAT(E.nombre, ' ', E.apellido) AS nombre_encargado 
+                CONCAT(E.nombre, ' ', E.apellido) AS nombre_encargado,
+                CONCAT(D.nombre_dep) AS nombre_dependencia
             FROM 
                 BLOQUES B
             JOIN 
@@ -83,6 +88,8 @@ const obtenerBienesPorBloqueYArea = (req, res) => {
                 BIEN_TECNOLOGICO BT ON A.ID_AREA = BT.ID_AREA_PER
             JOIN 
                 ENCARGADOS E ON BT.ID_ENCARGADO_PER = E.ID_ENCARGADO
+            JOIN 
+                DEPENDENCIA D ON BT.ID_DEPENDENCIA_PER = D.ID_DEP
             WHERE 
                 B.NOMBRE = ?
             AND 
