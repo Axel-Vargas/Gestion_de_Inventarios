@@ -1,35 +1,39 @@
 <div class="grid">
     <div class="col-12">
         <div class="card">
-            <div class="floating-button flex align-items-center">
-                <span class="tooltip" [ngClass]="{ show: tooltipVisible }">Nuevo</span>
-                <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
-                    (mouseleave)="hideTooltip()" (click)="abrirModalTecnologico()"></button>
+            <div class="flex tecnologicos justify-content-between flex-wrap mb-5">
+                <span class="flex mobiliarios align-items-center">Bienes Tecnológicos</span>
+                <div class="flex align-items-center">
+                    <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Bien</span>
+                    <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
+                      (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
+                  </div>
             </div>
-            <span class="flex mobiliarios align-items-center">Bienes Tecnológicos</span>
             <p-toast></p-toast>
-            <p-table  #dt1 [value]="tecnologicos" dataKey="id_bien" [tableStyle]="{ 'min-width': '60rem' }"
+            <p-table #dt1 [value]="tecnologicos" dataKey="id_bien" [tableStyle]="{ 'min-width': '60rem' }"
                 scrollDirection="both" [scrollable]="true" scrollHeight="450px" [rowHover]="true" [rows]="10"
-                [paginator]="true" [rowsPerPageOptions]="[10, 20, 30]" [globalFilterFields]="['nombre','atributos','marca','modelo','num_serie','fecha_adquisicion','estado','codigoUTA','localizacion','ip_tecnologico']">
+                [paginator]="true" [rowsPerPageOptions]="[10, 20, 30]"
+                [globalFilterFields]="['nombre','atributos','marca','modelo','num_serie','fecha_adquisicion','estado','codigoUTA','localizacion','ip_tecnologico']">
 
                 <ng-template pTemplate="caption">
                     <div class="flex justify-content-between flex-column sm:flex-row" style="gap: 6px">
                         <div class="flex justify-content-between flex-column sm:flex-row" style="gap: 6px">
                             <p-dropdown class="w-full" [options]="categories" optionLabel="name"
-                                placeholder="Selecciona un bloque" filter="true"
-                                class="fixed-width-dropdown" (onChange)="onSelectBloque($event)"></p-dropdown>
+                                placeholder="Selecciona un bloque" filter="true" class="fixed-width-dropdown"
+                                (onChange)="onSelectBloque($event)"></p-dropdown>
 
                             <p-dropdown class="w-full" [options]="area" optionLabel="name"
-                                placeholder="Selecciona un area" filter="true"
-                                class="fixed-width-dropdown" [disabled]="isDropdownDisabled" (onChange)="onSelectArea($event)"></p-dropdown>
+                                placeholder="Selecciona un area" filter="true" class="fixed-width-dropdown"
+                                [disabled]="isDropdownDisabled" (onChange)="onSelectArea($event)"></p-dropdown>
 
-                            <p-button label="Cargar" icon="pi pi-search" [loading]="loading[0]"
-                                (onClick)="load(0)" [disabled]="isFiltrarDisabled"></p-button>
-                            </div>
+                            <p-button label="Cargar" icon="pi pi-search" [loading]="loading[0]" (onClick)="load(0)"
+                                [disabled]="isFiltrarDisabled"></p-button>
+                        </div>
 
                         <span class="p-input-icon-left mb-2">
                             <i class="pi pi-search"></i>
-                            <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)" placeholder="Buscar" class="w-full" />
+                            <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)"
+                                placeholder="Buscar" class="w-full" />
                         </span>
 
                     </div>
@@ -42,15 +46,15 @@
                         <th pSortableColumn="nombre">
                             NOMBRE<p-sortIcon field="nombre"></p-sortIcon>
                         </th>
-                        
+
                         <th pSortableColumn="opciones">
-                            DETALLES 
+                            DETALLES
                         </th>
-                        
+
                         <th pSortableColumn="num_serie">
                             N. SERIE <p-sortIcon field="num_serie"></p-sortIcon>
                         </th>
-                        
+
                         <th pSortableColumn="estado">
                             ESTADO <p-sortIcon field="estado"></p-sortIcon>
                         </th>
@@ -60,22 +64,24 @@
                         <th pSortableColumn="localizacion">
                             LOCALIZACION <p-sortIcon field="localizacion"></p-sortIcon>
                         </th>
-                       <th pSortableColumn="acciones">ACCIONES</th>
+                        <th pSortableColumn="acciones">ACCIONES</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-product let-expanded="expanded">
-                    <tr >
+                    <tr>
                         <td>
                             <button type="button" pButton pRipple [pRowToggler]="product"
                                 class="p-button-text p-button-rounded p-button-plain"
                                 [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                         </td>
                         <td>
-                            <button pButton icon="pi pi-qrcode" (click)="showQRCode(product.image, product.nombre)"  class="p-button-rounded p-button-text"></button>
+                            <button pButton icon="pi pi-qrcode" (click)="showQRCode(product.image, product.nombre)"
+                                class="p-button-rounded p-button-text"></button>
                         </td>
                         <td>{{ product.nombre }}</td>
                         <td>
-                            <button pButton icon="pi pi-info-circle" (click)="showBienesDetails(product)" class="p-button-rounded p-button-text"></button>
+                            <button pButton icon="pi pi-info-circle" (click)="showBienesDetails(product)"
+                                class="p-button-rounded p-button-text"></button>
                         </td>
                         <td>{{ product.num_serie }}</td>
                         <td>
@@ -86,11 +92,14 @@
                         </td>
                         <td>{{ product.codigoUTA }}</td>
                         <td>{{ product.localizacion }}</td>
-                        <td  class="hidden-column">{{product.id_area_per}}</td>
+                        <td class="hidden-column">{{product.id_area_per}}</td>
                         <td class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
-                            <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded" (onClick)="editarBienTecnologico(product)"></p-button>
-                            <p-button type="button" icon="pi pi-trash" class="p-button-rounded" (onClick)="eliminar(product.id_bien)"></p-button>
-                            <p-button type="button" icon="pi pi-arrow-down" class="p-button-rounded" (click)="abrirModalComponente(product)" ></p-button>
+                            <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"
+                                (onClick)="editarBienTecnologico(product)"></p-button>
+                            <p-button type="button" icon="pi pi-trash" class="p-button-rounded"
+                                (onClick)="eliminar(product.id_bien)"></p-button>
+                            <p-button type="button" icon="pi pi-arrow-down" class="p-button-rounded"
+                                (click)="abrirModalComponente(product)"></p-button>
                         </td>
                     </tr>
                 </ng-template>
@@ -150,9 +159,11 @@
                             </span>
                         </td>
                         <td class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
-                            <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"   (click)="openEditComponentModal(order)"></p-button>
-                            <p-button type="button" icon="pi pi-trash" class="p-button-rounded" (click)="eliminarComponente(order.id_componente)"></p-button>
-                            
+                            <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"
+                                (click)="openEditComponentModal(order)"></p-button>
+                            <p-button type="button" icon="pi pi-trash" class="p-button-rounded"
+                                (click)="eliminarComponente(order.id_componente)"></p-button>
+
                         </td>
                     </tr>
                 </ng-template>
@@ -171,7 +182,8 @@
 </div>
 
 <!--producto detalles-->
-<p-dialog header="Detalles " modal="modal" draggable="false" [(visible)]="showDetailsModal" [style]="{ width: '70rem' }">
+<p-dialog header="Detalles " modal="modal" draggable="false" [(visible)]="showDetailsModal"
+    [style]="{ width: '70rem' }">
     <ng-template pTemplate="content">
         <p-table [value]="selectedProduct ? [selectedProduct] : []">
             <ng-template pTemplate="header">
@@ -182,9 +194,9 @@
                     <th pSortableColumn="marca">
                         MARCA <p-sortIcon field="marca"></p-sortIcon>
                     </th>
-                        <th pSortableColumn="modelo">
-                            MODELO <p-sortIcon field="modelo"></p-sortIcon>
-                        </th>
+                    <th pSortableColumn="modelo">
+                        MODELO <p-sortIcon field="modelo"></p-sortIcon>
+                    </th>
                     <th pSortableColumn="fecha_adquisicion">
                         FE. ADQUISICION
                         <p-sortIcon field="fecha_adquisicion"></p-sortIcon>
@@ -199,9 +211,9 @@
                 <tr>
                     <td>
                         <ul *ngIf="product.atributos">
-                          <li *ngFor="let attribute of product.atributos | keyvalue">
-                            {{ attribute.key }}: {{ attribute.value }}
-                          </li>
+                            <li *ngFor="let attribute of product.atributos | keyvalue">
+                                {{ attribute.key }}: {{ attribute.value }}
+                            </li>
                         </ul>
                     </td>
                     <td>{{ product.marca }}</td>
@@ -212,16 +224,17 @@
             </ng-template>
         </p-table>
     </ng-template>
-   
+
 </p-dialog>
 
 
 
 <!-- para el qr-->
-<p-dialog header="Código QR" [(visible)]="showQRCodeModal" modal="modal" draggable="false" [style]="{ maxWidth: '95%', width: '27rem' }">
+<p-dialog header="Código QR" [(visible)]="showQRCodeModal" modal="modal" draggable="false"
+    [style]="{ maxWidth: '95%', width: '27rem' }">
     <ng-template pTemplate="header">
         <div class="p-d-flex p-flex-align-center p-gap-2">
-            <i class="pi pi-qrcode"></i> 
+            <i class="pi pi-qrcode"></i>
             <span class="p-font-weight-bold p-white-space-nowrap">
                 Código QR
             </span>
@@ -235,45 +248,50 @@
 
 
 <!-- Form para agregar bien -->
-<p-dialog [header]="isEditMode ? 'Editar Bien Tecnológico' : 'Agregar Bien Tecnológico'" draggable="false" [(visible)]="display" modal="true"
-    [style]="{ width: '45vw', minWidth: '300px' }">
+<p-dialog [header]="isEditMode ? 'Editar Bien Tecnológico' : 'Agregar Bien Tecnológico'" draggable="false"
+    [(visible)]="display" modal="true" [style]="{ width: '45vw', minWidth: '300px' }">
     <form [formGroup]="inventoryForm" (ngSubmit)="guardarBienesTecnologicos()">
         <div class="formgrid grid">
             <div class="field col">
                 <label for="id_bloque_per">Selecciona el Bloque </label>
-                <p-dropdown formControlName="id_bloque_per" [options]="categories" optionLabel="name" placeholder="Selecciona"
-                    filter="true" class="focus:border-primary fixed-width-dropdown"  (onChange)="onSelectBloque($event)"></p-dropdown>
+                <p-dropdown formControlName="id_bloque_per" [options]="categories" optionLabel="name"
+                    placeholder="Selecciona" filter="true" class="focus:border-primary fixed-width-dropdown"
+                    (onChange)="onSelectBloque($event)"></p-dropdown>
             </div>
             <div class="field col">
                 <label for="id_area_per">Selecciona el Área</label>
                 <p-dropdown formControlName="id_area_per" [options]="area" optionLabel="name" placeholder="Selecciona"
-                    filter="true" class="focus:border-primary fixed-width-dropdown"  [disabled]="isDropdownDisabled" (onChange)="onSelectArea($event)"></p-dropdown>
+                    filter="true" class="focus:border-primary fixed-width-dropdown" [disabled]="isDropdownDisabled"
+                    (onChange)="onSelectArea($event)"></p-dropdown>
             </div>
-        
+
         </div>
         <div class="formgrid grid">
             <div class="field col">
                 <label for="nombre">Nombre tecnólogico</label>
-                <p-dropdown formControlName="nombre" [options]="tipoTecnologico" optionLabel="name" placeholder="Selecciona"
-                filter="true" class="focus:border-primary fixed-width-dropdown"(ngModelChange)="actualizarAtributos($event)"></p-dropdown>                                       
+                <p-dropdown formControlName="nombre" [options]="tipoTecnologico" optionLabel="name"
+                    placeholder="Selecciona" filter="true" class="focus:border-primary fixed-width-dropdown"
+                    (ngModelChange)="actualizarAtributos($event)"></p-dropdown>
             </div>
             <div class="field col">
-                <label for="id_proveedor_per" >Selecciona Proveedor</label>
-                <p-dropdown formControlName="id_proveedor_per" [options]="proveedor" optionLabel="name" placeholder="Selecciona"
-                    filter="true" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                <label for="id_proveedor_per">Selecciona Proveedor</label>
+                <p-dropdown formControlName="id_proveedor_per" [options]="proveedor" optionLabel="name"
+                    placeholder="Selecciona" filter="true"
+                    class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
         </div>
         <div class="formgrid grid">
             <div class="field col">
                 <label for="fecha_adquisicion">Fecha de Adquisición</label>
-                <p-calendar formControlName="fecha_adquisicion" [showIcon]="true"  [showOnFocus]="true" dateFormat="yy-mm-dd">
+                <p-calendar formControlName="fecha_adquisicion" [showIcon]="true" [showOnFocus]="true"
+                    dateFormat="yy-mm-dd">
                 </p-calendar>
-                
-            </div>                              
+
+            </div>
             <div class="field col">
                 <label for="estado">Estado</label>
                 <p-dropdown formControlName="estado" [options]="estado" optionLabel="name" placeholder="Selecciona"
-                     class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                    class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
         </div>
         <div class="formgrid grid">
@@ -284,8 +302,8 @@
             </div>
             <div class="field col">
                 <label for="encargado">Encargado</label>
-                <p-dropdown formControlName="encargado"  [options]="encargado" optionLabel="name" placeholder="Selecciona"
-                     class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                <p-dropdown formControlName="encargado" [options]="encargado" optionLabel="name"
+                    placeholder="Selecciona" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
         </div>
         <div class="formgrid grid">
@@ -294,7 +312,7 @@
                 <input formControlName="modelo" type="text"
                     class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
             </div>
-            
+
             <div class="field col">
                 <label for="codigoUTA">Código UTA</label>
                 <input formControlName="codigoUTA" type="text"
@@ -306,7 +324,7 @@
             <div class="field col">
                 <label for="marca">Selecciona la Marca</label>
                 <p-dropdown formControlName="marca" [options]="marca" optionLabel="name" placeholder="Selecciona"
-                    filter="true" class="focus:border-primary fixed-width-dropdown"  ></p-dropdown>
+                    filter="true" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
             <div class="field col">
                 <label for="localizacion">Localización</label>
@@ -317,15 +335,18 @@
         <div class="formgrid grid">
             <div class="field col">
                 <label for="atributos">Atributos</label>
-                <button pButton pRipple type="button" icon="pi pi-plus" (click)="abrirDialogo()" class="p-button-rounded"></button>
-                <textarea  pInputTextarea rows="5" formControlName="atributos" class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
+                <button pButton pRipple type="button" icon="pi pi-plus" (click)="abrirDialogo()"
+                    class="p-button-rounded"></button>
+                <textarea pInputTextarea rows="5" formControlName="atributos"
+                    class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full"></textarea>
             </div>
             <div class="field col">
             </div>
         </div>
-        
+
         <p-footer class="flex justify-content-end gap-3">
-            <button pButton type="submit" label="Guardar" class="p-button-success" [disabled]="!inventoryForm.valid"></button>
+            <button pButton type="submit" label="Guardar" class="p-button-success"
+                [disabled]="!inventoryForm.valid"></button>
             <button pButton type="button" label="Cancelar" class="p-button-secondary"
                 (click)="display = false"></button>
         </p-footer>
@@ -334,33 +355,34 @@
 
 <!-- Form para atributos -->
 <p-dialog header="Añadir Atributo" [(visible)]="mostrarDialogo" [modal]="true" class="dialog-atributos">
-    <div class="p-fluid" >
-      <div class="p-grid">
-        <div class="p-col-12 p-md-6">
-          <div class="p-field">
-            <label for="clave">Clave</label>
-            <input type="text" pInputText id="clave" [(ngModel)]="temporalClave">
-          </div>
+    <div class="p-fluid">
+        <div class="p-grid">
+            <div class="p-col-12 p-md-6">
+                <div class="p-field">
+                    <label for="clave">Clave</label>
+                    <input type="text" pInputText id="clave" [(ngModel)]="temporalClave">
+                </div>
+            </div>
+            <div class="p-col-12 p-md-6">
+                <div class="p-field">
+                    <label for="valor">Valor</label>
+                    <input type="text" pInputText id="valor" [(ngModel)]="temporalValor">
+                </div>
+            </div>
         </div>
-        <div class="p-col-12 p-md-6">
-          <div class="p-field">
-            <label for="valor">Valor</label>
-            <input type="text" pInputText id="valor" [(ngModel)]="temporalValor">
-          </div>
-        </div>
-      </div>
-      <br>
-      <p-button label="Aceptar" (click)="agregarAtributo()"></p-button>
+        <br>
+        <p-button label="Aceptar" (click)="agregarAtributo()"></p-button>
     </div>
-  </p-dialog>
-  
+</p-dialog>
+
 
 <p-toast position="bottom-center" key="bc"></p-toast>
 
 <!-- Form para componentes-->
-<p-dialog [header]="isEditModeComponentes ? 'Editar Componente' : 'Ingresar Componente'" [(visible)]="componentes" [modal]="true" [style]="{ width: '40vw', minWidth: '300px' }">
+<p-dialog [header]="isEditModeComponentes ? 'Editar Componente' : 'Ingresar Componente'" [(visible)]="componentes"
+    [modal]="true" [style]="{ width: '40vw', minWidth: '300px' }">
     <form [formGroup]="componentForm" (ngSubmit)="guardarComponentes()">
-        
+
         <div class="formgrid grid">
             <div class="field col">
                 <label for="nombre">Nombre</label>
@@ -370,7 +392,7 @@
             <div class="field col">
                 <label for="marca">Selecciona la Marca</label>
                 <p-dropdown formControlName="marca" [options]="marca" optionLabel="name" placeholder="Selecciona"
-                    filter="true" class="focus:border-primary fixed-width-dropdown"  ></p-dropdown>
+                    filter="true" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
         </div>
         <div class="formgrid grid">
@@ -389,18 +411,19 @@
         <div class="formgrid grid">
             <div class="field col">
                 <label for="repotenciado">Repotenciado</label>
-                <p-dropdown formControlName="repotenciado" [options]="repotenciado" optionLabel="name" placeholder="Selecciona"
-                     class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                <p-dropdown formControlName="repotenciado" [options]="repotenciado" optionLabel="name"
+                    placeholder="Selecciona" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
-            
+
             <div class="field col">
                 <label for="id_proveedor_per">Proveedor</label>
-                <p-dropdown inputId="dropdown" formControlName="id_proveedor_per"  [autoDisplayFirst]="false" [options]="proveedor" optionLabel="name" placeholder="Selecciona"
-                     class="focus:border-primary fixed-width-dropdown"></p-dropdown>
-                
+                <p-dropdown inputId="dropdown" formControlName="id_proveedor_per" [autoDisplayFirst]="false"
+                    [options]="proveedor" optionLabel="name" placeholder="Selecciona"
+                    class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+
             </div>
         </div>
-        
+
         <div class="formgrid grid">
             <div class="field col">
                 <label for="codigoUTA">Código UTA</label>
@@ -410,18 +433,20 @@
             <div class="field col">
                 <label for="estado">Estado</label>
                 <p-dropdown formControlName="estado" [options]="estado" optionLabel="name" placeholder="Selecciona"
-                     class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                    class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
         </div>
-       
+
         <p-footer class="flex justify-content-end gap-3">
-            <button pButton type="submit" label="Guardar" class="p-button-success" [disabled]="componentForm.invalid"></button>
+            <button pButton type="submit" label="Guardar" class="p-button-success"
+                [disabled]="componentForm.invalid"></button>
             <button pButton type="button" label="Cancelar" class="p-button-secondary"
                 (click)="componentes = false"></button>
         </p-footer>
     </form>
 </p-dialog>
 
-<p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" header="Eliminar" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+<p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" header="Eliminar"
+    icon="pi pi-exclamation-triangle"></p-confirmDialog>
 
 </div>
