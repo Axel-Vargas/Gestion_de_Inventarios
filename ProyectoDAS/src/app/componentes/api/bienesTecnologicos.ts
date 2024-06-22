@@ -20,5 +20,7 @@ export interface bienes_Tecnologicos {
     id_encargado_per?:number;
     id_area_per?: number;
     id_proveedor_per?: number;
+    id_dependencia_per?: number;
+    prestado?: string;
     componentes: Componentes[];
 }
