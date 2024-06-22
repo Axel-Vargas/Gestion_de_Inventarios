@@ -323,7 +323,7 @@ export class ReportesComponent {
     const headers = ['No.', 'Nombre', 'Marca', 'Modelo', 'N. Serie', 'Procesador','Memoria','Disco Duro','IP','Localización', 'Estado', 'Código UTA', 'Fecha de Adquisición'];
     const data = this.tecnologicosCompleto.map((comp, index) => [
       index + 1,
-      comp.nombre_bien || '',
+      comp.nombre || '',
       comp.marca || '',
       comp.modelo || '',
       comp.num_serie || '',
@@ -353,7 +353,7 @@ export class ReportesComponent {
 
       const data = this.tecnologicosPorArea.map((comp, index) => [
         index + 1,
-        comp.nombre_bien || '',
+        comp.nombre || '',
         comp.marca || '',
         comp.modelo || '',
         comp.num_serie || '',

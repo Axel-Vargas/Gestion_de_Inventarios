@@ -46,7 +46,7 @@ export class BienestecnologicosService {
 
     getComputadorasDeEscritorio(): Observable<bienes_Tecnologicos[]> {
         return this.http.get<bienes_Tecnologicos[]>(this.myAppUrl + this.myApyUrl).pipe(
-            map(bienes => bienes.filter(bien => bien.nombre_bien === 'COMPUTADORA DE ESCRITORIO'))
+            map(bienes => bienes.filter(bien => bien.nombre === 'COMPUTADORA DE ESCRITORIO'))
         );
     }
 
