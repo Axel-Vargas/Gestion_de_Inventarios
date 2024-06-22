@@ -57,9 +57,10 @@ export class ComponenteslibresComponent implements OnInit {
 
   getTecnologicos(): void {
     this.componenteService.getbienesAsignar().subscribe(data => {
+      console.log(data);
       this.bien_tecnologico = data.map((item: any) => ({
-        id_bien_tec: item.id_bien_tec,
-        nombre_bien: item.nombre_bien,
+        id_bien: item.id_bien,
+        nombre: item.nombre,
         num_serie: item.num_serie,
         codigoUTA: item.codigoUTA,
         estado: item.estado,
@@ -75,7 +76,7 @@ export class ComponenteslibresComponent implements OnInit {
         message: '¿Estás seguro de asignar el componente selecccionado a este bien tecnológico?',
         accept: () => {
           if (this.componenteSeleccionado?.id_componente !== undefined) {
-            this.componenteService.asignarComponente(this.componenteSeleccionado.id_componente, bien.id_bien_tec).subscribe(
+            this.componenteService.asignarComponente(this.componenteSeleccionado.id_componente, bien.id_bien).subscribe(
               () => {
                 this.getComponentes();
                 this.messageService.add({
@@ -152,7 +153,7 @@ export class ComponenteslibresComponent implements OnInit {
       modelo: '',
       num_serie: '',
       estado: { label: '', value: '' }, 
-    repotenciado: { label: '', value: '' }, 
+      repotenciado: { label: '', value: '' }, 
       codigoUTA: '',
       id_bien_per: 0,
       id_proveedor_per: 0
