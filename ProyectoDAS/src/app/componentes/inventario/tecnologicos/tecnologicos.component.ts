@@ -130,7 +130,7 @@ export class TecnologicosComponent implements OnInit {
       fecha_adquisicion: new FormControl('', Validators.required),
       estado: new FormControl('', Validators.required),
       num_serie: new FormControl(''),
-      nombre_bien: new FormControl('', Validators.required),
+      nombre: new FormControl('', Validators.required),
       atributos: this.fb.control({}),
       modelo: new FormControl(''),
       codigoUTA: new FormControl(''),
@@ -172,7 +172,7 @@ export class TecnologicosComponent implements OnInit {
             }
           }
           t.componentes = componentes.filter(
-            (c) => c.id_bien_per === t.id_bien_tec
+            (c) => c.id_bien_per === t.id_bien
           );
         });
         this.tecnologicos = bienesTecnologicos;
@@ -199,7 +199,7 @@ export class TecnologicosComponent implements OnInit {
           }
         }
         t.componentes = componentes.filter(
-          (c) => c.id_bien_per === t.id_bien_tec
+          (c) => c.id_bien_per === t.id_bien
         );
       });
       this.tecnologicos = arrayBienesTecnologicos;
@@ -425,7 +425,7 @@ agregarAtributo(): void {
             
           }
           t.componentes = componentes.filter(
-            (c) => c.id_bien_per === t.id_bien_tec
+            (c) => c.id_bien_per === t.id_bien
           );
         });
         this.tecnologicos = bienesTecnologicos;
@@ -434,20 +434,19 @@ agregarAtributo(): void {
     setTimeout(() => (this.loading[index] = false), 1000);
   }
 
-  abrirModalTecnologico(){
-    this.inventoryForm.reset();
-    this.display =  true
+  showDialogAgregar(){
     this.isEditMode = false;
+    this.display =  true
+    this.inventoryForm.reset(); 
   }
-
   
   guardarBienesTecnologicos(): void {
     const idProveedor = this.inventoryForm.value.id_proveedor_per.code;
     const idArea = this.inventoryForm.value.id_area_per.code;
     const estado = this.inventoryForm.value.estado.name.toUpperCase();
     const marca = this.inventoryForm.value.marca.name;
-    const nombre = this.inventoryForm.value.nombre_bien.name;
-    const encargado = this.inventoryForm.value.encargado.name;
+    const nombre = this.inventoryForm.value.nombre.name;
+    const encargado = this.inventoryForm.value.encargado.code;
     // Convertir atributos de string JSON a objeto, si no es un objeto ya.
     const atributosObj = typeof this.inventoryForm.value.atributos === 'string' ?
       JSON.parse(this.inventoryForm.value.atributos) : this.inventoryForm.value.atributos;
@@ -460,8 +459,8 @@ agregarAtributo(): void {
       estado: estado,
       codigoUTA: this.inventoryForm.value.codigoUTA.toUpperCase(),
       localizacion: this.inventoryForm.value.localizacion.toUpperCase(),
-      nombre_bien: nombre,
-      encargado: encargado,
+      nombre: nombre,
+      id_encargado_per: encargado,
       atributos: atributosObj, // Asegurarse de que esto es un objeto
       id_area_per: idArea,
       id_proveedor_per: idProveedor,
@@ -470,7 +469,7 @@ agregarAtributo(): void {
     if (this.isEditMode) {
       this.tecnologicosService
         .actualizarBienTecnologico(
-          this.selectedBienTecnologico.id_bien_tec,
+          this.selectedBienTecnologico.id_bien,
           nuevoBienTecnologico
         )
         .subscribe(
@@ -521,8 +520,8 @@ agregarAtributo(): void {
     const tipoSeleccionado = this.tipoBien.find((t) => t.code === bien.id_tipo_per);
     const estadoSeleccionado = this.estado.find((e) => e.name.toLowerCase().trim() === bien.estado.toLowerCase().trim());
     const marcaSeleccionado = this.marca.find((m) => m.name.toLowerCase().trim() === bien.marca.toLowerCase().trim());
-    const nombre = this.tipoTecnologico.find((tb) => tb.name.toLowerCase().trim() === bien.nombre_bien.toLowerCase().trim());
-    const encargado = this.encargado.find((en) => en.name.toLowerCase().trim() === bien.encargado.toLowerCase().trim());
+    const nombre = this.tipoTecnologico.find((tb) => tb.name.toLowerCase().trim() === bien.nombre.toLowerCase().trim());
+    const encargado = this.encargado.find((en) => en.code === bien.id_encargado_per);
   
     this.cargarAreas(bien.id_area_per).then(() => {
       const areaSeleccionada = this.area.find((a) => a.code === bien.id_area_per);
@@ -537,7 +536,7 @@ agregarAtributo(): void {
             fecha_adquisicion: fecha,
             estado: estadoSeleccionado || null,
             num_serie: bien.num_serie,
-            nombre_bien: nombre,
+            nombre: nombre,
             atributos: JSON.stringify(bien.atributos, null, 2),
             modelo: bien.modelo,
             codigoUTA: bien.codigoUTA,
@@ -591,7 +590,7 @@ agregarAtributo(): void {
       const formData = this.componentForm.value;
 
       if(!this.isEditModeComponentes){
-        formData.id_bien_per = this.selectedBienTecnologico.id_bien_tec;
+        formData.id_bien_per = this.selectedBienTecnologico.id_bien;
       }else{
         formData.id_bien_per = this.selectedComponente.id_bien_per;
       }

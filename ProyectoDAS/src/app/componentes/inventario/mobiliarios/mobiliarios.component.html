@@ -27,11 +27,6 @@
         <ng-template pTemplate="header">
           <tr>
             <th>
-              <span class="flex mb-2">BLD/BCA</span>
-              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="bld_bca"
-                placeholder="Buscar por BLD/BCA" ariaLabel="Filter Bld/Bca" />
-            </th>
-            <th>
               <span class="flex mb-2">NOMBRE</span>
               <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="nombre"
                 placeholder="Buscar por nombre" ariaLabel="Filter Nombre" />
@@ -82,11 +77,6 @@
                 placeholder="Buscar por código UTA" ariaLabel="Filter CódigoUTA" />
             </th>
             <th>
-              <span class="flex mb-2">VALOR CONTABLE</span>
-              <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text" field="valor_contable"
-                placeholder="Buscar por valor contable" ariaLabel="Filter Valor" />
-            </th>
-            <th>
               <span class="flex mb-2">ENCARGADO</span>
               <p-columnFilter field="nombre_encargado" matchMode="in" [showMenu]="false">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
@@ -126,7 +116,6 @@
         </ng-template>
         <ng-template pTemplate="body" let-mobiliario>
           <tr>
-            <td>{{ mobiliario.bld_bca }}</td>
             <td>{{ mobiliario.nombre }}</td>
             <td>{{ mobiliario.marca }}</td>
             <td>{{ mobiliario.modelo }}</td>
@@ -137,13 +126,12 @@
             <td>{{ mobiliario.estado }}</td>
             <td>{{ mobiliario.localizacion }}</td>
             <td>{{ mobiliario.codigoUTA }}</td>
-            <td>{{ mobiliario.valor_contable }}</td>
             <td>{{ mobiliario.nombre_encargado }}</td>
             <td>{{ mobiliario.nombre_area }}</td>
             <td class="flex flex-row ">
               <button pButton (click)="showDialogEditar(mobiliario)" pRipple type="button" icon="pi pi-pen-to-square"
                 class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>
-              <button pButton (click)="confirm(mobiliario.id_bien_mob)" pRipple type="button" icon="pi pi-trash"
+              <button pButton (click)="confirm(mobiliario.id_bien)" pRipple type="button" icon="pi pi-trash"
                 class="p-button p-component p-button-text p-button-trash flex align-items-center justify-content-center"></button>
             </td>
           </tr>
@@ -171,11 +159,6 @@
         <p-dropdown [options]="areas" dataKey="id_area" optionLabel="nombre" placeholder="Seleccione un Area"
           autoWidth="false" [style]="{ width: '15.9rem' }" [(ngModel)]="selectArea"></p-dropdown>
       </div>
-      <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
-        <label for="bld_bca" class="font-semibold w-6rem">Bld_Bca</label>
-        <input pInputText id="bld_bca" class="flex-auto" autocomplete="off" [(ngModel)]="bld_bca" maxlength="10" />
-      </div>
-
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="nombre " class="font-semibold w-6rem">Nombre </label>
         <input pInputText id="nombre " class="flex-auto" autocomplete="off" [(ngModel)]="nombre" maxlength="25"
@@ -225,12 +208,6 @@
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="codigoUTA" class="font-semibold w-6rem">CodigoUTA</label>
         <input pInputText id="codigoUTA" class="flex-auto" autocomplete="off" [(ngModel)]="codigoUTA" maxlength="15" />
-      </div>
-
-      <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
-        <label for="valor_contable" class="font-semibold w-6rem">Valor_contable</label>
-        <input pInputText id="valor_contable" class="flex-auto" autocomplete="off" [(ngModel)]="valor_contable"
-          maxlength="10" />
       </div>
     </div>
     <div class="flex justify-content-end gap-2">

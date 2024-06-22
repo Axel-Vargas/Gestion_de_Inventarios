@@ -24,7 +24,7 @@ export class UsuariosService {
     return this.http.get<any[]>(`${this.API}/${id}`);
   }
 
-  insertarUsuario(cedula: string, nombre: string, apellido: string, correo: string, telefono: string, contrasena: string, rol: string) {
+  insertarUsuario(cedula: string, nombre: string, apellido: string, correo: string, telefono: string, contrasena: string, estado: number,rol: string) {
     return this.http.post(this.API, { cedula, nombre, apellido, correo, telefono, contrasena, rol})
   }
 
@@ -40,8 +40,8 @@ export class UsuariosService {
     return this.http.delete(`${this.API}/${id}`);
   }
 
-  autenticarUsuario(usuario: string, contrasena: string): Observable<any> {
-    const body = { usuario, contrasena };
+  autenticarUsuario(correo: string, contrasena: string): Observable<any> {
+    const body = { correo, contrasena };
     return this.http.post(`${this.API}/auth`, body).pipe(
       tap((response) => {
         this.authService.setUser(response);

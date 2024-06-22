@@ -18,7 +18,7 @@ export class ProgramasService {
     return this.http.post(this.API, { software, version, tipo_licencia, fecha_adquisicion, laboratorio})
   }
 
-  actualizarPrograma(id: String, software: string, version: string, tipo_licencia: string, fecha_adquisicion: string, laboratorio: string) {
+  actualizarPrograma(id: String, software: string, version: string, tipo_licencia: string, fecha_adquisicion: Date, laboratorio: string) {
     return this.http.put(`${this.API}/${id}`, { software, version, tipo_licencia, fecha_adquisicion, laboratorio })
   }
 

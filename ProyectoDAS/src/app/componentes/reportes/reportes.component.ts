@@ -337,7 +337,8 @@ export class ReportesComponent {
   async descargarExcelCompletoDITIC() {
     const headers = ['Bien', 'Marca', 'Modelo', 'N. Serie', 'Procesador', 'Memoria', 'Disco Duro', 'IP', 'Localización', 'Ubicación', 'Estado', 'Custodio Actual', 'Código UTA', 'Fecha Adquisición'];
     const data = this.tecnologicosCompleto.map((comp, index) => [
-      comp.nombre_bien || '',
+      index + 1,
+      comp.nombre || '',
       comp.marca || '',
       comp.modelo || '',
       comp.num_serie || '',
@@ -368,7 +369,8 @@ export class ReportesComponent {
       const headers = ['Bien', 'Marca', 'Modelo', 'N. Serie', 'Procesador', 'Memoria', 'Disco Duro', 'IP', 'Localización', 'Ubicación', 'Estado', 'Custodio Actual', 'Código UTA', 'Fecha Adquisición'];
 
       const data = this.tecnologicosPorArea.map((comp, index) => [
-        comp.nombre_bien || '',
+        index + 1,
+        comp.nombre || '',
         comp.marca || '',
         comp.modelo || '',
         comp.num_serie || '',

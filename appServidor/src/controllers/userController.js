@@ -7,6 +7,7 @@ exports.getAllUsers = async (req, res) => {
       SELECT u.*, r.nombre AS nombre_rol
       FROM usuarios u
       INNER JOIN roles r ON u.id_rol_per = r.id_rol
+      WHERE u.estado = 1
     `;
     connection.query(selectQuery, (error, results) => {
       if (error) {
@@ -54,9 +55,9 @@ exports.getUserByCedula = async (req, res) => {
 
 exports.addUser = async (req, res) => {
   try {
-    const { cedula, nombre, apellido, telefono, correo, contrasena, rol, estado } = req.body;
+    const { cedula, nombre, apellido, telefono, correo, contrasena, estado, rol } = req.body;
 
-    const emailExistsQuery = `SELECT * FROM usuarios WHERE correo = ?`;
+    const emailExistsQuery = `SELECT * FROM usuarios WHERE correo = ? AND estado = 1`;
     connection.query(emailExistsQuery, [correo], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -71,8 +72,8 @@ exports.addUser = async (req, res) => {
           return res.status(500).json({ mensaje: 'Error interno del servidor' });
         }
 
-        const insertQuery = `INSERT INTO usuarios (cedula, nombre, apellido, correo, telefono, contrasena, id_rol_per) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-        connection.query(insertQuery, [cedula, nombre, apellido, correo, telefono, hash, rol, estado], (error, results) => {
+        const insertQuery = `INSERT INTO usuarios (cedula, nombre, apellido, correo, telefono, contrasena, estado, id_rol_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+        connection.query(insertQuery, [cedula, nombre, apellido, correo, telefono, hash, estado, rol], (error, results) => {
           if (error) {
             return res.status(500).json({ mensaje: 'Error interno del servidor' });
           }
@@ -91,7 +92,7 @@ exports.editUser = async (req, res) => {
     const id = req.params.id;
     const { cedula, nombre, apellido, telefono, correo, contrasena, rol } = req.body;
 
-    const emailExistsQuery = `SELECT * FROM usuarios WHERE correo = ? AND id_usuario != ?`;
+    const emailExistsQuery = `SELECT * FROM usuarios WHERE correo = ? AND id_usuario != ? AND estado = 1`;
     connection.query(emailExistsQuery, [correo, id], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -143,9 +144,9 @@ exports.deleteUser = async (req, res) => {
   try {
     const userId = req.params.id;
 
-    const deleteQuery = `DELETE FROM usuarios WHERE id_usuario = ?`;
+    const updateQuery = `UPDATE usuarios SET estado = 0 WHERE id_usuario = ?`;
 
-    connection.query(deleteQuery, [userId], (error, results) => {
+    connection.query(updateQuery, [userId], (error, results) => {
       if (error) {
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
       }
@@ -154,7 +155,7 @@ exports.deleteUser = async (req, res) => {
         return res.status(404).json({ mensaje: 'Usuario no encontrado' });
       }
 
-      res.status(200).json({ mensaje: 'Usuario eliminado exitosamente' });
+      res.status(200).json({ mensaje: 'Usuario dado de baja exitosamente' });
     });
   } catch (error) {
     res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -163,26 +164,51 @@ exports.deleteUser = async (req, res) => {
 
 exports.authenticateUser = async (req, res) => {
   try {
-    const { usuario, contrasena } = req.body;
+    const { correo, contrasena } = req.body;
 
-    const query = `SELECT * FROM usuarios WHERE correo = ? AND contrasena = ?`;
-    connection.query(query, [usuario, contrasena], (error, results) => {
+    if (!correo || !contrasena) {
+      return res.status(400).json({ mensaje: 'Usuario y contraseña son requeridos' });
+    }
+
+    // Buscar al usuario por su correo electrónico
+    const query = `SELECT * FROM usuarios WHERE correo = ? AND estado = 1`;
+    connection.query(query, [correo], async (error, results) => {
       if (error) {
+        console.error('Error al buscar el usuario:', error);
         return res.status(500).json({ mensaje: 'Error interno del servidor' });
       }
 
       if (results.length === 0) {
+        console.log('Usuario no encontrado');
         return res.status(401).json({ mensaje: 'Credenciales inválidas' });
       }
 
       const existingUser = results[0];
-      if (existingUser.contrasena !== contrasena) {
+
+      if (!existingUser.contrasena) {
+        console.log('No se encontró la contraseña en la base de datos');
         return res.status(401).json({ mensaje: 'Credenciales inválidas' });
       }
-      
-      res.status(200).json({ id: existingUser.id, usuario: existingUser.correo, contrasena: existingUser.contrasena, rol: existingUser.id_rol_per });
+
+      try {
+        // Comparar la contraseña proporcionada con el hash almacenado
+        const isMatch = await bcrypt.compare(contrasena, existingUser.contrasena);
+
+        if (!isMatch) {
+          console.log('Contraseña incorrecta');
+          return res.status(401).json({ mensaje: 'Credenciales inválidas' });
+        }
+
+        console.log('Autenticación exitosa');
+        res.status(200).json({usuario: existingUser.correo,contrasena: existingUser.contrasena,rol: existingUser.id_rol_per
+        });
+      } catch (error) {
+        console.error('Error al comparar la contraseña:', error);
+        res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
     });
   } catch (error) {
+    console.error('Error en el servidor:', error);
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 };
