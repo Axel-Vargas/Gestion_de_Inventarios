@@ -311,9 +311,8 @@ export class ReportesComponent {
   
       const data = this.tecnologicosPorArea.map((comp) => [
         '',
-        'Num. serie: ' + (comp.num_serie || '') + '\nIP: ' + (comp.atributos?.IP || ''),
-        'Máscara: ' + (comp.atributos?.Mascara || '') + '\nGateway: ' + (comp.atributos?.Gateway || ''),
-        'Ubicación: ' + (comp.localizacion || '') + '\nCódigo UTA: ' + (comp.codigoUTA || '')
+        'NUM. SERIE: ' + (comp.num_serie?.toLowerCase() || '') + '\n-----------------------' + '\nUBICACION: ' + (comp.localizacion?.toLowerCase() || '') + '\n-----------------------' + '\nCODIGO UTA: ' + (comp.codigoUTA?.toLowerCase() || ''),
+        'IP: ' + (comp.atributos?.IP || '') + '\n-----------------------' + '\nMASCARA: ' + (comp.atributos?.Mascara || '') + '\n-----------------------' + '\nGATEWAY: ' + (comp.atributos?.Gateway || '')
       ]);
   
       const qrImagesPromises = this.tecnologicosPorArea.map(async (comp) => {
@@ -338,32 +337,99 @@ export class ReportesComponent {
         return;
       }
   
-      autoTable(pdf, {
-        startY: 5,
-        body: data.map((row, index) => {
-          if (qrImages[index]) {
-            row[0] = ' '; // Puedes usar un espacio en blanco para evitar errores
-          }
-          return row;
-        }),
-        theme: 'striped',
-        columnStyles: {
-          0: { cellWidth: 20, minCellHeight: 20 }, // Ajustar el ancho de la columna QR
-          1: { cellWidth: 30 }, // Ajustar el ancho de la columna N. Serie
-          2: { cellWidth: 30 }, // Ajustar el ancho de la columna IP
-          3: { cellWidth: 30 }  // Ajustar el ancho de la columna Máscara de Red
-        },
-        margin: { left: 5, bottom: 25 }, // Ajustar los márgenes
-        didDrawCell: (data) => {
-          if (data.section === 'body' && data.column.index === 0 && qrImages[data.row.index]) {
-            pdf.addImage(qrImages[data.row.index], 'PNG', data.cell.x + 1, data.cell.y + 1, 18, 18);
-          }
-        },
-        styles: {
-          fontSize: 8,
-          valign: 'middle'
+      const pageWidth = pdf.internal.pageSize.width;
+      const pageHeight = pdf.internal.pageSize.height;
+  
+      const marginLeft1 = 5; // Margen izquierdo para la primera tabla
+      const marginLeft2 = pageWidth / 2 ; // Margen izquierdo para la segunda tabla (inicio de la segunda columna)
+  
+      let currentY = 5; // Posición vertical actual en la página
+  
+      let rowIndex = 0; // Índice global de fila para las dos tablas
+  
+      while (rowIndex < this.tecnologicosPorArea.length) {
+        const rowData1 = data[rowIndex];
+        let rowData2: string[][] = []; // Inicializar fila vacía para la segunda tabla
+  
+        // Verificar si se necesita una nueva página para la primera tabla
+        if (currentY + 60 > pageHeight) {
+          // Agregar una nueva página
+          pdf.addPage();
+          currentY = 5; // Reiniciar posición vertical en la nueva página
         }
-      });
+  
+        // Calcular espacio restante en la página actual para la primera tabla
+        const remainingHeight = pageHeight - currentY;
+  
+        // Calcular número de filas que caben en la página actual
+        const maxRowsPerPage = Math.floor(remainingHeight / 30); // Ajustar según el tamaño de fila y margen
+  
+        // Calcular número de filas restantes por procesar
+        const remainingRows = this.tecnologicosPorArea.length - rowIndex;
+  
+        // Determinar cuántas filas se pueden agregar a la primera tabla en la página actual
+        const rowsToAddToTable1 = Math.min(maxRowsPerPage, remainingRows);
+  
+        // Determinar cuántas filas irán a la segunda tabla (las restantes)
+        const rowsToAddToTable2 = remainingRows - rowsToAddToTable1;
+  
+        // Agregar filas a la primera tabla
+        autoTable(pdf, {
+          startY: currentY,
+          body: data.slice(rowIndex, rowIndex + rowsToAddToTable1),
+          theme: 'striped',
+          tableWidth: 'wrap',
+          columnStyles: {
+            0: { cellWidth: 28, minCellHeight: 28 },
+            1: { cellWidth: 25 },
+            2: { cellWidth: 25 },
+          },
+          margin: { left: marginLeft1, bottom: 25 },
+          didDrawCell: (data) => {
+            if (data.section === 'body' && data.column.index === 0 && qrImages[rowIndex + data.row.index]) {
+              pdf.addImage(qrImages[rowIndex + data.row.index], 'PNG', data.cell.x + 1, data.cell.y + 1, 26, 27);
+            }
+          },
+          styles: {
+            fontSize: 8,
+          },
+          tableLineColor: [0, 0, 0], // Color de los bordes (negro)
+          tableLineWidth: 0.1 // Grosor de los bordes
+        });
+  
+        currentY = Math.max(currentY + (pdf as any).lastAutoTable.finalY + 10, currentY);
+  
+        if (rowsToAddToTable2 > 0) {
+          // Agregar filas a la segunda tabla
+          rowData2 = data.slice(rowIndex + rowsToAddToTable1, rowIndex + rowsToAddToTable1 + rowsToAddToTable2).map(row => [...row]); // Copiar cada fila como un arreglo de cadenas
+          autoTable(pdf, {
+            startY: 5, // Empezar desde arriba en la nueva página
+            body: rowData2, // Usar rowData2 como el cuerpo de la segunda tabla
+            theme: 'striped',
+            tableWidth: 'wrap',
+            columnStyles: {
+              0: { cellWidth: 28, minCellHeight: 28 }, // Ajustar el ancho de la columna QR
+              1: { cellWidth: 25 }, // Ajustar el ancho de la columna N. Serie
+              2: { cellWidth: 25 }, // Ajustar el ancho de la columna IP
+            },
+            margin: { left: marginLeft2, bottom: 25 }, // Ajustar los márgenes
+            didDrawCell: (data) => {
+              if (data.section === 'body' && data.column.index === 0 && qrImages[rowIndex + rowsToAddToTable1 + data.row.index]) {
+       
+                pdf.addImage(qrImages[rowIndex + rowsToAddToTable1 + data.row.index], 'PNG', data.cell.x + 1, data.cell.y + 1, 26, 27);
+              }
+            },
+            styles: {
+              fontSize: 8,
+            },
+            tableLineColor: [0, 0, 0], // Color de los bordes (negro)
+            tableLineWidth: 0.1 // Grosor de los bordes
+          });
+        }
+  
+        // Actualizar índice global de filas
+        rowIndex += rowsToAddToTable1 + rowsToAddToTable2;
+      }
   
       pdf.save('QR_PC_FISEI.pdf');
   
@@ -371,6 +437,8 @@ export class ReportesComponent {
       console.error('Error al generar el reporte QR:', error);
     }
   }
+  
+
   showDialog(area: any) {
     this.visible = true;
     this.selectedArea = area;
