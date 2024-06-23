@@ -27,14 +27,24 @@ export class InicioService {
     return this.http.get<number>(`${this.API}/total-usuarios`);
   }
 
-  obtenerBienesPorBloque(idFacultad: number, idBloque: number): Observable<any> {
-    return this.http.get<any>(`${this.API}/bienes-por-bloque`, {
-      params: {
-        idFacultad: idFacultad.toString(),
-        idBloque: idBloque.toString()
-      }
-    });
+  //aqui
+  obtenerComponentesLibres(): Observable<number> {
+    return this.http.get<number>(`${this.API}/componentesLibres`);
   }
+  
+
+  obtenerTotalRepotencias(): Observable<number> {
+    return this.http.get<number>(`${this.API}/totalrepotencias`);
+  }
+
+  obtenerTotalBienesMobiliarios(): Observable<number> {
+    return this.http.get<number>(`${this.API}/totalbienesmobilarios`);
+  }
+  
+  obtenerTotalTecnologicosBodega(): Observable<number> {
+    return this.http.get<number>(`${this.API}/tecnologicosBodega`);
+  }
+
 
   obtenerBloques(idFacultad: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.API}/bloques`, {
@@ -43,8 +53,6 @@ export class InicioService {
       }
     });
   }
-
-  
 
   obtenerFacultades(): Observable<any[]> {
     return this.http.get<any[]>(`${this.API}/facultades`);
