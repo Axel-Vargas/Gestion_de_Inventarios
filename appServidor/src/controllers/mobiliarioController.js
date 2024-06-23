@@ -10,6 +10,7 @@ exports.getAllBienes = async (req, res) => {
       FROM bien_mobiliario bm
       LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
       LEFT JOIN areas a ON bm.id_area_per = a.id_area
+      WHERE bm.estado != 'BODEGA'
     `;
     connection.query(selectQuery, (error, results) => {
       if (error) {
@@ -19,8 +20,8 @@ exports.getAllBienes = async (req, res) => {
       res.status(200).json({ mobiliarios: results });
     });
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error interno del servidor' });
-}
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
 };
 
 exports.addBienes = async (req, res) => {

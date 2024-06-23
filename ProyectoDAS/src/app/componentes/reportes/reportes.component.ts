@@ -4,7 +4,7 @@ import { MobiliariosService } from '../../services/mobiliarios.service';
 import { bienes_Tecnologicos } from '../api/bienesTecnologicos';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
-import { catchError, forkJoin } from 'rxjs';
+import { catchError, forkJoin, of } from 'rxjs';
 import QRCode from 'qrcode';
 import * as XLSX from 'xlsx';
 
@@ -20,7 +20,9 @@ export class ReportesComponent {
   reportes: any[] = [];
   areas: any[] = [];
   visible: boolean = false;
+  qrVisible: boolean = false;
   selectedArea: any;
+  selectedAreaQR: any;
   reportesDITIC: any[] = [];
   reportesUPE: any[] = [];
   reportesREDES: any[] = [];
@@ -52,7 +54,9 @@ export class ReportesComponent {
 
     this.reportesDITIC = [
       { tipo: 'Reporte Completo', descripcion: 'Se mostrará un reporte de todos los computadores existentes', code: 1 },
-      { tipo: 'Reporte por Áreas', descripcion: 'Se mostrará un reporte de los computadores por el área seleccionada', code: 2 }
+      { tipo: 'Reporte QR', descripcion: 'Se mostrarán todos los computadores existentes con su respectivo QR', code: 2 },
+      { tipo: 'Reporte por Áreas', descripcion: 'Se mostrará un reporte de los computadores por el área seleccionada', code: 3 },
+
     ];
 
     this.reportesUPE = [
@@ -69,7 +73,6 @@ export class ReportesComponent {
     ];
 
     this.onDepartamentoChange({ value: this.selectedDepartamento });
-
   }
 
   onDepartamentoChange(event: any) {
@@ -77,7 +80,7 @@ export class ReportesComponent {
       this.reportes = this.reportesDITIC;
     } else if (event.value.code === 'UPE') {
       this.reportes = this.reportesUPE;
-    } else if (event.value.code === 'REDES'){
+    } else if (event.value.code === 'REDES') {
       this.reportes = this.reportesREDES;
     }
 
@@ -157,28 +160,39 @@ export class ReportesComponent {
       });
   }
 
-  loadComputadorasPorArea(idArea: number): void {
-    forkJoin({
-      bienesTecnologicos: this.bienesTecnologicosService.getComputadorasPorAreas(idArea),
-    })
-      .pipe(
+  async loadComputadorasPorArea(idArea: number): Promise<void> {
+    try {
+      const result = await forkJoin({
+        bienesTecnologicos: this.bienesTecnologicosService.getComputadorasPorAreas(idArea)
+      }).pipe(
         catchError((error) => {
-          console.error('Error al cargar datos', error);
-          return [];
+          console.error('Error fetching data:', error);
+          return of(undefined); // Retorna un observable de undefined en caso de error
         })
-      )
-      .subscribe(({ bienesTecnologicos }) => {
-        bienesTecnologicos.forEach((t) => {
-          if (t.atributos && typeof t.atributos === 'string') {
-            try {
-              t.atributos = JSON.parse(t.atributos);
-            } catch (error) {
-              console.error('Error parsing JSON for product:', t);
-            }
+      ).toPromise();
+
+      if (result === undefined) {
+        console.error('No se obtuvieron bienes tecnológicos para el área con ID:', idArea);
+        return; // Salir de la función si no se obtuvieron datos válidos
+      }
+
+      const bienesTecnologicos = result.bienesTecnologicos;
+
+      bienesTecnologicos.forEach((t) => {
+        if (t.atributos && typeof t.atributos === 'string') {
+          try {
+            t.atributos = JSON.parse(t.atributos);
+          } catch (error) {
+            console.error('Error parsing JSON for product:', t);
           }
-        });
-        this.tecnologicosPorArea = bienesTecnologicos;
+        }
       });
+
+      this.tecnologicosPorArea = bienesTecnologicos;
+    } catch (error) {
+      console.error('Error al cargar datos:', error);
+      throw error; // Propagar el error para manejarlo en un nivel superior si es necesario
+    }
   }
 
   loadMobiliarios(): void {
@@ -206,17 +220,19 @@ export class ReportesComponent {
 
   //REPORTES DE DITIC
   mostrarDialogoPDFDITIC(tipoReporte: number, tipoReporteStr: string) {
-    if (tipoReporte === 2) {
+    if (tipoReporte === 3) {
       this.showDialog(this.selectedArea);
+    } else if (tipoReporte === 2) {
+      this.showDialogQR(this.selectedAreaQR);
     } else {
       this.descargarPDFCompletoDITIC();
     }
   }
 
   mostrarDialogoEXCELDITIC(tipoReporte: number, tipoReporteStr: string) {
-    if (tipoReporte === 2) {
+    if (tipoReporte === 3) {
       this.showDialog(this.selectedArea);
-    } else {
+    } else if (tipoReporte === 1) {
       this.descargarExcelCompletoDITIC();
     }
   }
@@ -236,7 +252,7 @@ export class ReportesComponent {
       }
 
       const data = groupedByArea[area].map((comp) => [
-        comp.nombre_bien || '',
+        comp.nombre || '',
         comp.marca || '',
         comp.modelo || '',
         comp.num_serie || '',
@@ -247,7 +263,7 @@ export class ReportesComponent {
         comp.nombre_area || '',
         comp.localizacion || '',
         comp.estado || '',
-        comp.encargado || '',
+        comp.nombre_encargado || '',
         comp.codigoUTA || '',
         comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : ''
       ]);
@@ -287,9 +303,85 @@ export class ReportesComponent {
     return grouped;
   }
 
+  async descargarQRDitic() {
+    try {
+      await this.loadComputadorasPorArea(this.selectedAreaQR.id_area);
+  
+      const pdf = new jsPDF('portrait');
+  
+      const data = this.tecnologicosPorArea.map((comp) => [
+        '',
+        'Num. serie: ' + (comp.num_serie || '') + '\nIP: ' + (comp.atributos?.IP || ''),
+        'Máscara: ' + (comp.atributos?.Mascara || '') + '\nGateway: ' + (comp.atributos?.Gateway || ''),
+        'Ubicación: ' + (comp.localizacion || '') + '\nCódigo UTA: ' + (comp.codigoUTA || '')
+      ]);
+  
+      const qrImagesPromises = this.tecnologicosPorArea.map(async (comp) => {
+        try {
+          const response = await fetch(comp.image || '');
+          const blob = await response.blob();
+          return new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.readAsDataURL(blob);
+          });
+        } catch (error) {
+          console.error('Error al cargar la imagen QR:', error);
+          return '';
+        }
+      });
+  
+      const qrImages = await Promise.all(qrImagesPromises);
+  
+      if (qrImages.length !== this.tecnologicosPorArea.length) {
+        console.error('El número de imágenes QR no coincide con el número de computadoras.');
+        return;
+      }
+  
+      autoTable(pdf, {
+        startY: 5,
+        body: data.map((row, index) => {
+          if (qrImages[index]) {
+            row[0] = ' '; // Puedes usar un espacio en blanco para evitar errores
+          }
+          return row;
+        }),
+        theme: 'striped',
+        columnStyles: {
+          0: { cellWidth: 20, minCellHeight: 20 }, // Ajustar el ancho de la columna QR
+          1: { cellWidth: 30 }, // Ajustar el ancho de la columna N. Serie
+          2: { cellWidth: 30 }, // Ajustar el ancho de la columna IP
+          3: { cellWidth: 30 }  // Ajustar el ancho de la columna Máscara de Red
+        },
+        margin: { left: 5, bottom: 25 }, // Ajustar los márgenes
+        didDrawCell: (data) => {
+          if (data.section === 'body' && data.column.index === 0 && qrImages[data.row.index]) {
+            pdf.addImage(qrImages[data.row.index], 'PNG', data.cell.x + 1, data.cell.y + 1, 18, 18);
+          }
+        },
+        styles: {
+          fontSize: 8,
+          valign: 'middle'
+        }
+      });
+  
+      pdf.save('QR_PC_FISEI.pdf');
+  
+    } catch (error) {
+      console.error('Error al generar el reporte QR:', error);
+    }
+  }
   showDialog(area: any) {
     this.visible = true;
     this.selectedArea = area;
+    this.selectedAreaQR = null;
+
+  }
+
+  showDialogQR(area: any) {
+    this.qrVisible = true;
+    this.selectedAreaQR = area;
+    this.selectedArea = null;
   }
 
   async descargarPDFPorAreaDITIC() {
@@ -303,7 +395,7 @@ export class ReportesComponent {
 
     this.bienesTecnologicosService.getComputadorasPorAreas(this.selectedArea.id_area).subscribe(() => {
       const data = this.tecnologicosPorArea.map((comp, index) => [
-        comp.nombre_bien || '',
+        comp.nombre || '',
         comp.marca || '',
         comp.modelo || '',
         comp.num_serie || '',
@@ -314,7 +406,7 @@ export class ReportesComponent {
         comp.nombre_area || '',
         comp.localizacion || '',
         comp.estado || '',
-        comp.encargado || '',
+        comp.nombre_encargado || '',
         comp.codigoUTA || '',
         comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : ''
       ]);
@@ -337,7 +429,6 @@ export class ReportesComponent {
   async descargarExcelCompletoDITIC() {
     const headers = ['Bien', 'Marca', 'Modelo', 'N. Serie', 'Procesador', 'Memoria', 'Disco Duro', 'IP', 'Localización', 'Ubicación', 'Estado', 'Custodio Actual', 'Código UTA', 'Fecha Adquisición'];
     const data = this.tecnologicosCompleto.map((comp, index) => [
-      index + 1,
       comp.nombre || '',
       comp.marca || '',
       comp.modelo || '',
@@ -349,7 +440,7 @@ export class ReportesComponent {
       comp.nombre_area || '',
       comp.localizacion || '',
       comp.estado || '',
-      comp.encargado || '',
+      comp.nombre_encargado || '',
       comp.codigoUTA || '',
       comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : ''
     ]);
@@ -369,7 +460,6 @@ export class ReportesComponent {
       const headers = ['Bien', 'Marca', 'Modelo', 'N. Serie', 'Procesador', 'Memoria', 'Disco Duro', 'IP', 'Localización', 'Ubicación', 'Estado', 'Custodio Actual', 'Código UTA', 'Fecha Adquisición'];
 
       const data = this.tecnologicosPorArea.map((comp, index) => [
-        index + 1,
         comp.nombre || '',
         comp.marca || '',
         comp.modelo || '',
@@ -381,7 +471,7 @@ export class ReportesComponent {
         comp.nombre_area || '',
         comp.localizacion || '',
         comp.estado || '',
-        comp.encargado || '',
+        comp.nombre_encargado || '',
         comp.codigoUTA || '',
         comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : ''
       ]);
@@ -430,7 +520,7 @@ export class ReportesComponent {
         Object.keys(groupedByArea).forEach((area, index) => {
 
           const dataTecnologicos = groupedByArea[area].tecnologicos.map((comp: any) => [
-            comp.nombre_bien || '',
+            comp.nombre || '',
             comp.marca || '',
             comp.modelo || '',
             comp.num_serie || '',
@@ -440,7 +530,7 @@ export class ReportesComponent {
             comp.localizacion || '',
             comp.estado || '',
             comp.codigoUTA || '',
-            comp.encargado || '',
+            comp.nombre_encargado || '',
             comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : ''
           ]);
 
@@ -530,7 +620,7 @@ export class ReportesComponent {
         const headers = ['Bien', 'Marca', 'Modelo', 'N. Serie', 'Material', 'Color', 'Localización', 'Ubicación', 'Estado', 'Código UTA', 'Custodio Actual', 'Fecha Adquisición'];
 
         const dataTecnologicos = this.tecnologicosCompleto.map((comp: any) => [
-          comp.nombre_bien || '',
+          comp.nombre || '',
           comp.marca || '',
           comp.modelo || '',
           comp.num_serie || '',
@@ -540,7 +630,7 @@ export class ReportesComponent {
           comp.localizacion || '',
           comp.estado || '',
           comp.codigoUTA || '',
-          comp.encargado || '',
+          comp.nombre_encargado || '',
           comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : ''
         ]);
 
@@ -580,7 +670,7 @@ export class ReportesComponent {
 
     Object.keys(groupedByArea).forEach((area, index) => {
       const data = groupedByArea[area].tecnologicos.map((comp: any) => [
-        comp.nombre_bien || '',
+        comp.nombre || '',
         comp.marca || '',
         comp.modelo || '',
         comp.num_serie || '',
@@ -589,7 +679,7 @@ export class ReportesComponent {
         comp.atributos.Resolucion || '',
         comp.localizacion || '',
         comp.estado || '',
-        comp.encargado || '',
+        comp.nombre_encargado || '',
         comp.codigoUTA || '',
         comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : '',
         comp.atributos.Cambio_lampara || '',
@@ -650,19 +740,20 @@ export class ReportesComponent {
   }
 
   async descargarExcelTecnologicosUPE() {
-    const headers = ['Bien', 'Marca', 'Modelo', 'N. Serie', 'IP', 'Memoria', 'Resolución', 'Ubicación', 'Estado', 'Custodio Actual', 'Código UTA', 'Fecha Adquisición', 'Fec. Cambio de Lente'];
+    const headers = ['Bien', 'Marca', 'Modelo', 'N. Serie', 'IP', 'Memoria', 'Resolución', 'Localización', 'Ubicación', 'Estado', 'Custodio Actual', 'Código UTA', 'Fecha Adquisición', 'Fec. Cambio de Lente'];
 
     const data = this.tecnologicosCompletoUPE.map((comp: any) => [
-      comp.nombre_bien || '',
+      comp.nombre || '',
       comp.marca || '',
       comp.modelo || '',
       comp.num_serie || '',
       comp.atributos.IP || '',
       comp.atributos.Memoria || '',
       comp.atributos.Resolucion || '',
+      comp.nombre_area,
       comp.localizacion || '',
       comp.estado || '',
-      comp.encargado || '',
+      comp.nombre_encargado || '',
       comp.codigoUTA || '',
       comp.fecha_adquisicion ? new Date(comp.fecha_adquisicion).toLocaleDateString() : '',
       comp.atributos.Cambio_lampara || '',
@@ -697,7 +788,6 @@ export class ReportesComponent {
           mobiliario.num_serie || '',
           mobiliario.material || '',
           mobiliario.color || '',
-          mobiliario.nombre_area || '',
           mobiliario.localizacion || '',
           mobiliario.estado || '',
           mobiliario.codigoUTA || '',
@@ -716,7 +806,7 @@ export class ReportesComponent {
 
         const headers = [
           [{ content: `${area.toUpperCase()}`, colSpan: 12 }],
-          ['Bien', 'Marca', 'Modelo', 'N. Serie', 'Material', 'Color', 'Área', 'Localización', 'Estado', 'Código UTA', 'Custodio Actual', 'Fecha Adquisición'],
+          ['Bien', 'Marca', 'Modelo', 'N. Serie', 'Material', 'Color', 'Ubicación', 'Estado', 'Código UTA', 'Custodio Actual', 'Fecha Adquisición'],
         ];
 
         autoTable(pdf, {
@@ -725,7 +815,7 @@ export class ReportesComponent {
           body: dataMobiliarios,
           theme: 'striped',
           styles: {
-            fontSize: 8,
+            fontSize: 10,
             valign: 'middle',
             halign: 'center'
           },
@@ -767,9 +857,9 @@ export class ReportesComponent {
           (error: any) => reject(error)
         );
       });
-  
+
       const wb = XLSX.utils.book_new();
-  
+
       const dataMobiliarios = response.mobiliarios.map((mobiliario: any) => ({
         'Bien': mobiliario.nombre || '',
         'Marca': mobiliario.marca || '',
@@ -777,18 +867,18 @@ export class ReportesComponent {
         'N. Serie': mobiliario.num_serie || '',
         'Material': mobiliario.material || '',
         'Color': mobiliario.color || '',
-        'Área': mobiliario.nombre_area || '',
-        'Localización': mobiliario.localizacion || '',
+        'Localización': mobiliario.nombre_area || '',
+        'Ubicación': mobiliario.localizacion || '',
         'Estado': mobiliario.estado || '',
         'Código UTA': mobiliario.codigoUTA || '',
         'Custodio Actual': mobiliario.nombre_encargado + ' ' + mobiliario.apellido_encargado || '',
         'Fecha Adquisición': mobiliario.fecha_adquisicion ? new Date(mobiliario.fecha_adquisicion).toLocaleDateString() : ''
       }));
-  
+
       const ws = XLSX.utils.json_to_sheet(dataMobiliarios);
-  
+
       XLSX.utils.book_append_sheet(wb, ws, 'Mobiliarios');
-  
+
       XLSX.writeFile(wb, 'INVENTARIO_BIENES_MOBILIARIOS_UPE.xlsx');
     } catch (error) {
       console.error('Error al obtener datos de mobiliarios:', error);

@@ -29,46 +29,51 @@ function generateQR(data) {
 
 const getBienesTecnologicos = (req, res) => {
     try {
-
-        const sql = `
-            SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado 
-            FROM bien_tecnologico bt
-            LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
-            WHERE bt.estado != 'BODEGA'
-        `;
-        connection.query(sql, (err, data) => {
-            if (err) {
-                console.error('Error en la consulta SQL:', err);
-                res.status(500).json({ error: 'Error en el servidor' });
-            } else {
-                res.json(data);
-            }
-        });
-
+      const sql = `
+        SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado, a.nombre as nombre_area
+        FROM bien_tecnologico bt
+        LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bt.id_area_per = a.id_area
+        WHERE bt.estado != 'BODEGA'
+      `;
+      connection.query(sql, (err, data) => {
+        if (err) {
+          console.error('Error en la consulta SQL:', err);
+          res.status(500).json({ error: 'Error en el servidor' });
+        } else {
+          res.json(data);
+        }
+      });
     } catch (error) {
       console.error('Error en la función getBienesTecnologicos:', error);
       res.status(500).json({ error: 'Error en el servidor' });
     }
   };
 
-const getBienesTecnologicosPorArea = (req, res) => {
+  const getBienesTecnologicosPorArea = (req, res) => {
     try {
-        const { id } = req.params;
-        const sql = 'SELECT * FROM Bien_Tecnologico WHERE nombre = \'COMPUTADORA DE ESCRITORIO\' AND id_area_per = ?';
-
-        connection.query(sql, [id], (err, data) => {
-            if (err) {
-                console.error('Error en la consulta SQL:', err);
-                res.status(500).json({ error: 'Error en el servidor' });
-            } else {
-                res.json(data);
-            }
-        });
+      const { id } = req.params;
+      const sql = `
+        SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado, a.nombre as nombre_area
+        FROM Bien_Tecnologico bt
+        LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bt.id_area_per = a.id_area
+        WHERE bt.nombre = 'COMPUTADORA DE ESCRITORIO' AND bt.id_area_per = ? AND bt.estado != 'BODEGA'
+      `;
+  
+      connection.query(sql, [id], (err, data) => {
+        if (err) {
+          console.error('Error en la consulta SQL:', err);
+          res.status(500).json({ error: 'Error en el servidor' });
+        } else {
+          res.json(data);
+        }
+      });
     } catch (error) {
-        console.error('Error en la función getBienesTecnologicosPorArea:', error);
-        res.status(500).json({ error: 'Error en el servidor' });
+      console.error('Error en la función getBienesTecnologicosPorArea:', error);
+      res.status(500).json({ error: 'Error en el servidor' });
     }
-};
+  };
 
 const obtenerBienesPorBloqueYArea = (req, res) => {
     const { nombreBloque, nombreArea } = req.params;

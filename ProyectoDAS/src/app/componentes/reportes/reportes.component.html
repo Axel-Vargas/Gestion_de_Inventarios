@@ -37,7 +37,7 @@
                                     class="p-button p-component p-button-text flex p-button-lg align-items-center justify-content-center"
                                     style="color:green"></button>
 
-                                <p-button *ngIf="reporte.tipo !== 'Reporte Completo'" label="Seleccionar" (click)="mostrarDialogoPDFDITIC(reporte.code, reporte.tipo)"
+                                <p-button *ngIf="reporte.tipo === 'Reporte por Áreas' || reporte.tipo === 'Reporte QR'" label ="Seleccionar" (click)="mostrarDialogoPDFDITIC(reporte.code, reporte.tipo)"
                                     [rounded]="true"></p-button>
                             </ng-container>
                             <ng-template #UPEActions>
@@ -67,19 +67,31 @@
         </div>
     </div>
 </div>
-<p-dialog header="Reporte por Área" [modal]="true" [(visible)]="visible" [style]="{ width: '26rem', 'min-height': '320px' }">
+<p-dialog header="Reporte por Área" [modal]="true" [(visible)]="visible" [style]="{ width: '26rem' }">
     <div class="flex justify-content-between">
-        <div class="flex align-items-center justify-content-center gap-3 mb-3">
-            <p-dropdown [options]="areas" [(ngModel)]="selectedArea" dataKey="id_area" optionLabel="nombre"
+        <div class="flex align-content-start justify-content-center gap-3 mb-3">
+            <p-dropdown [options]="areas" [(ngModel)]="selectedArea" dataKey="id_area" appendTo="body" optionLabel="nombre"
                 placeholder="Seleccione un área"></p-dropdown>
         </div>
-        <div class="flex flex-row flex-wrap align-items-center justify-content-center">
+        <div class="flex flex-row flex-wrap align-content-start justify-content-center">
             <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarPDFPorAreaDITIC()"
-                class="p-button p-component p-button-text p-button-lg flex align-items-center justify-content-center"
+                class="p-button p-component p-button-text p-button-lg flex align-content-start justify-content-center"
                 [disabled]="!selectedArea" style="color:red"></button>
             <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarExcelPorAreaDITIC()"
-                class="p-button p-component p-button-text p-button-lg flex align-items-center justify-content-center"
+                class="p-button p-component p-button-text p-button-lg flex align-content-start justify-content-center"
                 [disabled]="!selectedArea" style="color:green"></button>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Tarjetas QR" [modal]="true" [(visible)]="qrVisible" [style]="{ width: '28rem' }">
+    <div class="flex justify-content-between">
+        <div class="flex align-content-start justify-content-center gap-3 mb-3">
+            <p-dropdown [options]="areas" [(ngModel)]="selectedAreaQR" dataKey="id_area" appendTo="body" optionLabel="nombre"
+                placeholder="Seleccione un área"></p-dropdown>
+        </div>
+        <div class="flex flex-row flex-wrap align-content-start justify-content-center">
+            <p-button label="Generar QR" (click)="descargarQRDitic()"
+            [rounded]="true"></p-button>
         </div>
     </div>
 </p-dialog>
