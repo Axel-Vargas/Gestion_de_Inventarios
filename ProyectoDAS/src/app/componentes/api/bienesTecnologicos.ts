@@ -15,13 +15,16 @@ export interface bienes_Tecnologicos {
     //repotenciado?: Repotenciado;
     estado?: string;
     codigoUTA?: string;
+    mascara?: string;
+    gateway?: string;
+    prestado?: string;
     image?: string;
     localizacion?: string;
     id_encargado_per?:number;
     nombre_area?: string;
-    nombre_encargado_completo?: string;
+    nombre_encargado?: string;
     id_area_per?: number;
-    id_encargado_per?:string;
+    //id_encargado_per?:string;
     id_proveedor_per?: number;
     componentes: Componentes[];
     material?: string;

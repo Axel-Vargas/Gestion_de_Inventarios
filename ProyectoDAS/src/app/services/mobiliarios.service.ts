@@ -13,6 +13,18 @@ export class MobiliariosService {
     return this.http.get(this.API);
   }
 
+  obtenerMobiliariosPorArea(id:string) {
+    return this.http.get<any[]>(`${this.API}/area/${id}`);
+  }
+
+  obtenerMobiliariosPorEstado(estado:string) {
+    return this.http.get<any[]>(`${this.API}/estado/${estado}`);
+  }
+
+  obtenerMobiliariosPorEncargado(encargado:string) {
+    return this.http.get<any[]>(`${this.API}/encargado/${encargado}`);
+  }
+
   obtenerUsuarioPorNombre(nombre: string): Observable<any[]> {
     return this.http.get<any[]>(`${this.API}/nombre/${nombre}`);
   }
