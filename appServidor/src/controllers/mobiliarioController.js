@@ -24,6 +24,89 @@ exports.getAllBienes = async (req, res) => {
   }
 };
 
+exports.getBienesPorArea = async (req, res) => {
+  const {id} = req.params;
+
+  try {
+    const selectQuery = `
+      SELECT bm.*, 
+             e.nombre AS nombre_encargado, 
+             e.apellido AS apellido_encargado,
+             a.nombre AS nombre_area 
+      FROM bien_mobiliario bm
+      LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
+      LEFT JOIN areas a ON bm.id_area_per = a.id_area
+      WHERE bm.estado != 'BODEGA' AND bm.id_area_per = ?
+    `;
+    connection.query(selectQuery, [id], (error, results) => {
+      if (error) {
+        return res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
+
+      res.status(200).json({ mobiliarios: results });
+    });
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
+exports.getBienesPorEstado = async (req, res) => {
+  const { estado } = req.params;
+
+  try {
+    const selectQuery = `
+      SELECT bm.*, 
+             e.nombre AS nombre_encargado, 
+             e.apellido AS apellido_encargado,
+             a.nombre AS nombre_area 
+      FROM bien_mobiliario bm
+      LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
+      LEFT JOIN areas a ON bm.id_area_per = a.id_area
+      WHERE bm.estado = ?
+    `;
+    connection.query(selectQuery, [estado], (error, results) => {
+      if (error) {
+        console.error('Error en la consulta SQL:', error);
+        return res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
+
+      res.status(200).json({ mobiliarios: results });
+    });
+  } catch (error) {
+    console.error('Error en la función getBienesPorEstado:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
+exports.getBienesPorEncargado = async (req, res) => {
+  const { encargado } = req.params;
+
+  try {
+    const selectQuery = `
+      SELECT bm.*, 
+             e.nombre AS nombre_encargado, 
+             e.apellido AS apellido_encargado,
+             a.nombre AS nombre_area 
+      FROM bien_mobiliario bm
+      LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
+      LEFT JOIN areas a ON bm.id_area_per = a.id_area
+      WHERE bm.id_encargado_per = ? AND bm.estado != 'BODEGA'
+    `;
+  
+    connection.query(selectQuery, [encargado], (error, results) => {
+      if (error) {
+        console.error('Error en la consulta SQL:', error);
+        return res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
+
+      res.status(200).json({ mobiliarios: results });
+    });
+  } catch (error) {
+    console.error('Error en la función getBienesPorEncargado:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
 exports.addBienes = async (req, res) => {
   try {
     const {bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per} = req.body;

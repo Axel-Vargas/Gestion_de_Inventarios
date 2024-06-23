@@ -17,6 +17,7 @@ export interface bienes_Tecnologicos {
     codigoUTA?: string;
     mascara?: string;
     gateway?: string;
+    prestado?: string;
     image?: string;
     localizacion?: string;
     id_encargado_per?:number;

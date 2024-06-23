@@ -69,8 +69,8 @@ export class MobiliariosComponent {
     this.listarEncargadosComboBox();
 
     this.estados = [
-      { name: 'Operativo', code: 1 },
-      { name: 'No Funcional', code: 2 },
+      { name: 'FUNCIONAL', code: 1 },
+      { name: 'NO FUNCIONAL', code: 2 },
     ];
   }
 
