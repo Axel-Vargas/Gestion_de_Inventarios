@@ -25,7 +25,7 @@ const getTotalBienes = (req, res) => {
         const sql = `
         SELECT COUNT(*) AS total
         FROM BIEN_TECNOLOGICO BT, COMPONENTES C
-        WHERE BT.ID_BIEN_TEC = C.ID_BIEN_PER
+        WHERE BT.ID_BIEN = C.ID_BIEN_PER
         AND BT.ESTADO = 'BODEGA'
         AND C.ESTADO != 'BODEGA'
         `;
@@ -216,7 +216,7 @@ const getRepotenciadosPorArea = (req, res) => {
         FROM BLOQUES B
         JOIN AREAS A ON B.ID_BLOQUE = A.ID_BLOQUE_PER
         JOIN BIEN_TECNOLOGICO BT ON A.ID_AREA = BT.ID_AREA_PER
-        JOIN COMPONENTES C ON BT.ID_BIEN_TEC = C.id_bien_per
+        JOIN COMPONENTES C ON BT.ID_BIEN = C.id_bien_per
         WHERE C.ESTADO != 'BODEGA'
         AND C.repotenciado = 'SI'
         AND B.ID_FACU_PER = 1
