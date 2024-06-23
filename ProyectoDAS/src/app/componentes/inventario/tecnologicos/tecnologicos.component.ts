@@ -435,15 +435,15 @@ agregarAtributo(): void {
     this.selectedBlockName = event.value.name;
     this.isDropdownDisabled = false;
     this.cargarAreas(selectedBlockId);
+    this.isFiltrarDisabled = false
   }
   
   onSelectArea(event: any) {
      this.selectedAreaName = event.value.name;
-    this.isFiltrarDisabled = false;
+     this.isFiltrarDisabled = false;
   }
   
-  load(index: number) {
-    this.loading[index] = true;
+  cargarPorArea() {
     forkJoin({
       bienesTecnologicos: this.tecnologicosService.getPorBloqueYArea(this.selectedBlockName,this.selectedAreaName),
       componentes: this.componente_service.getComponentes(),
@@ -471,9 +471,16 @@ agregarAtributo(): void {
         this.tecnologicos = bienesTecnologicos;
         console.log(this.tecnologicos);
       });
-    setTimeout(() => (this.loading[index] = false), 1000);
+    
+  }
+  cargarPorBloques(){
+
   }
 
+  refresh(index: number) {
+    this.loading[index] = true;
+    setTimeout(() => (this.loading[index] = false), 1000);
+  }
   abrirModalTecnologico(){
     this.inventoryForm.reset();
     this.display =  true

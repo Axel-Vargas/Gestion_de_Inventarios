@@ -17,14 +17,14 @@
                         <div class="flex justify-content-between flex-column sm:flex-row" style="gap: 6px">
                             <p-dropdown class="w-full" [options]="categories" optionLabel="name"
                                 placeholder="Selecciona un bloque" filter="true"
-                                class="fixed-width-dropdown" (onChange)="onSelectBloque($event)"></p-dropdown>
+                                class="fixed-width-dropdown" (onChange)="onSelectBloque($event)" (onChange)="cargarPorBloques()"></p-dropdown>
 
                             <p-dropdown class="w-full" [options]="area" optionLabel="name"
                                 placeholder="Selecciona un area" filter="true"
-                                class="fixed-width-dropdown" [disabled]="isDropdownDisabled" (onChange)="onSelectArea($event)"></p-dropdown>
+                                class="fixed-width-dropdown" [disabled]="isDropdownDisabled" (onChange)="onSelectArea($event)" (onChange)="cargarPorArea()"></p-dropdown>
 
                             <p-button label="Cargar" icon="pi pi-search" [loading]="loading[0]"
-                                (onClick)="load(0)" [disabled]="isFiltrarDisabled"></p-button>
+                                (onClick)="refresh" [disabled]="isFiltrarDisabled"></p-button>
                             </div>
 
                         <span class="p-input-icon-left mb-2">

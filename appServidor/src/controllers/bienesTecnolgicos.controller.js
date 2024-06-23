@@ -111,6 +111,42 @@ const obtenerBienesPorBloqueYArea = (req, res) => {
     }
 };
 
+const obtenerBienesPorBloque = (req, res) => {
+    const { nombreBloque} = req.params;
+    try {
+        const sql = `
+            SELECT 
+                BT.*, 
+                CONCAT(E.nombre, ' ', E.apellido) AS nombre_encargado,
+                CONCAT(D.nombre_dep) AS nombre_dependencia
+            FROM 
+                BLOQUES B
+            JOIN 
+                AREAS A ON B.ID_BLOQUE = A.ID_BLOQUE_PER
+            JOIN 
+                BIEN_TECNOLOGICO BT ON A.ID_AREA = BT.ID_AREA_PER
+            JOIN 
+                ENCARGADOS E ON BT.ID_ENCARGADO_PER = E.ID_ENCARGADO
+            JOIN 
+                DEPENDENCIA D ON BT.ID_DEPENDENCIA_PER = D.ID_DEP
+            WHERE 
+                B.NOMBRE = ?
+            AND 
+                BT.ESTADO != 'BODEGA';
+        `;
+        connection.query(sql, [nombreBloque], (err, data) => {
+            if (err) {
+                console.error('Error en la consulta SQL:', err);
+                res.status(500).json({ error: 'Error en el servidor' });
+            } else {
+                res.json(data);
+            }
+        });
+    } catch (error) {
+        console.error('Error en la función obtenerBienesPorBloqueYArea:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+};
 
 const createBienTecnologico = async (req, res) => {
     const { nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, prestado, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per, id_dependencia_per } = req.body;
@@ -217,5 +253,6 @@ module.exports = {
     updateBienTecnologico,
     deleteBienTecnologico,
     obtenerBienesPorBloqueYArea,
-    getBienesTecnologicosPorArea
+    getBienesTecnologicosPorArea,
+    obtenerBienesPorBloque
 };
