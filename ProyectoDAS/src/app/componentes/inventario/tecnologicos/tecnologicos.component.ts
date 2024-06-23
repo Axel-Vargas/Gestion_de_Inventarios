@@ -474,11 +474,39 @@ agregarAtributo(): void {
     
   }
   cargarPorBloques(){
-
+    forkJoin({
+      bienesTecnologicos: this.tecnologicosService.getPorBloque(this.selectedBlockName),
+      componentes: this.componente_service.getComponentes(),
+    })
+      .pipe(
+        catchError((error) => {
+          console.error('Error al cargar datos', error);
+          return [];
+        })
+      )
+      .subscribe(({ bienesTecnologicos, componentes }) => {
+        bienesTecnologicos.forEach((t) => {
+          if (t.atributos && typeof t.atributos === 'string') {
+            try {
+              t.atributos = JSON.parse(t.atributos);
+            } catch (error) {
+              console.error('Error parsing JSON for product:', t);
+            }
+            
+          }
+          t.componentes = componentes.filter(
+            (c) => c.id_bien_per === t.id_bien
+          );
+        });
+        this.tecnologicos = bienesTecnologicos;
+        console.log(this.tecnologicos);
+      });
   }
 
   refresh(index: number) {
     this.loading[index] = true;
+    this.cargarBienesTecnologicos()
+    this.cargarBloques();
     setTimeout(() => (this.loading[index] = false), 1000);
   }
   abrirModalTecnologico(){

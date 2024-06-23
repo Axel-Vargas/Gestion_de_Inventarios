@@ -23,8 +23,8 @@
                                 placeholder="Selecciona un area" filter="true"
                                 class="fixed-width-dropdown" [disabled]="isDropdownDisabled" (onChange)="onSelectArea($event)" (onChange)="cargarPorArea()"></p-dropdown>
 
-                            <p-button label="Cargar" icon="pi pi-search" [loading]="loading[0]"
-                                (onClick)="refresh" [disabled]="isFiltrarDisabled"></p-button>
+                            <p-button  icon="pi pi-refresh" [loading]="loading[0]"
+                                (onClick)="refresh(0)" [disabled]="isFiltrarDisabled"></p-button>
                             </div>
 
                         <span class="p-input-icon-left mb-2">
