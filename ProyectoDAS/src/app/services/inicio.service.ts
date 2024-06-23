@@ -45,6 +45,15 @@ export class InicioService {
     return this.http.get<number>(`${this.API}/tecnologicosBodega`);
   }
 
+  obtenerBienesPorArea(): Observable<any> {
+    return this.http.get<any>(`${this.API}/bienes-por-area`)
+     
+  }
+  
+  obtenerRepotenciadoPorArea(): Observable<any> {
+    return this.http.get<any>(`${this.API}/repotenciadoPorArea`)
+     
+  }
 
   obtenerBloques(idFacultad: number): Observable<any[]> {
     return this.http.get<any[]>(`${this.API}/bloques`, {
@@ -57,4 +66,5 @@ export class InicioService {
   obtenerFacultades(): Observable<any[]> {
     return this.http.get<any[]>(`${this.API}/facultades`);
   }
+  
 }

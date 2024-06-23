@@ -7,14 +7,14 @@ const {
   getTotalUsuarios,
   getFacultades,
   getBloques,
-  //getBienesPorArea,
+  getBienesPorArea,
   //
   getTotalComponentesLibres,
   getTotalBienesMobiliarios,
   getTotalRepotencias,
   getTotalBienesTecnologicosBodega,
   getTotalBienesTecnologicosNoFuncional,
-  //getRepotenciadosPorArea
+  getRepotenciadosPorArea
 
 } = require("../controllers/inicioController.js");
 
@@ -24,13 +24,13 @@ router.get("/total-proveedores", getTotalProveedores);
 router.get("/total-usuarios", getTotalUsuarios);
 router.get("/facultades", getFacultades);
 router.get("/bloques", getBloques);
-//router.get("/bienes-por-area", getBienesPorArea);
+router.get("/bienes-por-area", getBienesPorArea);
 //cambios
 router.get("/componentesLibres", getTotalComponentesLibres);
 router.get("/totalbienesmobilarios", getTotalBienesMobiliarios);
 router.get("/totalrepotencias", getTotalRepotencias);
 router.get("/tecnologicosBodega",getTotalBienesTecnologicosBodega)
 router.get("/tecnologicosNoFuncional",getTotalBienesTecnologicosNoFuncional)
-//router.get("/repotenciadoPorArea", getRepotenciadosPorArea)
+router.get("/repotenciadoPorArea", getRepotenciadosPorArea)
 module.exports = router;
 
