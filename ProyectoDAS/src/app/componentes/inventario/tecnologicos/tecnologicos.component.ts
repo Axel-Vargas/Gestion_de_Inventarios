@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { BienestecnologicosService } from '../../../services/bienestecnologicos.service';
 import { bienes_Tecnologicos } from '../../api/bienesTecnologicos';
@@ -22,6 +22,7 @@ import { Encargados } from '../../api/Encargados';
 import { ScannerService } from '../../../services/scanner.service';
 import { DependenciaService } from '../../../services/dependencia.service';
 import { Dependencia } from '../../api/Dependencias';
+import { Button } from 'primeng/button';
 
 @Component({
   selector: 'app-tecnologicos',
@@ -98,10 +99,15 @@ export class TecnologicosComponent implements OnInit {
     private tipoTecnologicoService:TipoTecnologicoService,
     private encargadosService:EncargadosService,
     private scannerService: ScannerService,
+    private cdr: ChangeDetectorRef,
     private dependenciaService: DependenciaService,
   ) {
-    //this.cargarBloques();
-    //this.cargarProveedores();
+    this.obtenerMarcas();
+    this.obtenerTipoTecnologico()
+    this.obtenerEncargados()
+    this.cargarBloques();
+    this.cargarProveedores();
+    this.cargarDependencias()
 
     this.estado = [
       { name: 'Funcional', code: 1 },
@@ -119,23 +125,20 @@ export class TecnologicosComponent implements OnInit {
     ];
   }
 
+  
+
+  
   ngOnInit() {
+    
     this.scannerService.scannedCode$.subscribe(code => {
       this.scannedCode = code;
-      const scnnaerNumer = Number(this.scannedCode)
-        if(!this.scannedCode){
+      const scannerNumber = Number(this.scannedCode);
+      if (!this.scannedCode) {
           this.cargarBienesTecnologicos();
-        }else{
-          this.cargarBienesTecnologicosPorId(scnnaerNumer)
-        }
-    });
-
-    this.obtenerMarcas();
-    this.obtenerTipoTecnologico()
-    this.obtenerEncargados()
-    this.cargarBloques();
-    this.cargarProveedores();
-    this.cargarDependencias()
+      } else {
+          this.cargarBienesTecnologicosPorId(scannerNumber);
+      }
+  });
 
     this.inventoryForm = new FormGroup({
       id_proveedor_per: new FormControl('', Validators.required),
@@ -207,6 +210,8 @@ export class TecnologicosComponent implements OnInit {
       })
     ).subscribe(({ bienesTecnologicos, componentes }) => {
       const arrayBienesTecnologicos = Array.isArray(bienesTecnologicos) ? bienesTecnologicos : [bienesTecnologicos];
+      this.editarBienTecnologico(bienesTecnologicos)
+      
       arrayBienesTecnologicos.forEach((t) => {
         if (t.atributos && typeof t.atributos === 'string') {
           try {
@@ -221,6 +226,7 @@ export class TecnologicosComponent implements OnInit {
       });
       this.tecnologicos = arrayBienesTecnologicos;
     });
+
   }
   
   
