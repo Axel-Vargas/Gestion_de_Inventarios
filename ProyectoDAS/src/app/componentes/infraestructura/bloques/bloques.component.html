@@ -87,7 +87,7 @@
                 </div>  
                 <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
                     <label for="nombre" class="font-semibold w-6rem">Nombre</label>
-                    <input pInputText id="nombre" autocomplete="off" [(ngModel)]="nombre" maxlength="20"/>
+                    <input pInputText id="nombre" autocomplete="off" [(ngModel)]="nombre" maxlength="20" (input)="handleInput($event)/>
                 </div>
             </div>
         </div>
