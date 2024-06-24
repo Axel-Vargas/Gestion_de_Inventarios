@@ -21,6 +21,7 @@ import {CalendarModule} from 'primeng/calendar';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { FieldsetModule } from 'primeng/fieldset';
+import { MultiSelectModule } from 'primeng/multiselect';
 @NgModule({
   declarations: [
     TecnologicosComponent,
@@ -44,7 +45,8 @@ import { FieldsetModule } from 'primeng/fieldset';
     ReactiveFormsModule,
     CalendarModule,
     ConfirmDialogModule,
-    FieldsetModule
+    FieldsetModule,
+    MultiSelectModule
 
   ],
   exports: [

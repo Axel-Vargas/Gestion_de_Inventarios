@@ -58,7 +58,6 @@ export class TecnologicosComponent implements OnInit {
 
   //bloques!: Bloque[];
   //areas!: Area[];
-
   selectedBienTecnologico: any = null;
   isEditMode: boolean = false;
   componentForm!: FormGroup;
