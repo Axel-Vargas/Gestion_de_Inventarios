@@ -49,7 +49,6 @@ export class MobiliariosComponent {
 
   rolUsuario: number | null = null;
 
-
   constructor(private authServices: AuthService,private confirmationService: ConfirmationService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService, private messageService: MessageService) {}
 
   id_bien = '';

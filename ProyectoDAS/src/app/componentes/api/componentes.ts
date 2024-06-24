@@ -18,5 +18,4 @@ export interface Componentes {
     codigoUTA?: string;
     id_bien_per?: number;
     id_proveedor_per?: number;
-    id_dependencia_per?: number;
 }
