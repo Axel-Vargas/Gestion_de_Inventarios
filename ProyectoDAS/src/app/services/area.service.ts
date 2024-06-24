@@ -22,8 +22,9 @@ export class AreasService {
     }
 
     getArea(id: number): Observable<Area> {
-        return this.http.get<Area>(`${this.myAppUrl}${this.myApiUrl}${id}`);
+        return this.http.get<Area>(`${this.myAppUrl}${this.myApiUrl}/${id}`);
     }
+
     getAreaFiltro(id: number): Observable<Area> {
         return this.http.get<Area>(`${this.myAppUrl}${this.myApiUrlFiltro}/${id}`);
     }

@@ -27,6 +27,7 @@ export interface bienes_Tecnologicos {
     //id_encargado_per?:string;
     id_proveedor_per?: number;
     componentes: Componentes[];
+    id_dependencia_per?: number;
     material?: string;
     color?: string;
 }
