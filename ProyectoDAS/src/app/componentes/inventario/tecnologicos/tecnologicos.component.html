@@ -20,7 +20,7 @@
                                 class="fixed-width-dropdown" (onChange)="onSelectBloque($event)" (onChange)="cargarPorBloques()"></p-dropdown>
 
                             <p-dropdown class="w-full" [options]="area" optionLabel="name"
-                                placeholder="Selecciona un area" filter="true"
+                                placeholder="Selecciona un área" filter="true"
                                 class="fixed-width-dropdown" [disabled]="isDropdownDisabled" (onChange)="onSelectArea($event)" (onChange)="cargarPorArea()"></p-dropdown>
 
                             <p-button  icon="pi pi-refresh" [loading]="loading[0]"
@@ -96,7 +96,7 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="rowexpansion" let-product>
-                    <h6>COMPONENTES</h6>
+                    <h6>REPOTENCIACIÓN</h6>
                     <tr>
                         <td colspan="15">
                             <div class="p-3">
@@ -164,7 +164,7 @@
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="6">Sin componentes</td>
+                        <td colspan="6">Sin repotenciación</td>
                     </tr>
                 </ng-template>
             </p-table>

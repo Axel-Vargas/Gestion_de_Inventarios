@@ -39,16 +39,20 @@
                       <td>{{ componente.repotenciado }}</td>
                       <td>{{ componente.codigoUTA }}</td>
                       <td class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
+                      <!-- 
+                      
                         <button type="button" class="p-button p-button-sm p-button-info" title="Editar" (click)="editComponente(componente)">
                           <i class="pi pi-pencil"></i>
                         </button>
                         <button type="button" class="p-button p-button-sm p-button-danger" title="Eliminar" (click)="deleteComponente(componente.id_componente)">
                           <i class="pi pi-trash"></i>
                         </button>
+                        -->
                         <button type="button" class="p-button p-button-sm p-button-danger" title="Eliminar" (click)="show(componente)">
                             <i class="pi pi-arrow-right"></i>
                           </button>
                       </td>
+                      
                     </tr>
                   </ng-template>
               </p-table>
@@ -140,7 +144,7 @@
                       <td>{{ bien.nombre_bloque }}</td>
                       <td>{{ bien.nombre_area }}</td>
                       <td>
-                        <button type="button" pButton icon="pi pi-search" (click)="selectBien(bien)"></button>
+                        <button type="button" pButton icon="pi pi-send" (click)="selectBien(bien)"></button>
                       </td>
                     </tr>
                   </ng-template>
