@@ -20,7 +20,7 @@
                             </p-inputIcon>
                             <input pInputText type="text"
                                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                                placeholder="Buscar Facultad" />
+                                placeholder="Buscar Facultad" (input)="handleInput($event)"/>
                         </p-iconField>
                     </div>
                 </ng-template>
@@ -29,12 +29,12 @@
                         <th>
                             <span class="flex mb-2">NOMBRE</span>
                             <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
-                                field="nombre" placeholder="Buscar por nombre" ariaLabel="Filter Nombre" />
+                                field="nombre" placeholder="Buscar por nombre" ariaLabel="Filter Nombre" (input)="handleInput($event)" />
                         </th>
                         <th>
                             <span class="flex mb-2">SIGLAS</span>
                             <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
-                                field="siglas" placeholder="Buscar por siglas" ariaLabel="Filter Siglas" />
+                                field="siglas" placeholder="Buscar por siglas" ariaLabel="Filter Siglas" (input)="handleInput($event)"/>
                         </th>
                         <th *ngIf="rolUsuario === 1"></th>
                     </tr>

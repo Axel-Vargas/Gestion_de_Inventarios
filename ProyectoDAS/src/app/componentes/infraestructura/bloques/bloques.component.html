@@ -20,7 +20,7 @@
                             </p-inputIcon>
                             <input pInputText type="text"
                                 (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                                placeholder="Buscar Bloque" />
+                                placeholder="Buscar Bloque" (input)="handleInput($event)"/>
                         </p-iconField>
                     </div>
                 </ng-template>
@@ -29,7 +29,7 @@
                         <th>
                             <span class="flex mb-2">NOMBRE</span>
                             <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
-                                field="nombre" placeholder="Buscar por nombre" ariaLabel="Filter Nombre" />
+                                field="nombre" placeholder="Buscar por nombre" ariaLabel="Filter Nombre" (input)="handleInput($event)"/>
                         </th>
                         <th>
                             <span class="flex mb-2">FACULTAD A LA QUE PERTENECE</span>
@@ -87,7 +87,7 @@
                 </div>  
                 <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
                     <label for="nombre" class="font-semibold w-6rem">Nombre</label>
-                    <input pInputText id="nombre" autocomplete="off" [(ngModel)]="nombre" maxlength="20"/>
+                    <input pInputText id="nombre" autocomplete="off" [(ngModel)]="nombre" maxlength="20" (input)="handleInput($event)" />
                 </div>
             </div>
         </div>
