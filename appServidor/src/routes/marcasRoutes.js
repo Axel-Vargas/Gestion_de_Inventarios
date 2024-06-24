@@ -12,4 +12,3 @@ router.put('/:id', marcasController.updateMarcas);
 router.delete('/:id', marcasController.deleteMarcas);
 
 module.exports = router;
-

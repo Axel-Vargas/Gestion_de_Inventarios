@@ -3,7 +3,6 @@ const router = express.Router();
 const { getBienesTecnologicos, createBienTecnologico, getBienTecnologicoById, updateBienTecnologico, deleteBienTecnologico, obtenerBienesPorBloqueYArea, getBienesTecnologicosPorArea, getBienesTecnologicosPorEstado, getBienesTecnologicosPorEncargado } = require('../controllers/bienesTecnolgicos.controller.js');
 
 router.get('/obtenerPorBloqueYArea/:nombreBloque/:nombreArea', obtenerBienesPorBloqueYArea); // Ruta para obtener bienes por bloque y área
-router.get('/obtenerPorBloque/:nombreBloque', obtenerBienesPorBloque)
 router.get('/', getBienesTecnologicos);
 router.get('/area/:id', getBienesTecnologicosPorArea);
 router.get('/estado/:estado', getBienesTecnologicosPorEstado);

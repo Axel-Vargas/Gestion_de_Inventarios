@@ -75,7 +75,7 @@ export class EncargadosComponent {
         console.error('Error al obtener encargados:', error);
       }
     );
-}
+  }
 
   registrarEncargado() {
     if (this.cedula == '' || this.nombre == '' || this.apellido == '' || this.telefono == '' || this.direccion == '') {
