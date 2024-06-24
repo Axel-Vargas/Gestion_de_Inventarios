@@ -3,14 +3,14 @@
         <div class="card">
             <div class="flex tecnologicos justify-content-between flex-wrap mb-5">
                 <span class="flex mobiliarios align-items-center">Bienes Tecnológicos</span>
-                <div class="flex align-items-center">
+                <div *ngIf="rolUsuario === 1" class="flex align-items-center">
                     <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Bien</span>
                     <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
-                      (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
-                  </div>
+                        (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
+                </div>
             </div>
             <p-toast></p-toast>
-            <p-table #dt1 [value]="tecnologicos" dataKey="id_bien" [tableStyle]="{ 'min-width': '60rem' }"
+            <p-table #dt [value]="tecnologicos" dataKey="id_bien" [tableStyle]="{ 'min-width': '60rem' }"
                 scrollDirection="both" [scrollable]="true" scrollHeight="450px" [rowHover]="true" [rows]="10"
                 [paginator]="true" [rowsPerPageOptions]="[10, 20, 30]"
                 [globalFilterFields]="['nombre','atributos','marca','modelo','num_serie','fecha_adquisicion','estado','codigoUTA','localizacion','ip_tecnologico']">
@@ -29,12 +29,14 @@
                             <p-button label="Cargar" icon="pi pi-search" [loading]="loading[0]" (onClick)="load(0)"
                                 [disabled]="isFiltrarDisabled"></p-button>
                         </div>
-
-                        <span class="p-input-icon-left mb-2">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text" #filter (input)="onGlobalFilter(dt1, $event)"
-                                placeholder="Buscar" class="w-full" />
-                        </span>
+                        <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input pInputText type="text"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                                placeholder="Buscar Bien" />
+                        </p-iconField>
 
                     </div>
                 </ng-template>
@@ -64,7 +66,7 @@
                         <th pSortableColumn="localizacion">
                             LOCALIZACION <p-sortIcon field="localizacion"></p-sortIcon>
                         </th>
-                        <th pSortableColumn="acciones">ACCIONES</th>
+                        <th *ngIf="rolUsuario === 1" pSortableColumn="acciones"></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-product let-expanded="expanded">
@@ -93,7 +95,8 @@
                         <td>{{ product.codigoUTA }}</td>
                         <td>{{ product.localizacion }}</td>
                         <td class="hidden-column">{{product.id_area_per}}</td>
-                        <td class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
+                        <td *ngIf="rolUsuario === 1" class="flex flex-row align-items-center sm:flex-col"
+                            style="gap: 8px">
                             <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"
                                 (onClick)="editarBienTecnologico(product)"></p-button>
                             <p-button type="button" icon="pi pi-trash" class="p-button-rounded"
@@ -135,7 +138,7 @@
                             REPOTENCIADO
                             <p-sortIcon field="repotenciado"></p-sortIcon>
                         </th>
-                        <th pSortableColumn="acciones">ACCIONES</th>
+                        <th *ngIf="rolUsuario === 1" pSortableColumn="acciones"></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-order>
@@ -158,12 +161,11 @@
                                 ">{{ order.repotenciado }}
                             </span>
                         </td>
-                        <td class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
+                        <td *ngIf="rolUsuario === 1" class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
                             <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"
                                 (click)="openEditComponentModal(order)"></p-button>
                             <p-button type="button" icon="pi pi-trash" class="p-button-rounded"
                                 (click)="eliminarComponente(order.id_componente)"></p-button>
-
                         </td>
                     </tr>
                 </ng-template>

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Marcas } from '../api/Marcas';
 import { MarcasService } from '../../services/marcas.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-marcas',
@@ -19,10 +20,17 @@ export class MarcasComponent implements OnInit {
     { label: 'TECNOLOGICO', value: 'TECNOLOGICO' },
     { label: 'MOBILIARIO', value: 'MOBILIARIO' }
   ];
-  constructor(private marcaService: MarcasService, private messageService: MessageService, private confirmationService: ConfirmationService) { }
+
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService, private marcaService: MarcasService, private messageService: MessageService, private confirmationService: ConfirmationService) { }
 
   ngOnInit(): void {
     this.getMarcas();
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   getMarcas() {

@@ -3,7 +3,7 @@
         <div class="card">
             <div class="flex bloques justify-content-between flex-wrap mb-5">
                 <span class="flex align-items-center">Bloques</span>
-                <div class="flex align-items-center">
+                <div *ngIf="rolUsuario === 1" class="flex align-items-center">
                     <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Bloque</span>
                     <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
                         (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
@@ -49,14 +49,14 @@
                               </ng-template>
                             </p-columnFilter>
                         </th>
-                        <th></th>
+                        <th *ngIf="rolUsuario === 1"></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-bloque>
                     <tr>
                         <td>{{ bloque.nombre }}</td>
                         <td>{{ bloque.nombre_facultad }}</td>
-                        <td class="flex flex-row ">
+                        <td *ngIf="rolUsuario === 1" class="flex flex-row ">
                             <button pButton (click)="showDialogEditar(bloque)" pRipple type="button"
                                 icon="pi pi-pen-to-square"
                                 class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>

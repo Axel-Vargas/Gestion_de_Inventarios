@@ -3,6 +3,7 @@ import { MobiliariosService } from '../../../services/mobiliarios.service';
 import { AreaMobiliarioService } from '../../../services/area.mobiliario.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { EncargadosService } from '../../../services/encargados.service';
+import { AuthService } from '../../../services/auth.service';
 
 
 
@@ -46,7 +47,9 @@ export class MobiliariosComponent {
   selectedRepresentatives: any[] = [];
   selectedRepresentativesA: any[] = [];
 
-  constructor(private confirmationService: ConfirmationService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService, private messageService: MessageService) {}
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService,private confirmationService: ConfirmationService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService, private messageService: MessageService) {}
 
   id_bien = '';
   id_encargado_per = '';
@@ -72,6 +75,10 @@ export class MobiliariosComponent {
       { name: 'FUNCIONAL', code: 1 },
       { name: 'NO FUNCIONAL', code: 2 },
     ];
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   listarEncargados(): void {

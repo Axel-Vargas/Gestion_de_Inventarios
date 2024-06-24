@@ -3,7 +3,7 @@
         <div class="card">
             <div class="flex encargados justify-content-between flex-wrap mb-5">
                 <span class="flex align-items-center">Encargados</span>
-                <div class="flex align-items-center">
+                <div *ngIf="rolUsuario === 1" class="flex align-items-center">
                     <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar encargado</span>
                     <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
                         (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
@@ -14,17 +14,18 @@
                 [tableStyle]="{ 'min-width': '95rem' }">
                 <ng-template pTemplate="caption">
                     <div class="flex align-items-center justify-content-between">
-                      <p-button label="Traspasar Bienes Libres" icon="pi pi-arrow-right" class="mr-2"
-                                (click)="openTransferModalForNullEncargados()"></p-button>
-                      <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
-                        <p-inputIcon>
-                          <i class="pi pi-search ml-2"></i>
-                        </p-inputIcon>
-                        <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                               placeholder="Buscar Encargado" class="ml-2"/>
-                      </p-iconField>
+                        <p-button *ngIf="rolUsuario === 1" label="Traspasar Bienes Libres" icon="pi pi-arrow-right" class="mr-2"
+                            (click)="openTransferModalForNullEncargados()"></p-button>
+                        <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+                            <p-inputIcon>
+                                <i class="pi pi-search ml-2"></i>
+                            </p-inputIcon>
+                            <input pInputText type="text"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                                placeholder="Buscar Encargado" class="ml-2" />
+                        </p-iconField>
                     </div>
-                  </ng-template>
+                </ng-template>
                 <ng-template pTemplate="header">
                     <tr>
                         <th>
@@ -52,7 +53,7 @@
                             <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
                                 field="direccion" placeholder="Buscar por direccion" ariaLabel="Filter Direccion" />
                         </th>
-                        <th></th>
+                        <th *ngIf="rolUsuario === 1"></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-encargado>
@@ -62,7 +63,7 @@
                         <td>{{ encargado.apellido }}</td>
                         <td>{{ encargado.telefono }}</td>
                         <td>{{ encargado.direccion }}</td>
-                        <td class="flex flex-row ">
+                        <td *ngIf="rolUsuario === 1" class="flex flex-row ">
                             <button pButton (click)="showDialogEditar(encargado)" pRipple type="button"
                                 icon="pi pi-pen-to-square"
                                 class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>
@@ -125,35 +126,35 @@
     </div>
 </p-dialog>
 
-<p-dialog header="Traspaso de Bienes" [(visible)]="displayModalBienes" modal="true" [style]="{width: '600px', height: '500px'}">
+<p-dialog header="Traspaso de Bienes" [(visible)]="displayModalBienes" modal="true"
+    [style]="{width: '600px', height: '500px'}">
     <div class="flex flex-column gap-2" [style]="{ height: '85%'}">
         <div class="flex align-items-center flex-row">
-            <p-dropdown [options]="encargados" dataKey="id_encargado" [(ngModel)]="selectedEncargado" optionLabel="nombreCompleto" placeholder="Seleccione un nuevo encargado"  [style]="{width: '100%'}"></p-dropdown>
+            <p-dropdown [options]="encargados" dataKey="id_encargado" [(ngModel)]="selectedEncargado"
+                optionLabel="nombreCompleto" placeholder="Seleccione un nuevo encargado"
+                [style]="{width: '100%'}"></p-dropdown>
         </div>
         <div class="flex flex-row gap-2" [style]="{ height: 'calc(100% - 2rem)'}">
             <div class="flex flex-column flex-1 overflow-auto" style="max-height: calc(100% - 2rem);">
-                <p-button class="mb-2 small-rounded-button" [style]="{width: '100%'}" label="Mover Todos" icon="pi pi-angle-double-right" (click)="moveAllToTarget()" [disabled]="!selectedEncargado"></p-button>
+                <p-button class="mb-2 small-rounded-button" [style]="{width: '100%'}" label="Mover Todos"
+                    icon="pi pi-angle-double-right" (click)="moveAllToTarget()"
+                    [disabled]="!selectedEncargado"></p-button>
                 <div class="p-2 border-1 surface-border border-round flex-1 overflow-auto">
                     <ul class="list-none flex flex-column gap-2 p-0 m-0">
-                        <li 
-                            *ngFor="let bien of sourceBienes"
-                            class="p-2 border-round shadow-1" 
-                            pDraggable 
-                            (onDragStart)="dragStart(bien)" 
-                            (onDragEnd)="dragEnd()">
+                        <li *ngFor="let bien of sourceBienes" class="p-2 border-round shadow-1" pDraggable
+                            (onDragStart)="dragStart(bien)" (onDragEnd)="dragEnd()">
                             {{bien.nombre}}/{{bien.codigoUTA}}
                         </li>
                     </ul>
                 </div>
             </div>
             <div class="flex flex-column flex-1 overflow-auto" style="max-height: calc(100% - 2rem);">
-                <p-button class="mb-2 small-rounded-button" [style]="{width: '100%'}" label="Mover Todos" icon="pi pi-angle-double-left" (click)="moveAllToSource()" [disabled]="!selectedEncargado"></p-button>
+                <p-button class="mb-2 small-rounded-button" [style]="{width: '100%'}" label="Mover Todos"
+                    icon="pi pi-angle-double-left" (click)="moveAllToSource()"
+                    [disabled]="!selectedEncargado"></p-button>
                 <div class="p-2 border-1 surface-border border-round flex-1 overflow-auto" pDroppable (onDrop)="drop()">
                     <ul class="list-none flex flex-column gap-2 p-0 m-0">
-                        <li 
-                            *ngFor="let bien of targetBienes" 
-                            class="p-2 border-round shadow-1" 
-                            pDraggable >
+                        <li *ngFor="let bien of targetBienes" class="p-2 border-round shadow-1" pDraggable>
                             {{bien.nombre}}/{{bien.codigoUTA}}
                         </li>
                     </ul>
@@ -161,8 +162,10 @@
             </div>
         </div>
         <div class="flex justify-content-end gap-2 mt-auto">
-            <p-button label="Cancelar" icon="pi pi-times" (click)="cancelTransfer()" class="small-rounded-button"></p-button>
-            <p-button label="Confirmar" icon="pi pi-check" (click)="confirmTransfer()" [disabled]="targetBienes.length === 0 || !selectedEncargado" class="small-rounded-button"></p-button>
+            <p-button label="Cancelar" icon="pi pi-times" (click)="cancelTransfer()"
+                class="small-rounded-button"></p-button>
+            <p-button label="Confirmar" icon="pi pi-check" (click)="confirmTransfer()"
+                [disabled]="targetBienes.length === 0 || !selectedEncargado" class="small-rounded-button"></p-button>
         </div>
     </div>
 </p-dialog>

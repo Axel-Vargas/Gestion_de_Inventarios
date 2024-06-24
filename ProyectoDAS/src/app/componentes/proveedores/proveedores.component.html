@@ -3,7 +3,7 @@
         <div class="card">
             <div class="flex proveedores justify-content-between flex-wrap mb-5">
                 <span class="flex align-items-center">Proveedores</span>
-                <div class="flex align-items-center">
+                <div *ngIf="rolUsuario === 1" class="flex align-items-center">
                     <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Proveedor</span>
                     <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
                         (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
@@ -41,7 +41,7 @@
                             <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
                                 field="telefono" placeholder="Buscar por teléfono" ariaLabel="Filter Telefono" />
                         </th>
-                        <th></th>
+                        <th *ngIf="rolUsuario === 1"></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-proveedor>
@@ -49,7 +49,7 @@
                         <td>{{ proveedor.nombre }}</td>
                         <td>{{ proveedor.direccion }}</td>
                         <td>{{ proveedor.telefono }}</td>
-                        <td class="flex flex-row ">
+                        <td *ngIf="rolUsuario === 1" class="flex flex-row ">
                             <button pButton (click)="showDialogEditar(proveedor)" pRipple type="button"
                                 icon="pi pi-pen-to-square"
                                 class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>
