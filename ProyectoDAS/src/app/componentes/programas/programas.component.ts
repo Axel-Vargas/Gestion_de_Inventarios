@@ -47,6 +47,7 @@ export class ProgramasComponent {
 
   ngOnInit(): void {
     this.listarProgramas();
+    this.obtenerRolUsuario();
 
     this.licencias = [
       { name: 'Licencia', code: 1 },

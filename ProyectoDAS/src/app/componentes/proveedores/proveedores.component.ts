@@ -37,6 +37,7 @@ export class ProveedoresComponent {
 
   ngOnInit(): void {
     this.listarProveedores();
+    this.obtenerRolUsuario();
   }
 
   obtenerRolUsuario(): void {

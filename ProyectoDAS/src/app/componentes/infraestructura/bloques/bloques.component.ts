@@ -45,6 +45,7 @@ export class BloquesComponent {
     this.listarBloques();
     this.listarFacultades();
     this.listarFacultadesComboBox();
+    this.obtenerRolUsuario();
   }
 
   obtenerRolUsuario(): void {

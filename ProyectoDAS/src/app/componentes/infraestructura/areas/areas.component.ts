@@ -44,6 +44,7 @@ export class AreasComponent {
     this.listarAreas();
     this.listarBloques();
     this.listarBloquesComboBox();
+    this.obtenerRolUsuario();
 
     this.pisos = [
       { name: 'Planta Baja', code: 1 },

@@ -27,6 +27,7 @@ export class MarcasComponent implements OnInit {
 
   ngOnInit(): void {
     this.getMarcas();
+    this.obtenerRolUsuario();
   }
 
   obtenerRolUsuario(): void {

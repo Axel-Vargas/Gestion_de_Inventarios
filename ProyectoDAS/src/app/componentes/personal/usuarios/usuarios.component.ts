@@ -53,6 +53,7 @@ export class UsuariosComponent {
   ngOnInit(): void {
     this.listarUsuarios();
     this.listarRoles();
+    this.obtenerRolUsuario();
   }
 
   obtenerRolUsuario(): void {

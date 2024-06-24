@@ -117,6 +117,7 @@ export class TecnologicosComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.obtenerRolUsuario();
     this.scannerService.scannedCode$.subscribe(code => {
       this.scannedCode = code;
       const scnnaerNumer = Number(this.scannedCode)

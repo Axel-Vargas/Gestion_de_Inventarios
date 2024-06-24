@@ -53,6 +53,7 @@ export class EncargadosComponent {
 
   ngOnInit(): void {
     this.listarEncargados();
+    this.obtenerRolUsuario();
   }
 
   obtenerRolUsuario(): void {

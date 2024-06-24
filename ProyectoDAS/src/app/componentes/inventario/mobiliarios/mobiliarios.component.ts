@@ -70,6 +70,7 @@ export class MobiliariosComponent {
     this.listarAreasComboBox();
     this.listarEncargados();
     this.listarEncargadosComboBox();
+    this.obtenerRolUsuario();
 
     this.estados = [
       { name: 'FUNCIONAL', code: 1 },
