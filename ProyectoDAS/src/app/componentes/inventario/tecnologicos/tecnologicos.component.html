@@ -15,6 +15,7 @@
                 [paginator]="true" [rowsPerPageOptions]="[10, 20, 30]"
                 [globalFilterFields]="['nombre','atributos','marca','modelo','num_serie','fecha_adquisicion','estado','codigoUTA','localizacion','ip_tecnologico']">
 
+
                 <ng-template pTemplate="caption">
                     <div class="flex justify-content-between flex-column sm:flex-row" style="gap: 6px">
                         <div class="flex justify-content-between flex-column sm:flex-row" style="gap: 6px">
@@ -68,6 +69,7 @@
                         </th>
                         <th *ngIf="rolUsuario === 1" pSortableColumn="acciones"></th>
                     </tr>
+                        
                 </ng-template>
                 <ng-template pTemplate="body" let-product let-expanded="expanded">
                     <tr>
@@ -77,8 +79,8 @@
                                 [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"></button>
                         </td>
                         <td>
-                            <button pButton icon="pi pi-qrcode" (click)="showQRCode(product.image, product.nombre)"
-                                class="p-button-rounded p-button-text"></button>
+                            <button pButton icon="pi pi-qrcode" (click)="showQRCode(product.image, product.nombre)"  class="p-button-rounded p-button-text"></button>
+
                         </td>
                         <td>{{ product.nombre }}</td>
                         <td>
@@ -94,20 +96,16 @@
                         </td>
                         <td>{{ product.codigoUTA }}</td>
                         <td>{{ product.localizacion }}</td>
-                        <td class="hidden-column">{{product.id_area_per}}</td>
-                        <td *ngIf="rolUsuario === 1" class="flex flex-row align-items-center sm:flex-col"
-                            style="gap: 8px">
-                            <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"
-                                (onClick)="editarBienTecnologico(product)"></p-button>
-                            <p-button type="button" icon="pi pi-trash" class="p-button-rounded"
-                                (onClick)="eliminar(product.id_bien)"></p-button>
-                            <p-button type="button" icon="pi pi-arrow-down" class="p-button-rounded"
-                                (click)="abrirModalComponente(product)"></p-button>
+                        <td  class="hidden-column">{{product.id_area_per}}</td>
+                        <td class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
+                            <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded" (onClick)="editarBienTecnologico(product)"></p-button>
+                            <p-button type="button" icon="pi pi-trash" class="p-button-rounded" (onClick)="eliminar(product.id_bien)"></p-button>
+                            <p-button type="button" icon="pi pi-arrow-down" class="p-button-rounded" (click)="abrirModalComponente(product)" ></p-button>
                         </td>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="rowexpansion" let-product>
-                    <h6>COMPONENTES</h6>
+                    <h6>REPOTENCIACIÓN</h6>
                     <tr>
                         <td colspan="15">
                             <div class="p-3">
@@ -138,6 +136,10 @@
                             REPOTENCIADO
                             <p-sortIcon field="repotenciado"></p-sortIcon>
                         </th>
+                        <th pSortableColumn="dependencia">
+                            DEPENDENCIA
+                            <p-sortIcon field="dependencia"></p-sortIcon>
+                        </th>
                         <th *ngIf="rolUsuario === 1" pSortableColumn="acciones"></th>
                     </tr>
                 </ng-template>
@@ -161,6 +163,7 @@
                                 ">{{ order.repotenciado }}
                             </span>
                         </td>
+                        <td>{{ order.nombre_dependencia }}</td>
                         <td *ngIf="rolUsuario === 1" class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
                             <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"
                                 (click)="openEditComponentModal(order)"></p-button>
@@ -171,7 +174,7 @@
                 </ng-template>
                 <ng-template pTemplate="emptymessage">
                     <tr>
-                        <td colspan="6">Sin componentes</td>
+                        <td colspan="6">Sin repotenciación</td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -184,8 +187,7 @@
 </div>
 
 <!--producto detalles-->
-<p-dialog header="Detalles " modal="modal" draggable="false" [(visible)]="showDetailsModal"
-    [style]="{ width: '70rem' }">
+<p-dialog header="Detalles " modal="modal" draggable="false" [(visible)]="showDetailsModal" [style]="{ width: '90rem' }">
     <ng-template pTemplate="content">
         <p-table [value]="selectedProduct ? [selectedProduct] : []">
             <ng-template pTemplate="header">
@@ -207,6 +209,14 @@
                         ENCARGADO
                         <p-sortIcon field="encargado"></p-sortIcon>
                     </th>
+                    <th pSortableColumn="prestado">
+                        PRESTADO
+                        <p-sortIcon field="prestado"></p-sortIcon>
+                    </th>
+                    <th pSortableColumn="nombre_dependencia">
+                        DEPENDENCIA
+                        <p-sortIcon field="nombre_dependencia"></p-sortIcon>
+                    </th>
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-product>
@@ -222,11 +232,12 @@
                     <td>{{ product.modelo }}</td>
                     <td>{{ product.fecha_adquisicion | date : "yyyy-MM-dd" }}</td>
                     <td>{{ product.nombre_encargado}}</td>
+                    <td>{{ product.prestado}}</td>
+                    <td>{{ product.nombre_dependencia}}</td>
                 </tr>
             </ng-template>
         </p-table>
     </ng-template>
-
 </p-dialog>
 
 
@@ -246,7 +257,6 @@
         <img [src]="qrCodeImageUrl" [alt]="qrCodeAltText" width="100%">
     </div>
 </p-dialog>
-
 
 
 <!-- Form para agregar bien -->
@@ -271,9 +281,8 @@
         <div class="formgrid grid">
             <div class="field col">
                 <label for="nombre">Nombre tecnólogico</label>
-                <p-dropdown formControlName="nombre" [options]="tipoTecnologico" optionLabel="name"
-                    placeholder="Selecciona" filter="true" class="focus:border-primary fixed-width-dropdown"
-                    (ngModelChange)="actualizarAtributos($event)"></p-dropdown>
+                <p-dropdown formControlName="nombre" [options]="tipoTecnologico" optionLabel="name" placeholder="Selecciona"
+                filter="true" class="focus:border-primary fixed-width-dropdown"(ngModelChange)="actualizarAtributos($event)"></p-dropdown>                                       
             </div>
             <div class="field col">
                 <label for="id_proveedor_per">Selecciona Proveedor</label>
@@ -304,8 +313,8 @@
             </div>
             <div class="field col">
                 <label for="encargado">Encargado</label>
-                <p-dropdown formControlName="encargado" [options]="encargado" optionLabel="name"
-                    placeholder="Selecciona" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                <p-dropdown formControlName="encargado"  [options]="encargado" optionLabel="name" placeholder="Selecciona"
+                     class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
         </div>
         <div class="formgrid grid">
@@ -332,6 +341,19 @@
                 <label for="localizacion">Localización</label>
                 <input formControlName="localizacion" type="text"
                     class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+            </div>
+        </div>
+
+        <div class="formgrid grid">
+            <div class="field col">
+                <label for="id_dependencia_per">Selecciona la Dependencia</label>
+                <p-dropdown formControlName="id_dependencia_per" [options]="dependencia" optionLabel="name" placeholder="Selecciona"
+                    filter="true" class="focus:border-primary fixed-width-dropdown"  ></p-dropdown>
+            </div>
+            <div class="field col">
+                <label for="prestado">Selecciona Prestado</label>
+                <p-dropdown formControlName="prestado" [options]="prestado" optionLabel="name" placeholder="Selecciona"
+                    filter="true" class="focus:border-primary fixed-width-dropdown"  ></p-dropdown>
             </div>
         </div>
         <div class="formgrid grid">
@@ -419,18 +441,17 @@
 
             <div class="field col">
                 <label for="id_proveedor_per">Proveedor</label>
-                <p-dropdown inputId="dropdown" formControlName="id_proveedor_per" [autoDisplayFirst]="false"
-                    [options]="proveedor" optionLabel="name" placeholder="Selecciona"
-                    class="focus:border-primary fixed-width-dropdown"></p-dropdown>
-
+                <p-dropdown inputId="dropdown" formControlName="id_proveedor_per"  [autoDisplayFirst]="false" [options]="proveedor" optionLabel="name" placeholder="Selecciona"
+                class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                
             </div>
         </div>
 
         <div class="formgrid grid">
             <div class="field col">
-                <label for="codigoUTA">Código UTA</label>
-                <input formControlName="codigoUTA" type="text"
-                    class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+                <label for="id_dependencia_per">Selecciona la Dependencia</label>
+                    <p-dropdown formControlName="id_dependencia_per" [options]="dependencia" optionLabel="name" placeholder="Selecciona"
+                        filter="true" class="focus:border-primary fixed-width-dropdown"  ></p-dropdown>
             </div>
             <div class="field col">
                 <label for="estado">Estado</label>
@@ -438,7 +459,15 @@
                     class="focus:border-primary fixed-width-dropdown"></p-dropdown>
             </div>
         </div>
-
+        <div class="formgrid grid">
+            <div class="field col">
+                <label for="codigoUTA">Código UTA</label>
+                <input formControlName="codigoUTA" type="text"
+                    class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+            </div> 
+            <div class="field col"></div>
+        </div>
+        
         <p-footer class="flex justify-content-end gap-3">
             <button pButton type="submit" label="Guardar" class="p-button-success"
                 [disabled]="componentForm.invalid"></button>

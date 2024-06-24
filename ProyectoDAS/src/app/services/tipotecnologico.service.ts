@@ -14,7 +14,7 @@ export class TipoTecnologicoService {
 
     constructor(private http: HttpClient) {
         this.myAppUrl = environment.endpoint;
-        this.myApiUrl = 'api/tipotecnologico'; // Cambia esta URL según tu configuración
+        this.myApiUrl = 'api/tipotecnologico'; 
     }
 
     getTiposTecnologicos(): Observable<TipoTecnologico[]> {
@@ -29,8 +29,8 @@ export class TipoTecnologicoService {
         return this.http.post<TipoTecnologico>(`${this.myAppUrl}${this.myApiUrl}`, tipo);
     }
 
-    actualizarTipoTecnologico(id: number, tipo: TipoTecnologico): Observable<any> {
-        return this.http.put(`${this.myAppUrl}${this.myApiUrl}/${id}`, tipo);
+    actualizarTipoTecnologico( tipo: TipoTecnologico): Observable<any> {
+        return this.http.put(`${this.myAppUrl}${this.myApiUrl}/${tipo.id}`, tipo);
     }
 
     eliminarTipoTecnologico(id: number): Observable<any> {
