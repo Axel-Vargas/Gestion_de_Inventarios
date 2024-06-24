@@ -95,21 +95,20 @@
 
                 <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
                     <label for="facultades" class="font-semibold w-6rem">Facultad</label>
-                    <p-dropdown [options]="facultades" dataKey="id_facultad" optionLabel="nombre" placeholder="Seleccione Facultad"
+                    <p-dropdown appendTo="body" [options]="facultades" dataKey="id_facultad" optionLabel="nombre" placeholder="Seleccione Facultad"
                     (onChange)="onFacultadChange($event)" autoWidth="false" [style]="{'width':'14rem'}"[(ngModel)]="selectedFacultad" [disabled]="esEdicion"></p-dropdown>
                 </div>
 
                 <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%; ">
                     <label for="bloque" class="font-semibold w-10rem">Bloque</label>
-                    <p-dropdown [options]="bloques" dataKey="id_bloque" optionLabel="nombre"
+                    <p-dropdown appendTo="body" [options]="bloques" dataKey="id_bloque" optionLabel="nombre"
                         placeholder="Seleccione un Bloque" autoWidth="false" [style]="{'width':'15.9rem'}"
                         [(ngModel)]="selectedBloque"></p-dropdown>
 
                 </div>
-
                 <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
                     <label for="piso" class="font-semibold w-6rem">Piso</label>
-                    <p-dropdown [options]="pisos" dataKey="code" optionLabel="name" placeholder="Seleccione un Piso"
+                    <p-dropdown appendTo="body" [options]="pisos" dataKey="code" optionLabel="name" placeholder="Seleccione un Piso"
                         autoWidth="false" [style]="{'width':'14rem'}"[(ngModel)]="selectPiso"></p-dropdown>
                 </div>
                 <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">

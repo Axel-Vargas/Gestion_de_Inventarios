@@ -76,13 +76,13 @@
     </div>
 </div>
 
-<p-dialog [header]="esEdicion ? 'Editar Bloque' : 'Agregar Bloque'" [modal]="true" [(visible)]="visible" [style]="{ 'width': '505px','height': '360px' }">
+<p-dialog [header]="esEdicion ? 'Editar Bloque' : 'Agregar Bloque'" [modal]="true" [(visible)]="visible" [style]="{ 'width': '505px' }">
     <div class="flex flex-column" style="height: 100%;">
         <div class="flex-grow-1">
             <div class="flex flex-wrap gap-3">
                 <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%; ">
                     <label for="facultad" class="font-semibold w-10rem">Facultad</label>
-                    <p-dropdown [options]="facultades" dataKey="id_facultad" optionLabel="nombre" placeholder="Seleccione una Facultad"
+                    <p-dropdown appendTo="body" [options]="facultades" dataKey="id_facultad" optionLabel="nombre" placeholder="Seleccione una Facultad"
                         autoWidth="false" [style]="{'width':'15.9rem'}" [(ngModel)]="selectedFacultad"></p-dropdown>
                 </div>  
                 <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">

@@ -10,20 +10,20 @@
         </div>
       </div>
       <p-table #dt [value]="marcas" [paginator]="true" [rowsPerPageOptions]="[10, 20, 30]" [scrollable]="true"
-        scrollHeight="380px" [rows]="10" [customSort]="true" [tableStyle]="{'min-width': '60rem'}" [globalFilterFields]="['nom_marca','tipo_marca']">
+        scrollHeight="380px" [rows]="10" [customSort]="true" [tableStyle]="{'min-width': '60rem'}"
+        [globalFilterFields]="['nom_marca','tipo_marca']">
         <ng-template pTemplate="caption">
           <div class="flex justify-content-between flex-column sm:flex-row" style="gap: 6px">
-              <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
-                  <p-inputIcon>
-                      <i class="pi pi-search"></i>
-                  </p-inputIcon>
-                  <input pInputText type="text"
-                      (input)="dt.filterGlobal($any($event.target).value, 'contains')"
-                      placeholder="Buscar Marca" />
-              </p-iconField>
+            <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+              <p-inputIcon>
+                <i class="pi pi-search"></i>
+              </p-inputIcon>
+              <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                placeholder="Buscar Marca" />
+            </p-iconField>
 
           </div>
-      </ng-template>
+        </ng-template>
         <ng-template pTemplate="header" let-columns>
           <tr>
             <th>NOMBRE</th>
@@ -49,37 +49,29 @@
         </ng-template>
       </p-table>
       <p-dialog [header]="isEditMode ? 'Editar Marca' : 'Agregar Marca'" draggable="false" [(visible)]="displayDialog"
-        [modal]="true" [responsive]="true" [style]="{ 'width': '400px' }">
+        [modal]="true" [responsive]="true" [style]="{ width: '36rem' }">
         <ng-template pTemplate="content">
           <form #marcaForm="ngForm" (ngSubmit)="guardarMarca()">
-            <div class="formgrid grid">
-              <div class="field col">
+            <div class="flex flex-wrap gap-3">
+              <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+                <label for="tipo_marca">Tipo</label>
+                <p-dropdown appendTo="body" [options]="tiposMarcas" name="tipo_marca" [(ngModel)]="marca.tipo_marca" optionLabel="label"
+                  optionValue="value" placeholder="Seleccione" [style]="{ width: '15.9rem' }"
+                  class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+              </div>
+              <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
                 <label for="nom_marca">Nombre</label>
-                <input type="text" id="nom_marca" name="nom_marca" [(ngModel)]="marca.nom_marca" required
-                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
-
+                <input pInputText type="text" id="nom_marca" name="nom_marca" [(ngModel)]="marca.nom_marca" required class="flex-auto">
               </div>
             </div>
-            <div class="formgrid grid">
-              <div class="field col">
-                <div class="flex align-items-left gap-3 mb-3 flex-column">
-                  <label for="tipo_marca">Tipo</label>
-                  <p-dropdown [options]="tiposMarcas" name="tipo_marca" [(ngModel)]="marca.tipo_marca"
-                    optionLabel="label" optionValue="value" placeholder="Seleccione"
-                    class="focus:border-primary fixed-width-dropdown"></p-dropdown>
-                </div>
-
-              </div>
+            <div class="flex justify-content-end gap-2">
+              <p-button type="button" label="Cancelar" (click)="hideDialog()"
+                [rounded]="true"></p-button>
+              <p-button type="submit" label="Guardar" [rounded]="true"></p-button>
             </div>
-            <p-footer class="flex justify-content-end gap-3">
-              <button type="button" pButton icon="pi pi-times" label="Cancelar" (click)="hideDialog()"
-                class="p-button-secondary"></button>
-              <button type="submit" pButton icon="pi pi-check" label="Guardar" class="p-button-primary"></button>
-            </p-footer>
           </form>
         </ng-template>
       </p-dialog>
-
       <p-toast position="bottom-center" key="bc"></p-toast>
       <p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" header="Eliminar"
         icon="pi pi-exclamation-triangle"></p-confirmDialog>
