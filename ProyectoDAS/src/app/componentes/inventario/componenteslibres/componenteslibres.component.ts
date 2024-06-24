@@ -7,6 +7,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { MarcasService } from '../../../services/marcas.service';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ProveedorService } from '../../../services/provedor.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-componenteslibres',
@@ -19,7 +20,7 @@ export class ComponenteslibresComponent implements OnInit {
   displayModal: boolean = false;
   isEditing: boolean = false;
   bien_tecnologico: any[] = [];
-  displayDialog: boolean = false; 
+  displayDialog: boolean = false;
   componenteSeleccionado: Componentes | null = null;
 
   selectedComponente: Componentes = {
@@ -28,8 +29,8 @@ export class ComponenteslibresComponent implements OnInit {
     marca: '',
     modelo: '',
     num_serie: '',
-    estado: { label: '', value: '' }, 
-    repotenciado: { label: '', value: '' }, 
+    estado: { label: '', value: '' },
+    repotenciado: { label: '', value: '' },
     codigoUTA: '',
     id_bien_per: 0,
     id_proveedor_per: 0
@@ -40,24 +41,30 @@ export class ComponenteslibresComponent implements OnInit {
   estadoOptions = ['Funcional', 'No Funcional'];
   repotenciadoOptions = ['Sí', 'No'];
 
-  constructor(private componenteService: componentesService, 
-    private messageService: MessageService, 
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService, private componenteService: componentesService,
+    private messageService: MessageService,
     private confirmationService: ConfirmationService,
-    private marcasService: MarcasService, 
+    private marcasService: MarcasService,
     public dialogService: DialogService,
-    private provedorService: ProveedorService, 
+    private provedorService: ProveedorService,
   ) { }
 
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
+  }
+
   ngOnInit(): void {
-     this.getComponentes();
+    this.getComponentes();
     this.getMarcas();
     this.getProveedores();
     this.getTecnologicos()
+    this.obtenerRolUsuario();
   }
 
   getTecnologicos(): void {
     this.componenteService.getbienesAsignar().subscribe(data => {
-      console.log(data);
       this.bien_tecnologico = data.map((item: any) => ({
         id_bien: item.id_bien,
         nombre: item.nombre,
@@ -100,11 +107,11 @@ export class ComponenteslibresComponent implements OnInit {
       console.error('No se ha seleccionado ningún componente.');
     }
   }
-  
-  
+
+
 
   show(componente: Componentes): void {
-    this.componenteSeleccionado = componente; 
+    this.componenteSeleccionado = componente;
     this.displayDialog = true;
   }
 
@@ -152,8 +159,8 @@ export class ComponenteslibresComponent implements OnInit {
       marca: '',
       modelo: '',
       num_serie: '',
-      estado: { label: '', value: '' }, 
-      repotenciado: { label: '', value: '' }, 
+      estado: { label: '', value: '' },
+      repotenciado: { label: '', value: '' },
       codigoUTA: '',
       id_bien_per: 0,
       id_proveedor_per: 0

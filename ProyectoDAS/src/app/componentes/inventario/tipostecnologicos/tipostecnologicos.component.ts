@@ -3,6 +3,7 @@ import { TipoTecnologico } from '../../api/tipoTecnologico';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { TipoTecnologicoService } from '../../../services/tipotecnologico.service';
 import { DialogService } from 'primeng/dynamicdialog';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-tipostecnologicos',
@@ -19,10 +20,17 @@ export class TipostecnologicosComponent implements OnInit {
   nuevoAtributo: string = '';
   displayModalAtributos: boolean = false;
 
-  constructor(private confirmationService: ConfirmationService, private tipoTecnologicoService: TipoTecnologicoService, private dialogService: DialogService, private messageService: MessageService) {}
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService,private confirmationService: ConfirmationService, private tipoTecnologicoService: TipoTecnologicoService, private dialogService: DialogService, private messageService: MessageService) {}
 
   ngOnInit() {
+    this.obtenerRolUsuario();
     this.loadTiposTecnologicos();
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   loadTiposTecnologicos() {
