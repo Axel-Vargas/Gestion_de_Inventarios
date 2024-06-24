@@ -111,6 +111,12 @@
                 </ng-template>
               </p-columnFilter>
             </th>
+            <th>
+              <span class="flex mb-2">DEPENDENCIA</span>
+              <p-columnFilter field="nombre_dependencia" matchMode="in" [showMenu]="false">
+              
+              </p-columnFilter>
+            </th>
             <th></th>
           </tr>
         </ng-template>
@@ -128,6 +134,7 @@
             <td>{{ mobiliario.codigoUTA }}</td>
             <td>{{ mobiliario.nombre_encargado }}</td>
             <td>{{ mobiliario.nombre_area }}</td>
+            <td>{{ mobiliario.nombre_dependencia }}</td>
             <td class="flex flex-row ">
               <button pButton (click)="showDialogEditar(mobiliario)" pRipple type="button" icon="pi pi-pen-to-square"
                 class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>

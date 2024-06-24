@@ -4,13 +4,15 @@ exports.getAllBienes = async (req, res) => {
   try {
     const selectQuery = `
       SELECT bm.*, 
-             e.nombre AS nombre_encargado, 
-             e.apellido AS apellido_encargado,
-             a.nombre AS nombre_area 
-      FROM bien_mobiliario bm
-      LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
-      LEFT JOIN areas a ON bm.id_area_per = a.id_area
-      WHERE bm.estado != 'BODEGA'
+       e.nombre AS nombre_encargado, 
+       e.apellido AS apellido_encargado,
+       a.nombre AS nombre_area,
+       d.nombre_dep AS nombre_dependencia
+        FROM bien_mobiliario bm
+        LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bm.id_area_per = a.id_area
+        LEFT JOIN dependencia d ON bm.id_dependencia_per = d.id_dep
+        WHERE bm.estado != 'BODEGA';
     `;
     connection.query(selectQuery, (error, results) => {
       if (error) {
@@ -30,13 +32,16 @@ exports.getBienesPorArea = async (req, res) => {
   try {
     const selectQuery = `
       SELECT bm.*, 
-             e.nombre AS nombre_encargado, 
-             e.apellido AS apellido_encargado,
-             a.nombre AS nombre_area 
-      FROM bien_mobiliario bm
-      LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
-      LEFT JOIN areas a ON bm.id_area_per = a.id_area
-      WHERE bm.estado != 'BODEGA' AND bm.id_area_per = ?
+       e.nombre AS nombre_encargado, 
+       e.apellido AS apellido_encargado,
+       a.nombre AS nombre_area,
+       d.nombre_dep AS nombre_dependencia
+        FROM bien_mobiliario bm
+        LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bm.id_area_per = a.id_area
+        LEFT JOIN dependencia d ON bm.id_dependencia_per = d.id_dep
+        WHERE bm.estado != 'BODEGA' 
+        AND bm.id_area_per = ?;
     `;
     connection.query(selectQuery, [id], (error, results) => {
       if (error) {
@@ -56,13 +61,15 @@ exports.getBienesPorEstado = async (req, res) => {
   try {
     const selectQuery = `
       SELECT bm.*, 
-             e.nombre AS nombre_encargado, 
-             e.apellido AS apellido_encargado,
-             a.nombre AS nombre_area 
-      FROM bien_mobiliario bm
-      LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
-      LEFT JOIN areas a ON bm.id_area_per = a.id_area
-      WHERE bm.estado = ?
+       e.nombre AS nombre_encargado, 
+       e.apellido AS apellido_encargado,
+       a.nombre AS nombre_area,
+       d.nombre_dep AS nombre_dependencia
+        FROM bien_mobiliario bm
+        LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bm.id_area_per = a.id_area
+        LEFT JOIN dependencia d ON bm.id_dependencia_per = d.id_dep
+        WHERE bm.estado = ?;
     `;
     connection.query(selectQuery, [estado], (error, results) => {
       if (error) {
@@ -84,13 +91,16 @@ exports.getBienesPorEncargado = async (req, res) => {
   try {
     const selectQuery = `
       SELECT bm.*, 
-             e.nombre AS nombre_encargado, 
-             e.apellido AS apellido_encargado,
-             a.nombre AS nombre_area 
-      FROM bien_mobiliario bm
-      LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
-      LEFT JOIN areas a ON bm.id_area_per = a.id_area
-      WHERE bm.id_encargado_per = ? AND bm.estado != 'BODEGA'
+       e.nombre AS nombre_encargado, 
+       e.apellido AS apellido_encargado,
+       a.nombre AS nombre_area,
+       d.nombre_dep AS nombre_dependencia
+        FROM bien_mobiliario bm
+        LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bm.id_area_per = a.id_area
+        LEFT JOIN dependencia d ON bm.id_dependencia_per = d.id_dep
+        WHERE bm.id_encargado_per = ? 
+        AND bm.estado != 'BODEGA';
     `;
   
     connection.query(selectQuery, [encargado], (error, results) => {
@@ -109,10 +119,10 @@ exports.getBienesPorEncargado = async (req, res) => {
 
 exports.addBienes = async (req, res) => {
   try {
-    const { nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA,  id_encargado_per, id_area_per} = req.body;
+    const { nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA,  id_encargado_per, id_area_per, id_dependencia_per} = req.body;
 
-      const insertQuery = `INSERT INTO bien_mobiliario (nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
-      connection.query(insertQuery, [nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per], (error, results) => {
+      const insertQuery = `INSERT INTO bien_mobiliario (nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per, id_dependencia_per) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
+      connection.query(insertQuery, [nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per, id_dependencia_per], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error interno del servidor' });
         }
@@ -127,11 +137,11 @@ exports.addBienes = async (req, res) => {
 exports.editBienes = async (req, res) => {
     try {
       const id_bien = req.params.id;
-      const { nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per} = req.body;
+      const { nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per, id_dependencia_per} = req.body;
   
-      const updateQuery = `UPDATE bien_mobiliario SET nombre = ?, marca = ?, modelo = ?, num_serie = ?, material = ?, color = ?, fecha_adquisicion = ?, estado = ?, localizacion = ?, codigoUTA = ?, id_encargado_per = ?, id_area_per = ? WHERE id_bien = ?`;
+      const updateQuery = `UPDATE bien_mobiliario SET nombre = ?, marca = ?, modelo = ?, num_serie = ?, material = ?, color = ?, fecha_adquisicion = ?, estado = ?, localizacion = ?, codigoUTA = ?, id_encargado_per = ?, id_area_per = ?, id_dependencia_per = ? WHERE id_bien = ?`;
   
-      connection.query(updateQuery, [ nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per, id_bien], (error, results) => {
+      connection.query(updateQuery, [ nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per, id_dependencia_per, id_bien], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error al actualizar el bien' });
         }
