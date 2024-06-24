@@ -4,9 +4,10 @@ const connection = require('../db/connection');
 const getAreas = (req, res) => {
     try {
       const sql = `
-        SELECT areas.*, bloques.nombre AS nombre_bloque
+        SELECT areas.*, bloques.nombre AS nombre_bloque, facultad.nombre AS nombre_facultad
         FROM areas
         INNER JOIN bloques ON areas.id_bloque_per = bloques.id_bloque
+        INNER JOIN facultad ON bloques.id_facu_per = facultad.id_facultad
       `;
       connection.query(sql, (err, data) => {
         if (err) {

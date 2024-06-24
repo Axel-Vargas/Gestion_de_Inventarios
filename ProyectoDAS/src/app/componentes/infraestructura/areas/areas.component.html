@@ -54,6 +54,11 @@
                                 </ng-template>
                             </p-columnFilter>
                         </th>
+                        <th>
+                            <span class="flex mb-2">FACULTAD</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="nombre_facultad" placeholder="Buscar por Facultad" ariaLabel="Filter Numero" />
+                        </th>
                         <th *ngIf="rolUsuario === 1"></th>
                     </tr>
                 </ng-template>
@@ -62,6 +67,7 @@
                         <td>{{ area.nombre }}</td>
                         <td>{{ area.num_piso }}</td>
                         <td>{{ area.nombre_bloque }}</td>
+                        <td>{{ area.nombre_facultad }}</td>
                         <td *ngIf="rolUsuario === 1" class="flex flex-row ">
                             <button pButton (click)="showDialogEditar(area)" pRipple type="button"
                                 icon="pi pi-pen-to-square"
@@ -86,12 +92,21 @@
     <div class="flex flex-column" style="height: 100%;">
         <div class="flex-grow-1">
             <div class="flex flex-wrap gap-3">
+
+                <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+                    <label for="facultades" class="font-semibold w-6rem">Facultad</label>
+                    <p-dropdown [options]="facultades" dataKey="id_facultad" optionLabel="nombre" placeholder="Seleccione Facultad"
+                    (onChange)="onFacultadChange($event)" autoWidth="false" [style]="{'width':'14rem'}"[(ngModel)]="selectedFacultad" [disabled]="esEdicion"></p-dropdown>
+                </div>
+
                 <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%; ">
                     <label for="bloque" class="font-semibold w-10rem">Bloque</label>
                     <p-dropdown [options]="bloques" dataKey="id_bloque" optionLabel="nombre"
                         placeholder="Seleccione un Bloque" autoWidth="false" [style]="{'width':'15.9rem'}"
                         [(ngModel)]="selectedBloque"></p-dropdown>
+
                 </div>
+
                 <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
                     <label for="piso" class="font-semibold w-6rem">Piso</label>
                     <p-dropdown [options]="pisos" dataKey="code" optionLabel="name" placeholder="Seleccione un Piso"
@@ -99,8 +114,9 @@
                 </div>
                 <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
                     <label for="nombre" class="font-semibold w-6rem">Nombre</label>
-                    <input pInputText id="nombre" autocomplete="off" [(ngModel)]="nombre" maxlength="20" />
+                    <input pInputText id="nombre" autocomplete="off" [(ngModel)]="nombre" maxlength="30" />
                 </div>
+                
             </div>
         </div>
         <div class="flex justify-content-end gap-2 mb-3">

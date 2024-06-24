@@ -7,7 +7,6 @@ import { Injectable } from '@angular/core';
 export class Bloques2Service {
 
   API = "http://localhost:4000/api/bloques"
-
   constructor(private http: HttpClient) { }
 
   obtenerBloques() {
@@ -16,6 +15,10 @@ export class Bloques2Service {
 
   insertarBloque(nombre: string, id_facu_per: string) {
     return this.http.post(this.API, { nombre, id_facu_per})
+  }
+
+  getBloquesFacultad(nombre: string){
+    return this.http.get(`${this.API}/bloques/${nombre}`);
   }
 
   actualizarBloque(id: String, nombre: string, id_facu_per: string) {

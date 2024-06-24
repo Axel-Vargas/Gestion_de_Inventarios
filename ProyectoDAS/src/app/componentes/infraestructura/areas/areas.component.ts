@@ -3,6 +3,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { AreaMobiliarioService } from '../../../services/area.mobiliario.service';
 import { Bloques2Service } from '../../../services/bloques2.service';
 import { AuthService } from '../../../services/auth.service';
+import { FacultadesService } from '../../../services/facultades.service';
 
 @Component({
   selector: 'app-areas',
@@ -13,8 +14,10 @@ export class AreasComponent {
   tooltipVisible: boolean = false;
   areas: any = [];
   bloques: any[] = [];
+  facultades: any[] = [];
   filterOptions: any = [];
   selectedBloque: any;
+  selectedFacultad: any;
   selectPiso: any;
 
   id: string = '';
@@ -30,7 +33,7 @@ export class AreasComponent {
 
   rolUsuario: number | null = null;
 
-  constructor(private authServices: AuthService, private confirmationService: ConfirmationService, private areasService: AreaMobiliarioService, private bloquesService: Bloques2Service, private messageService: MessageService) { }
+  constructor(private facultadesService:FacultadesService, private authServices: AuthService, private confirmationService: ConfirmationService, private areasService: AreaMobiliarioService, private bloquesService: Bloques2Service, private messageService: MessageService) { }
 
   matchModeOptions = [
     { label: 'Empieza con', value: 'startsWith' },
@@ -45,7 +48,7 @@ export class AreasComponent {
     this.listarBloques();
     this.listarBloquesComboBox();
     this.obtenerRolUsuario();
-
+    this.listarfacultad();
     this.pisos = [
       { name: 'Planta Baja', code: 1 },
       { name: 'Primer Piso', code: 2 },
@@ -89,6 +92,47 @@ export class AreasComponent {
       }
     );
   }
+  onFacultadChange(event: any): void {
+    const selectedFacultad = event.value;
+    if (selectedFacultad && selectedFacultad.nombre) {
+      this.listarBloquesFacultad(selectedFacultad.nombre);
+    }
+  }
+  listarBloquesFacultad(nombre: string, callback?: () => void): void {
+    this.bloquesService.getBloquesFacultad(nombre).subscribe(
+      (response: any) => {
+        if (response) {
+          this.bloques = response;
+        } else {
+          this.bloques = [];
+        }
+        if (callback) {
+          callback();
+        }
+      },
+      (error) => {
+        console.error('Error al obtener los bloques:', error);
+        if (callback) {
+          callback();
+        }
+      }
+    );
+  }
+  
+  listarfacultad(): void {
+    this.facultadesService.obtenerFacultades().subscribe(
+      (response: any) => {
+        if (response) {
+          this.facultades = response.facultades;
+        } else {
+          this.facultades = [];
+        }
+      },
+      (error) => {
+        console.error('Error al obtener las facultades:', error);
+      }
+    );
+  }
 
   listarBloquesComboBox(): void {
     this.bloquesService.obtenerBloques().subscribe(
@@ -112,10 +156,14 @@ export class AreasComponent {
   }
 
   registrarArea() {
-    if (this.nombre == '' || !this.selectedBloque) {
+    if (this.nombre.trim() === '' || !this.selectedBloque) {
       this.mostrarMensaje("Complete todos los campos", false);
+    } else if (!this.soloLetrasRegex.test(this.nombre)) {
+      this.mostrarMensaje("El nombre solo debe contener letras", false);
+    } else if (this.nombre.length > 30) {
+      this.mostrarMensaje("El nombre no debe exceder los 30 caracteres", false);
     } else {
-      this.areasService.insertarArea(this.nombre, this.selectPiso.name,this.selectedBloque.id_bloque).subscribe(
+      this.areasService.insertarArea(this.nombre, this.selectPiso.name, this.selectedBloque.id_bloque).subscribe(
         (response) => {
           this.mostrarMensaje("Área registrada con éxito", true);
           this.limpiarFormulario();
@@ -125,8 +173,8 @@ export class AreasComponent {
         (error) => {
           this.mostrarMensaje("Error en el servidor", false);
         }
-      )
-    };
+      );
+    }
   }
 
   eliminarArea(id: string) {
@@ -142,12 +190,16 @@ export class AreasComponent {
   }
 
   editarArea() {
-    if (this.nombre == '' || !this.selectedBloque) {
+    if (this.nombre.trim() === '' || !this.selectedBloque) {
       this.mostrarMensaje("Complete todos los campos", false);
+    } else if (!this.soloLetrasRegex.test(this.nombre)) {
+      this.mostrarMensaje("El nombre solo debe contener letras", false);
+    } else if (this.nombre.length > 30) {
+      this.mostrarMensaje("El nombre no debe exceder los 30 caracteres", false);
     } else {
       this.areasService.actualizarArea(this.id, this.nombre, this.selectPiso.name, this.selectedBloque.id_bloque).subscribe(
         (response) => {
-          this.mostrarMensaje("Áreea actualizada con éxito", true);
+          this.mostrarMensaje("Área actualizada con éxito", true);
           this.limpiarFormulario();
           this.visible = false;
           this.listarAreas();
@@ -155,8 +207,8 @@ export class AreasComponent {
         (error) => {
           this.mostrarMensaje("Hubo un problema", false);
         }
-      )
-    };
+      );
+    }
   }
 
   confirm(id: string) {
@@ -192,29 +244,44 @@ export class AreasComponent {
     this.esEdicion = true;
     this.nombre = area.nombre;
     this.selectPiso = this.pisos.find(piso => piso.name === area.num_piso);
-    this.selectedBloque = this.bloques.find(bloque => bloque.id_bloque === area.id_bloque_per);
+    this.selectedFacultad = this.facultades.find(facultad => facultad.nombre === area.nombre_facultad);
     this.id = area.id_area;
     this.visible = true;
-  }
-
-  async mostrarMensaje(mensaje: string, exito: boolean) {
-    this.messageService.add(
-      {
-        severity: exito ? 'success' : 'error',
-        summary: exito ? 'Éxito' : 'Error', detail: mensaje
+  
+    if (this.selectedFacultad && this.selectedFacultad.nombre) {
+      this.listarBloquesFacultad(this.selectedFacultad.nombre, () => {
+        this.selectedBloque = this.bloques.find(bloque => bloque.id_bloque === area.id_bloque_per);
       });
-  }
-
-  handleInput(event: any) {
-    const inputValue = event.target.value;
-    if (!this.soloLetrasRegex.test(inputValue)) {
-      event.target.value = inputValue.replace(/[^a-zA-Z\s]/g, '');
     }
   }
+  
+
+async mostrarMensaje(mensaje: string, exito: boolean) {
+  this.messageService.add({
+    severity: exito ? 'success' : 'error',
+    summary: exito ? 'Éxito' : 'Error',
+    detail: mensaje
+  });
+}
+
+
+  handleInput(event: any) {
+    let inputValue = event.target.value;
+    inputValue = inputValue.replace(/[^a-zA-Z\s]/g, ''); // Remove non-letter characters
+    if (inputValue.length > 30) {
+      inputValue = inputValue.substring(0, 30); // Limit to 30 characters
+    }
+    event.target.value = inputValue;
+    this.nombre = inputValue;
+  }
+  
 
   limpiarFormulario() {
     this.nombre = '';
     this.selectPiso = null;
     this.selectedBloque = null;
+    this.selectedFacultad = null;
   }
+
+  
 }

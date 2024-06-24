@@ -21,6 +21,28 @@ const getBloques = (req, res) => {
     }
 };
 
+const getBloquesFacultad = (req, res) => {
+    try {
+        const facultadNombre = req.params.nombre || req.body.nombre;  
+        const sql = `
+        SELECT bloques.*, facultad.nombre AS nombre_facultad
+        FROM bloques
+        INNER JOIN facultad ON bloques.id_facu_per = facultad.id_facultad
+        WHERE facultad.nombre = ?
+        `;
+        connection.query(sql, [facultadNombre], (err, data) => {
+            if (err) {
+                res.status(500).json({ error: 'Error en el servidor' });
+            } else {
+                res.json(data);
+            }
+        });
+    } catch (error) {
+        console.error('Error en la función getBloquesFacultad:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+};
+
 
 const getBloquesFisei = (req, res) => {
     const { id_facu_per } = req.params;
@@ -157,5 +179,6 @@ module.exports = {
     createBloque,
     updateBloque,
     deleteBloque,
-    getBloquesFisei
+    getBloquesFisei,
+    getBloquesFacultad
 };

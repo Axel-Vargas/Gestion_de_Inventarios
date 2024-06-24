@@ -1,8 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { getBloques, getBloquesFisei, getBloqueById, createBloque, updateBloque, deleteBloque } = require('../controllers/bloquesController.js');
+const { getBloquesFacultad, getBloques, getBloquesFisei, getBloqueById, createBloque, updateBloque, deleteBloque } = require('../controllers/bloquesController.js');
 
 router.get('/', getBloques);
+router.get('/bloques/:nombre',getBloquesFacultad)
 router.post('/', createBloque);
 router.get('/:id', getBloqueById);
 router.put('/:id', updateBloque);
