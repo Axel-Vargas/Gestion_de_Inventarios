@@ -3,7 +3,7 @@
         <div class="card">
             <div class="flex justify-content-between flex-wrap mb-5">
                 <span class="flex usuarios align-items-center">Usuarios</span>
-                <div class="flex align-items-center">
+                <div *ngIf="rolUsuario === 1" class="flex align-items-center">
                     <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar usuario</span>
                     <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
                         (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
@@ -56,7 +56,7 @@
                             <p-columnFilter class="custom-column-filter" [matchModeOptions]="matchModeOptions"
                                 type="text" field="nombre_rol" placeholder="Buscar por rol" ariaLabel="Filter Rol" />
                         </th>
-                        <th></th>
+                        <th *ngIf="rolUsuario === 1"></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-usuario>
@@ -67,7 +67,7 @@
                         <td>{{ usuario.telefono }}</td>
                         <td>{{ usuario.correo }}</td>
                         <td>{{ usuario.nombre_rol }}</td>
-                        <td class="flex flex-row ">
+                        <td *ngIf="rolUsuario === 1" class="flex flex-row ">
                             <button pButton (click)="showDialogEditar(usuario)" pRipple type="button"
                                 icon="pi pi-pen-to-square"
                                 class="p-button p-component p-button-text flex align-items-center justify-content-center"></button>

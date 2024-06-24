@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { EncargadosService } from '../../../services/encargados.service';
 import { catchError, forkJoin } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-encargados',
@@ -35,9 +36,12 @@ export class EncargadosComponent {
   draggedEncargado: any = null;
   sourceBienes: any[] = [];
   targetBienes: any[] = [];
+  bienesDisponibles: any[] = [];
   draggedBien: any;
 
-  constructor(private confirmationService: ConfirmationService, private encargadosService: EncargadosService, private messageService: MessageService) { }
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService,private confirmationService: ConfirmationService, private encargadosService: EncargadosService, private messageService: MessageService) { }
 
   matchModeOptions = [
     { label: 'Empieza con', value: 'startsWith' },
@@ -51,6 +55,9 @@ export class EncargadosComponent {
     this.listarEncargados();
   }
 
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
+  }
 
   listarEncargados(): void {
     this.encargadosService.obtenerEncargados().subscribe(
@@ -157,11 +164,10 @@ export class EncargadosComponent {
   }
 
   showDialogPasoDeBien(encargado: any) {
-    let nombre = encargado.nombre + ' ' + encargado.apellido;
 
     forkJoin({
       bienesMobiliarios: this.encargadosService.obtenerBienesMobiliariosAsignados(encargado.id_encargado),
-      bienesTecnologicos: this.encargadosService.obtenerBienesTecnologicosAsignados(nombre)
+      bienesTecnologicos: this.encargadosService.obtenerBienesTecnologicosAsignados(encargado.id_encargado)
     }).subscribe(
       (response: any) => {
         const { bienesMobiliarios, bienesTecnologicos } = response;
@@ -274,38 +280,48 @@ export class EncargadosComponent {
     }
     return index;
   }
-/*
+
   confirmTransfer() {
     if (this.selectedEncargado && this.targetBienes.length > 0) {
-      const bienesMobiliario = this.targetBienes.filter(bien => bien.tipo === 'mobiliario');
-      const bienesTecnologico = this.targetBienes.filter(bien => bien.tipo === 'tecnologico');
-
-      if (bienesMobiliario.length > 0) {
-        this.bienesService.updateBienesEncargadoMobiliario(bienesMobiliario, this.selectedEncargado.id).subscribe(
-          response => {
-            console.log('Bienes Mobiliario actualizados:', response);
-          },
-          error => {
-            console.error('Error al actualizar bienes mobiliario:', error);
+      const bienesIds = this.targetBienes.map(bien => bien.id_bien);
+  
+      if (bienesIds.length > 0) {
+        for (let i = 0; i < this.targetBienes.length; i++) {
+          const bien = this.targetBienes[i];
+          if (!bien.atributos) {
+            this.encargadosService.updateBienesEncargadoMobiliario(bien.id_bien, this.selectedEncargado.id_encargado).subscribe(
+              response => {
+                this.mostrarMensaje("Traspaso de Bien realizado con exito", true);
+              },
+              error => {
+                this.mostrarMensaje("Hubo un problema al traspasar el bien", false);
+              }
+            );
+          } else {
+            this.encargadosService.updateBienesEncargadoTecnologico(bien.id_bien, this.selectedEncargado.id_encargado).subscribe(
+              response => {
+                this.mostrarMensaje("Traspaso de Bien realizado con exito", true);
+              },
+              error => {
+                this.mostrarMensaje("Hubo un problema al traspasar el bien", false);
+              }
+              
+            );
+            console.log(this.selectedEncargado.id_encargado);
           }
-        );
-      }
-
-      if (bienesTecnologico.length > 0) {
-        this.bienesService.updateBienesEncargadoTecnologico(bienesTecnologico, this.selectedEncargado.id).subscribe(
-          response => {
-            console.log('Bienes Tecnológicos actualizados:', response);
-          },
-          error => {
-            console.error('Error al actualizar bienes tecnológicos:', error);
-          }
-        );
-      }
-
+        }
+      }  
+      this.targetBienes = [];
+      this.selectedEncargado = null;
       this.displayModalBienes = false;
     }
   }
-*/
+
+  cancelTransfer() {
+    this.targetBienes = [];
+    this.selectedEncargado = null;
+    this.displayModalBienes = false;
+  }
 
   moveAllToTarget() {
     this.targetBienes = this.targetBienes.concat(this.sourceBienes);
@@ -323,5 +339,18 @@ export class EncargadosComponent {
     this.apellido = '';
     this.telefono = '';
     this.direccion = '';
+  }
+
+  openTransferModalForNullEncargados() {
+    this.encargadosService.getBienesDisponibles().subscribe(
+      bienes => {
+        this.sourceBienes = bienes;
+  
+        this.displayModalBienes = true;
+      },
+      error => {
+        console.error('Error al obtener los bienes disponibles:', error);
+      }
+    );
   }
 }

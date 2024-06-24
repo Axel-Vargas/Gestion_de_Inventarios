@@ -30,13 +30,13 @@ export class MenuComponent implements OnInit {
                         label: 'Personal', icon: 'pi pi-id-card',
                         items: [
                             {
-                                label: 'Usuarios', icon: 'pi pi-users', routerLink: ['/panel/personal/usuarios'], visible: this.userRole === 1
+                                label: 'Usuarios', icon: 'pi pi-users', routerLink: ['/panel/personal/usuarios']
                             },
                             {
-                                label: 'Encargados', icon: 'pi pi-user-plus', routerLink: ['/panel/personal/encargados'], visible: this.userRole === 1
+                                label: 'Encargados', icon: 'pi pi-user-plus', routerLink: ['/panel/personal/encargados']
                             }
                         ],
-                        visible: this.userRole === 1
+                        visible: this.userRole === 1,
                     },
                     {
                         label: 'Inventario', icon: 'pi pi-box',
@@ -55,8 +55,7 @@ export class MenuComponent implements OnInit {
                             {
                                 label: 'Componentes Libres', icon: 'pi pi-align-center', routerLink: ['/panel/inventarios/componentes']
                             }
-                        ],
-                        visible: this.userRole === 1 || this.userRole === 2
+                        ]
                     },
                     {
                         label: 'Infraestructura', icon: 'pi pi-hammer',
@@ -72,13 +71,12 @@ export class MenuComponent implements OnInit {
                             {
                                 label: 'Áreas', icon: 'pi pi-map-marker', routerLink: ['/panel/infraestructura/areas']
                             }
-                        ],
-                        visible: this.userRole === 1
+                        ]
                     },
-                    { label: 'Softwares', icon: 'pi pi-microsoft', routerLink: ['/panel/programas'], visible: this.userRole === 1 || this.userRole === 2},
-                    { label: 'Proveedores', icon: 'pi pi-truck', routerLink: ['/panel/proveedores'], visible: this.userRole === 1 || this.userRole === 2 },
-                    { label: 'Marcas', icon: 'pi pi-truck', routerLink: ['/panel/marcas'], visible: this.userRole === 1 || this.userRole === 2 },
-                    { label: 'Reportes', icon: 'pi pi-file', routerLink: ['/panel/reportes'], visible: this.userRole === 1 || this.userRole === 2 || this.userRole === 3},
+                    { label: 'Softwares', icon: 'pi pi-microsoft', routerLink: ['/panel/programas']},
+                    { label: 'Proveedores', icon: 'pi pi-truck', routerLink: ['/panel/proveedores']},
+                    { label: 'Marcas', icon: 'pi pi-android', routerLink: ['/panel/marcas']},
+                    { label: 'Reportes', icon: 'pi pi-file', routerLink: ['/panel/reportes']},
                 ]
             },
             {

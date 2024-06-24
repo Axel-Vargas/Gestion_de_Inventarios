@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProveedoresService } from '../../services/proveedores.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-proveedores',
@@ -22,7 +23,9 @@ export class ProveedoresComponent {
   soloLetrasRegex = /^[a-zA-Z]*$/;
   soloNumerosRegex = /^[0-9]*$/;
 
-  constructor(private confirmationService: ConfirmationService, private proveedoresService: ProveedoresService, private messageService: MessageService) { }
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService, private confirmationService: ConfirmationService, private proveedoresService: ProveedoresService, private messageService: MessageService) { }
 
   matchModeOptions = [
     { label: 'Empieza con', value: 'startsWith' },
@@ -34,6 +37,10 @@ export class ProveedoresComponent {
 
   ngOnInit(): void {
     this.listarProveedores();
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   listarProveedores(): void {
@@ -85,7 +92,7 @@ export class ProveedoresComponent {
     if (this.nombre == '' || this.telefono == '' || this.direccion == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      this.proveedoresService.actualizarProveedor(this.id, this.nombre, this.direccion, this.telefono ).subscribe(
+      this.proveedoresService.actualizarProveedor(this.id, this.nombre, this.direccion, this.telefono).subscribe(
         (response) => {
           this.mostrarMensaje("Proveedor actualizado con éxito", true);
           this.limpiarFormulario();

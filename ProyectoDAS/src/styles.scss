@@ -39,6 +39,20 @@ $gutter: 1rem;
     cursor: default;
 }
 
+@media (max-width: 440px) {
+    .flex.align-items-center .tooltip {
+        display: none;
+    }
+
+    .mobiliarios{
+        font-size: 18px;
+    }
+
+    .tecnologicos{
+        font-size: 18px;
+    }
+}
+
 .tooltip.show {
     opacity: 1;
 }

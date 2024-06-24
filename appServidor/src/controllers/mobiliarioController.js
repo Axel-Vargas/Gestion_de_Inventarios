@@ -5,10 +5,12 @@ exports.getAllBienes = async (req, res) => {
     const selectQuery = `
       SELECT bm.*, 
              e.nombre AS nombre_encargado, 
+             e.apellido AS apellido_encargado,
              a.nombre AS nombre_area 
       FROM bien_mobiliario bm
       LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
       LEFT JOIN areas a ON bm.id_area_per = a.id_area
+      WHERE bm.estado != 'BODEGA'
     `;
     connection.query(selectQuery, (error, results) => {
       if (error) {
@@ -18,19 +20,99 @@ exports.getAllBienes = async (req, res) => {
       res.status(200).json({ mobiliarios: results });
     });
   } catch (error) {
-    res.status(500).json({ mensaje: 'Error interno del servidor' });
-}
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
 };
 
+exports.getBienesPorArea = async (req, res) => {
+  const {id} = req.params;
 
+  try {
+    const selectQuery = `
+      SELECT bm.*, 
+             e.nombre AS nombre_encargado, 
+             e.apellido AS apellido_encargado,
+             a.nombre AS nombre_area 
+      FROM bien_mobiliario bm
+      LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
+      LEFT JOIN areas a ON bm.id_area_per = a.id_area
+      WHERE bm.estado != 'BODEGA' AND bm.id_area_per = ?
+    `;
+    connection.query(selectQuery, [id], (error, results) => {
+      if (error) {
+        return res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
+
+      res.status(200).json({ mobiliarios: results });
+    });
+  } catch (error) {
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
+exports.getBienesPorEstado = async (req, res) => {
+  const { estado } = req.params;
+
+  try {
+    const selectQuery = `
+      SELECT bm.*, 
+             e.nombre AS nombre_encargado, 
+             e.apellido AS apellido_encargado,
+             a.nombre AS nombre_area 
+      FROM bien_mobiliario bm
+      LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
+      LEFT JOIN areas a ON bm.id_area_per = a.id_area
+      WHERE bm.estado = ?
+    `;
+    connection.query(selectQuery, [estado], (error, results) => {
+      if (error) {
+        console.error('Error en la consulta SQL:', error);
+        return res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
+
+      res.status(200).json({ mobiliarios: results });
+    });
+  } catch (error) {
+    console.error('Error en la función getBienesPorEstado:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
+
+exports.getBienesPorEncargado = async (req, res) => {
+  const { encargado } = req.params;
+
+  try {
+    const selectQuery = `
+      SELECT bm.*, 
+             e.nombre AS nombre_encargado, 
+             e.apellido AS apellido_encargado,
+             a.nombre AS nombre_area 
+      FROM bien_mobiliario bm
+      LEFT JOIN encargados e ON bm.id_encargado_per = e.id_encargado
+      LEFT JOIN areas a ON bm.id_area_per = a.id_area
+      WHERE bm.id_encargado_per = ? AND bm.estado != 'BODEGA'
+    `;
   
+    connection.query(selectQuery, [encargado], (error, results) => {
+      if (error) {
+        console.error('Error en la consulta SQL:', error);
+        return res.status(500).json({ mensaje: 'Error interno del servidor' });
+      }
+
+      res.status(200).json({ mobiliarios: results });
+    });
+  } catch (error) {
+    console.error('Error en la función getBienesPorEncargado:', error);
+    res.status(500).json({ mensaje: 'Error interno del servidor' });
+  }
+};
 
 exports.addBienes = async (req, res) => {
   try {
     const {bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per} = req.body;
 
-      const insertQuery = `INSERT INTO bien_mobiliario (bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-      connection.query(insertQuery, [bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per], (error, results) => {
+      const insertQuery = `INSERT INTO bien_mobiliario (nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      connection.query(insertQuery, [nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error interno del servidor' });
         }
@@ -44,12 +126,12 @@ exports.addBienes = async (req, res) => {
 };
 exports.editBienes = async (req, res) => {
     try {
-      const id_bien = req.params.id; // Recibir el ID del bien desde la URL
-      const {bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per} = req.body;
+      const id_bien = req.params.id;
+      const { nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per} = req.body;
   
-      const updateQuery = `UPDATE bien_mobiliario SET bld_bca = ?, nombre = ?, marca = ?, modelo = ?, num_serie = ?, material = ?, color = ?, fecha_adquisicion = ?, estado = ?, localizacion = ?, codigoUTA = ?, valor_contable = ?, id_encargado_per = ?, id_area_per = ? WHERE id_bien = ?`;
+      const updateQuery = `UPDATE bien_mobiliario SET nombre = ?, marca = ?, modelo = ?, num_serie = ?, material = ?, color = ?, fecha_adquisicion = ?, estado = ?, localizacion = ?, codigoUTA = ?, id_encargado_per = ?, id_area_per = ? WHERE id_bien = ?`;
   
-      connection.query(updateQuery, [bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per, id_bien], (error, results) => {
+      connection.query(updateQuery, [ nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per, id_bien], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error al actualizar el bien' });
         }
@@ -67,7 +149,7 @@ exports.editBienes = async (req, res) => {
 
   exports.deleteBienes = async (req, res) => {
     try {
-      const id_bien = req.params.id; // Recibir el ID del bien desde la URL
+      const id_bien = req.params.id;
   
       const deleteQuery = `DELETE FROM bien_mobiliario WHERE id_bien = ?`;
   
@@ -92,11 +174,8 @@ exports.editBienes = async (req, res) => {
   exports.getBuscarBienPorId = async (req, res) => {
     try {
         const { id_bien } = req.params;
+        const selectQuery = `SELECT id_bien, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per FROM bien_mobiliario WHERE id_bien = ?`;
 
-        // La consulta SQL para buscar por id_bien
-        const selectQuery = `SELECT id_bien, bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per FROM bien_mobiliario WHERE id_bien = ?`;
-
-        // Ejecutar la consulta SQL
         connection.query(selectQuery, [id_bien], (error, results) => {
             if (error) {
                 return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -133,3 +212,5 @@ exports.getMobiliarioByName = async (req, res) => {
     res.status(500).json({ mensaje: 'Error interno del servidor' });
   }
 };
+
+

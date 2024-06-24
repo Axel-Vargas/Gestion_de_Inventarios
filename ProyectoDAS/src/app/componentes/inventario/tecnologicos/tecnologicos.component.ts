@@ -23,6 +23,7 @@ import { ScannerService } from '../../../services/scanner.service';
 import { DependenciaService } from '../../../services/dependencia.service';
 import { Dependencia } from '../../api/Dependencias';
 import { Button } from 'primeng/button';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-tecnologicos',
@@ -85,7 +86,10 @@ export class TecnologicosComponent implements OnInit {
   marcas!: any[];
   scannedCode: string = '';
 
+  rolUsuario: number | null = null;
+
   constructor(
+    private authServices: AuthService,
     private tecnologicosService: BienestecnologicosService,
     private componente_service: componentesService,
     private areasService: AreasService,
@@ -124,9 +128,10 @@ export class TecnologicosComponent implements OnInit {
     ];
   }
 
-  
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
+  }
 
-  
   ngOnInit() {
     
     this.scannerService.scannedCode$.subscribe(code => {
@@ -511,9 +516,12 @@ agregarAtributo(): void {
   abrirModalTecnologico(){
     this.inventoryForm.reset();
     this.display =  true
-    this.isEditMode = false;
-  }
 
+  showDialogAgregar(){
+    this.isEditMode = false;
+    this.display =  true
+    this.inventoryForm.reset(); 
+  }
   
   guardarBienesTecnologicos(): void {
     const idProveedor = this.inventoryForm.value.id_proveedor_per.code;

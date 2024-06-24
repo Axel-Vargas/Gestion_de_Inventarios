@@ -13,18 +13,22 @@ export class BienestecnologicosService {
     private myApyUrls: string;
     private myApyUrls2: string;
     private myApyUrls3: string;
+    private myApyUrls4: string;
+
     constructor(private http: HttpClient) {
         this.myAppUrl = environment.endpoint;
         this.myApyUrl = 'api/bientecnologico';
         this.myApyUrls = 'api/bientecnologico/obtenerPorBloqueYArea';
         this.myApyUrls3 = 'api/bientecnologico/obtenerPorBloque';
         this.myApyUrls2 = 'api/bientecnologico/area';
+        this.myApyUrls3 = 'api/bientecnologico/estado';
+        this.myApyUrls4 = 'api/bientecnologico/encargado';
     }
 
     getBienesTecnologicos(): Observable<bienes_Tecnologicos[]> {
         return this.http.get<bienes_Tecnologicos[]>(this.myAppUrl + this.myApyUrl);
     }
-
+    
     getPorBloqueYArea(bloque: string, area: string): Observable<bienes_Tecnologicos[]> {
     const url = `${this.myAppUrl}${this.myApyUrls}/${bloque}/${area}`;
     return this.http.get<bienes_Tecnologicos[]>(url);
@@ -57,8 +61,30 @@ export class BienestecnologicosService {
         );
     }
 
-    getComputadorasPorAreas(id: number): Observable<bienes_Tecnologicos[]> {
+    getBienesTecnologicosPrestados(): Observable<bienes_Tecnologicos[]> {
+        return this.http.get<bienes_Tecnologicos[]>(this.myAppUrl + this.myApyUrl).pipe(
+            map(bienes => bienes.filter(bien => bien.prestado === 'SI'))
+        );
+    }
+
+    getBienesTecnologicosPorAreas(id: number): Observable<bienes_Tecnologicos[]> {
         const url = `${this.myAppUrl}${this.myApyUrls2}/${id}`;
         return this.http.get<bienes_Tecnologicos[]>(url);
+    }
+
+    getBienesTecnologicosPorEstado(estado: string): Observable<bienes_Tecnologicos[]> {
+        const url = `${this.myAppUrl}${this.myApyUrls3}/${estado}`;
+        return this.http.get<bienes_Tecnologicos[]>(url);
+    }
+
+    getBienesTecnologicosPorEncargado(encargado: string): Observable<bienes_Tecnologicos[]> {
+        const url = `${this.myAppUrl}${this.myApyUrls4}/${encargado}`;
+        return this.http.get<bienes_Tecnologicos[]>(url);
+    }
+
+    getComputadorasPorAreas(id: number): Observable<bienes_Tecnologicos[]> {
+        return this.http.get<bienes_Tecnologicos[]>(this.myAppUrl + this.myApyUrls2 +'/'+id).pipe(
+            map(bienes => bienes.filter(bien => bien.nombre === 'COMPUTADORA DE ESCRITORIO'))
+        );
     }
 }

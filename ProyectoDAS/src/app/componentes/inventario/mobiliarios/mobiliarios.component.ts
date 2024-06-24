@@ -3,6 +3,7 @@ import { MobiliariosService } from '../../../services/mobiliarios.service';
 import { AreaMobiliarioService } from '../../../services/area.mobiliario.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { EncargadosService } from '../../../services/encargados.service';
+import { AuthService } from '../../../services/auth.service';
 
 
 
@@ -28,7 +29,6 @@ export class MobiliariosComponent {
   esEdicion: boolean = false;
 
   id: string = '';
-  bld_bca = '';
   nombre = '';
   marca = '';
   modelo = '';
@@ -38,7 +38,6 @@ export class MobiliariosComponent {
   fecha_adquisicion = '';
   localizacion = '';
   codigoUTA = '';
-  valor_contable = '';
   selectEncargados: any = null;
   selectAreas: any = null;
   soloLetrasRegex = /^[a-zA-Z]*$/;
@@ -48,7 +47,10 @@ export class MobiliariosComponent {
   selectedRepresentatives: any[] = [];
   selectedRepresentativesA: any[] = [];
 
-  constructor(private confirmationService: ConfirmationService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService, private messageService: MessageService) {}
+  rolUsuario: number | null = null;
+
+
+  constructor(private authServices: AuthService,private confirmationService: ConfirmationService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService, private messageService: MessageService) {}
 
   id_bien = '';
   id_encargado_per = '';
@@ -71,9 +73,13 @@ export class MobiliariosComponent {
     this.listarEncargadosComboBox();
 
     this.estados = [
-      { name: 'Operativo', code: 1 },
-      { name: 'No Funcional', code: 2 },
+      { name: 'FUNCIONAL', code: 1 },
+      { name: 'NO FUNCIONAL', code: 2 },
     ];
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   listarEncargados(): void {
@@ -178,22 +184,21 @@ export class MobiliariosComponent {
 
   registrarMobiliario() {
     console.log(this.selectEstado);
-    if (this.bld_bca == '' || this.nombre == '' || this.marca == '' || this.modelo == '' ||
+    if (this.nombre == '' || this.marca == '' || this.modelo == '' ||
       this.num_serie == '' || this.material == '' || this.color == '' || this.fecha_adquisicion == '' || !this.selectEstado || this.localizacion == '' ||
-      this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado == '' || this.selectArea == '') {
+      this.codigoUTA == '' || this.selectEncargado == '' || this.selectArea == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      const valorContableInt = parseFloat(this.valor_contable);
       const fechaAdquisicionDate = new Date(this.fecha_adquisicion);
 
-      if (isNaN(valorContableInt) || isNaN(fechaAdquisicionDate.getTime())) {
+      if (isNaN(fechaAdquisicionDate.getTime())) {
         this.mostrarMensaje("Datos numéricos o de fecha inválidos", false);
         return;
       }
 
-      this.mobiliariosService.insertarMobiliaria(this.bld_bca, this.nombre, this.marca, this.modelo,
+      this.mobiliariosService.insertarMobiliaria( this.nombre, this.marca, this.modelo,
         this.num_serie, this.material, this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion,
-        this.codigoUTA, valorContableInt, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
+        this.codigoUTA, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
           (response) => {
             this.mostrarMensaje("Bien registrado con éxito", true);
             this.limpiarFormulario();
@@ -232,21 +237,20 @@ export class MobiliariosComponent {
   }
 
   editarMobiliario() {
-    if (this.bld_bca == '' || this.nombre == '' || this.marca == '' || this.modelo == '' ||
+    if (this.nombre == '' || this.marca == '' || this.modelo == '' ||
       this.num_serie == '' || this.material == '' || this.color == '' || this.fecha_adquisicion == '' || !this.estados || this.localizacion == '' ||
-      this.codigoUTA == '' || this.valor_contable == '' || this.selectEncargado == '' || this.selectArea == '') {
+      this.codigoUTA == '' || this.selectEncargado == '' || this.selectArea == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      const valorContableInt = parseFloat(this.valor_contable);
       const fechaAdquisicionDate = new Date(this.fecha_adquisicion);
 
-      if (isNaN(valorContableInt) || isNaN(fechaAdquisicionDate.getTime())) {
+      if (isNaN(fechaAdquisicionDate.getTime())) {
         this.mostrarMensaje("Datos numéricos o de fecha inválidos", false);
         return;
       }
 
-      this.mobiliariosService.actualizarMobiliarios(this.id, this.bld_bca, this.nombre, this.marca, this.modelo, this.num_serie, this.material,
-        this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion, this.codigoUTA, valorContableInt, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
+      this.mobiliariosService.actualizarMobiliarios(this.id,  this.nombre, this.marca, this.modelo, this.num_serie, this.material,
+        this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion, this.codigoUTA, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
           (response) => {
             this.mostrarMensaje("Bien actualizo con éxito", true);
             this.visible = false;
@@ -274,7 +278,6 @@ export class MobiliariosComponent {
 
   showDialogEditar(mobiliario: any) {
     this.esEdicion = true;
-    this.bld_bca = mobiliario.bld_bca;
     this.nombre = mobiliario.nombre;
     this.marca = mobiliario.marca;
     this.modelo = mobiliario.modelo;
@@ -285,7 +288,6 @@ export class MobiliariosComponent {
     this.selectEstado = this.estados.find(estado => estado.name === mobiliario.estado);
     this.localizacion = mobiliario.localizacion;
     this.codigoUTA = mobiliario.codigoUTA;
-    this.valor_contable = mobiliario.valor_contable;
     this.selectEncargado = this.encargados.find(encargado => encargado.id_encargado === mobiliario.id_encargado_per);
     this.selectArea = this.areas.find(area => area.id_area === mobiliario.id_area_per);
     this.id = mobiliario.id_bien;
@@ -317,7 +319,6 @@ export class MobiliariosComponent {
 
   limpiarFormulario() {
     this.id_bien = '';
-    this.bld_bca = '';
     this.nombre = '';
     this.marca = '';
     this.modelo = '';
@@ -327,7 +328,6 @@ export class MobiliariosComponent {
     this.fecha_adquisicion = '';
     this.localizacion = '';
     this.codigoUTA = '';
-    this.valor_contable = '';
     this.selectEncargado = null;
     this.selectArea = null;
   }

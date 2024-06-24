@@ -3,6 +3,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Bloque } from '../../api/bloques';
 import { Bloques2Service } from '../../../services/bloques2.service';
 import { FacultadesService } from '../../../services/facultades.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-bloques',
@@ -28,7 +29,9 @@ export class BloquesComponent {
   selectedRepresentatives: any[] = [];
   representatives: any[] = [];
 
-  constructor(private confirmationService: ConfirmationService, private facultadesService: FacultadesService,private bloquesService: Bloques2Service, private messageService: MessageService) { }
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService, private confirmationService: ConfirmationService, private facultadesService: FacultadesService,private bloquesService: Bloques2Service, private messageService: MessageService) { }
 
   matchModeOptions = [
     { label: 'Empieza con', value: 'startsWith' },
@@ -42,6 +45,10 @@ export class BloquesComponent {
     this.listarBloques();
     this.listarFacultades();
     this.listarFacultadesComboBox();
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   listarBloques(): void {

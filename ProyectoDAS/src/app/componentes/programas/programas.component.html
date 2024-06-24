@@ -3,7 +3,7 @@
         <div class="card">
             <div class="flex programas justify-content-between flex-wrap mb-5">
                 <span class="flex align-items-center">Softwares</span>
-                <div class="flex align-items-center">
+                <div *ngIf="rolUsuario === 1" class="flex align-items-center">
                     <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Software</span>
                     <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
                         (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
@@ -78,7 +78,7 @@
                                 </ng-template>
                               </p-columnFilter>
                         </th>
-                        <th></th>
+                        <th *ngIf="rolUsuario === 1"></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-programa>
@@ -86,9 +86,9 @@
                         <td>{{ programa.software }}</td>
                         <td>{{ programa.version }}</td>
                         <td>{{ programa.tipo_licencia }}</td>
-                        <td>{{ programa.fecha_adquisicion }}</td>
+                        <td>{{ programa.fecha_adquisicion | date : "yyyy-MM-dd"}}</td>
                         <td>{{ programa.laboratorio }}</td>
-                        <td class="flex flex-row ">
+                        <td *ngIf="rolUsuario === 1" class="flex flex-row ">
                             <button pButton (click)="showDialogEditar(programa)" pRipple type="button"
                                 icon="pi pi-pen-to-square"
                                 class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>
@@ -108,8 +108,8 @@
     </div>
 </div>
 
-<p-dialog [header]="esEdicion ? 'Editar Programa' : 'Agregar Programa'" [modal]="true" [(visible)]="visible"
-    [style]="{ width: '36rem'}">
+<p-dialog [header]="esEdicion ? 'Editar Programa' : 'Agregar Programa'" [modal]="true" [(visible)]="visible" draggable="false"
+    [style]="{ width: '36rem', minWidth: '300px'}">
     <div class="flex flex-wrap gap-3">
         <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
             <label for="estado" class="font-semibold w-10rem">Tipo de Licencia</label>
@@ -132,8 +132,8 @@
         </div>
         <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
             <label for="telefono" class="font-semibold w-11rem">Fecha de Adquisición</label>
-            <p-calendar [style]="{ width: '15.9rem' }" id="fecha_adquisicion" inputId="fecha_adquisicion" [(ngModel)]="fecha_adquisicion" [showIcon]="true"
-            [showOnFocus]="true" dateFormat="dd/mm/yy" placeholder="Seleccione una fecha">
+            <p-calendar [style]="{ width: '15.9rem' }" id="fecha_adquisicion" inputId="fecha_adquisicion" appendTo="body" [(ngModel)]="fecha_adquisicion" [showIcon]="true"
+            [showOnFocus]="true" dateFormat="yy-mm-dd" placeholder="Seleccione una fecha">
           </p-calendar>
         </div>
 

@@ -10,6 +10,7 @@ import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { DialogModule } from 'primeng/dialog';
+import { ChartModule } from 'primeng/chart';
 
 @NgModule({
   declarations: [
@@ -23,6 +24,7 @@ import { DialogModule } from 'primeng/dialog';
     ButtonModule,
     ZXingScannerModule,
     DialogModule,
+    ChartModule
   ],
   exports: [
     InicioComponent

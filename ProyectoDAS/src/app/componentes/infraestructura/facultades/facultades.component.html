@@ -3,7 +3,7 @@
         <div class="card">
             <div class="flex facultades justify-content-between flex-wrap mb-5">
                 <span class="flex align-items-center">Facultades</span>
-                <div class="flex align-items-center">
+                <div *ngIf="rolUsuario === 1" class="flex align-items-center">
                     <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Facultad</span>
                     <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
                         (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
@@ -36,14 +36,14 @@
                             <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
                                 field="siglas" placeholder="Buscar por siglas" ariaLabel="Filter Siglas" />
                         </th>
-                        <th></th>
+                        <th *ngIf="rolUsuario === 1"></th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-facultad>
                     <tr>
                         <td>{{ facultad.nombre }}</td>
                         <td>{{ facultad.siglas }}</td>
-                        <td class="flex flex-row ">
+                        <td *ngIf="rolUsuario === 1" class="flex flex-row ">
                             <button pButton (click)="showDialogEditar(facultad)" pRipple type="button"
                                 icon="pi pi-pen-to-square"
                                 class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>

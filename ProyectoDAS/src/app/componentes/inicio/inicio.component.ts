@@ -18,24 +18,36 @@ import { InicioService } from '../../services/inicio.service';
 export class InicioComponent implements OnInit, OnDestroy {
 
 
-  historial: Historial[] = [];
+    historial: Historial[] = [];
 
-  items!: MenuItem[];
+    items!: MenuItem[];
+  
+    tecnologicos!: bienes_Tecnologicos[];
+  
+    chartData: any;
+  
+    chartOptions: any;
+  
+    subscription!: Subscription;
 
-  tecnologicos!: bienes_Tecnologicos[];
+    data: any;
+    options: any;
+    basicData: any;
+    basicOptions: any;
 
-  chartData: any;
+  
+    tooltipVisible: boolean = false;
+    displayQRScanner: boolean = false;
+    totalBienes: number = 0;
+    totalAreas: number = 0;
+    totalProveedores: number = 0;
+    totalUsuarios: number = 0;
+    componentesLibres:number = 0;
+    bienesMobiliarios:number = 0
+    tecnologicosBodega: number = 0
+    totalRepotencias:number = 0
 
-  chartOptions: any;
 
-  subscription!: Subscription;
-
-  tooltipVisible: boolean = false;
-  displayQRScanner: boolean = false;
-  totalBienes: number = 0;
-  totalAreas: number = 0;
-  totalProveedores: number = 0;
-  totalUsuarios: number = 0;
 
   constructor(private inicioService: InicioService, private historialService: HistorialService, private productService: BienestecnologicosService, public layoutService: LayoutService) {
     this.subscription = this.layoutService.configUpdate$
@@ -46,30 +58,51 @@ export class InicioComponent implements OnInit, OnDestroy {
 }
 obtenerDatos(): void {
     this.inicioService.obtenerTotalBienes().subscribe(
-      (data) => this.totalBienes = data,
-      (error) => console.error('Error al obtener total de bienes', error)
-    );
-
-    this.inicioService.obtenerTotalAreas().subscribe(
-      (data) => this.totalAreas = data,
-      (error) => console.error('Error al obtener total de áreas', error)
-    );
-
-    this.inicioService.obtenerTotalProveedores().subscribe(
-      (data) => this.totalProveedores = data,
-      (error) => console.error('Error al obtener total de proveedores', error)
-    );
-
-    this.inicioService.obtenerTotalUsuarios().subscribe(
-      (data) => this.totalUsuarios = data,
-      (error) => console.error('Error al obtener total de usuarios', error)
-    );
+        (data) => this.totalBienes = data,
+        (error) => console.error('Error al obtener total de bienes', error)
+      );
+  
+      this.inicioService.obtenerTotalAreas().subscribe(
+        (data) => this.totalAreas = data,
+        (error) => console.error('Error al obtener total de áreas', error)
+      );
+  
+      this.inicioService.obtenerTotalProveedores().subscribe(
+        (data) => this.totalProveedores = data,
+        (error) => console.error('Error al obtener total de proveedores', error)
+      );
+  
+      this.inicioService.obtenerTotalUsuarios().subscribe(
+        (data) => this.totalUsuarios = data,
+        (error) => console.error('Error al obtener total de usuarios', error)
+      );
+  
+      this.inicioService.obtenerComponentesLibres().subscribe(
+          (data) => this.componentesLibres = data,
+          (error) => console.error('Error al obtener total de usuarios', error)
+      );
+  
+      this.inicioService.obtenerTotalBienesMobiliarios().subscribe(
+          (data) => this.bienesMobiliarios = data,
+          (error) => console.error('Error al obtener total de usuarios', error)
+      );
+  
+      this.inicioService.obtenerTotalTecnologicosBodega().subscribe(
+          (data) => this.tecnologicosBodega = data,
+          (error) => console.error('Error al obtener total de usuarios', error)
+      );
+  
+      this.inicioService.obtenerTotalRepotencias().subscribe(
+          (data) => this.totalRepotencias = data,
+          (error) => console.error('Error al obtener total de usuarios', error)
+      );
   }
 
 ngOnInit() {
     this.obtenerDatos();
   this.cargarHistorial();
-    this.initChart();
+  this.initChart();
+  this.initChartPastel();
     //this.productService.getProductsSmall().then(data => this.products = data);
 
     this.items = [
@@ -90,64 +123,112 @@ cargarHistorial(): void {
 }
 
 
-  initChart() {
-      const documentStyle = getComputedStyle(document.documentElement);
-      const textColor = documentStyle.getPropertyValue('--text-color');
-      const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-      const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
-      this.chartData = {
-          labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-          datasets: [
-              {
-                  label: 'First Dataset',
-                  data: [65, 59, 80, 81, 56, 55, 40],
-                  fill: false,
-                  backgroundColor: documentStyle.getPropertyValue('--bluegray-700'),
-                  borderColor: documentStyle.getPropertyValue('--bluegray-700'),
-                  tension: .4
-              },
-              {
-                  label: 'Second Dataset',
-                  data: [28, 48, 40, 19, 86, 27, 90],
-                  fill: false,
-                  backgroundColor: documentStyle.getPropertyValue('--green-600'),
-                  borderColor: documentStyle.getPropertyValue('--green-600'),
-                  tension: .4
-              }
-          ]
-      };
+initChart() {
 
-      this.chartOptions = {
-          plugins: {
-              legend: {
-                  labels: {
-                      color: textColor
-                  }
-              }
-          },
-          scales: {
-              x: {
-                  ticks: {
-                      color: textColorSecondary
-                  },
-                  grid: {
-                      color: surfaceBorder,
-                      drawBorder: false
-                  }
-              },
-              y: {
-                  ticks: {
-                      color: textColorSecondary
-                  },
-                  grid: {
-                      color: surfaceBorder,
-                      drawBorder: false
-                  }
-              }
+    
+  const documentStyle = getComputedStyle(document.documentElement);
+  const textColor = documentStyle.getPropertyValue('--text-color');
+  const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
+  const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+
+  this.inicioService.obtenerBienesPorArea().subscribe((data: any[]) => {
+    const labels = data.map(item => item.NOMBRE);
+    const datasetData = data.map(item => item.total_bienes);
+
+    this.basicData = {
+      labels: labels,
+      datasets: [
+        {
+          label: 'Total Bienes',
+          data: datasetData,
+          backgroundColor: ['rgba(255, 159, 64, 0.2)', 'rgba(75, 192, 192, 0.2)', 'rgba(54, 162, 235, 0.2)', 'rgba(153, 102, 255, 0.2)', 'rgba(255, 99, 132, 0.2)'],
+          borderColor: ['rgb(255, 159, 64)', 'rgb(75, 192, 192)', 'rgb(54, 162, 235)', 'rgb(153, 102, 255)', 'rgb(255, 99, 132)'],
+          borderWidth: 1
+        }
+      ]
+    };
+
+    this.basicOptions = {
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor
           }
-      };
-  }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            color: textColorSecondary
+          },
+          grid: {
+            color: surfaceBorder,
+            drawBorder: false
+          }
+        },
+        x: {
+          ticks: {
+            color: textColorSecondary
+          },
+          grid: {
+            color: surfaceBorder,
+            drawBorder: false
+          }
+        }
+      }
+    };
+  });
+}
+
+
+
+initChartPastel() {
+  const documentStyle = getComputedStyle(document.documentElement);
+  const textColor = documentStyle.getPropertyValue('--text-color');
+
+  this.inicioService.obtenerRepotenciadoPorArea().subscribe((data: any[]) => {
+    const labels = data.map(item => item.NOMBRE);
+    const datasetData = data.map(item => item.total_bienes);
+
+    this.data = {
+      labels: labels,
+      datasets: [
+        {
+          data: datasetData,
+          backgroundColor: [
+            documentStyle.getPropertyValue('--blue-500'),
+            documentStyle.getPropertyValue('--yellow-500'),
+            documentStyle.getPropertyValue('--green-500'),
+            documentStyle.getPropertyValue('--red-500'),
+            documentStyle.getPropertyValue('--purple-500')
+          ],
+          hoverBackgroundColor: [
+            documentStyle.getPropertyValue('--blue-400'),
+            documentStyle.getPropertyValue('--yellow-400'),
+            documentStyle.getPropertyValue('--green-400'),
+            documentStyle.getPropertyValue('--red-400'),
+            documentStyle.getPropertyValue('--purple-400')
+          ]
+        }
+      ]
+    };
+
+    this.options = {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '60%',
+      plugins: {
+        legend: {
+          labels: {
+            color: textColor
+          }
+        }
+      }
+    };
+  });
+}
 
   ngOnDestroy() {
       if (this.subscription) {

@@ -30,15 +30,12 @@ function generateQR(data) {
 const getBienesTecnologicos = (req, res) => {
     try {
         const sql = `
-            SELECT 
-            bt.*,
-            CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado,
-            CONCAT(d.nombre_dep) AS nombre_dependencia
-            FROM bien_tecnologico bt
-            LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
-            LEFT JOIN dependencia d ON bt.id_dependencia_per = d.id_dep
-            WHERE bt.estado != 'BODEGA';
-        `;
+        SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado, a.nombre as nombre_area
+        FROM bien_tecnologico bt
+        LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bt.id_area_per = a.id_area
+        WHERE bt.estado != 'BODEGA'
+      `;
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -56,7 +53,13 @@ const getBienesTecnologicos = (req, res) => {
 const getBienesTecnologicosPorArea = (req, res) => {
     try {
         const { id } = req.params;
-        const sql = 'SELECT * FROM Bien_Tecnologico WHERE nombre = \'COMPUTADORA DE ESCRITORIO\' AND id_area_per = ?';
+        const sql = `
+        SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado, a.nombre as nombre_area
+        FROM Bien_Tecnologico bt
+        LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bt.id_area_per = a.id_area
+        WHERE bt.id_area_per = ? AND bt.estado != 'BODEGA'
+      `;
         connection.query(sql, [id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -67,6 +70,56 @@ const getBienesTecnologicosPorArea = (req, res) => {
         });
     } catch (error) {
         console.error('Error en la función getBienesTecnologicosPorArea:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+};
+
+const getBienesTecnologicosPorEstado = (req, res) => {
+    try {
+        const { estado } = req.params;
+        const sql = `
+        SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado, a.nombre as nombre_area
+        FROM Bien_Tecnologico bt
+        LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bt.id_area_per = a.id_area
+        WHERE bt.estado = ?
+      `;
+
+        connection.query(sql, [estado], (err, data) => {
+            if (err) {
+                console.error('Error en la consulta SQL:', err);
+                res.status(500).json({ error: 'Error en el servidor' });
+            } else {
+                res.json(data);
+            }
+        });
+    } catch (error) {
+        console.error('Error en la función getBienesTecnologicosPorEstado:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+};
+
+const getBienesTecnologicosPorEncargado = (req, res) => {
+    try {
+        const { encargado } = req.params;
+        const sql = `
+        SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado, a.nombre as nombre_area
+        FROM Bien_Tecnologico bt
+        LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bt.id_area_per = a.id_area
+        WHERE bt.id_encargado_per = ? AND bt.estado != 'BODEGA'
+      `;
+
+        connection.query(sql, [encargado], (err, data) => {
+            if (err) {
+                console.error('Error en la consulta SQL:', err);
+                res.status(500).json({ error: 'Error en el servidor' });
+            } else {
+                res.json(data);
+            }
+        });
+    } catch (error) {
+        console.error('Error en la función getBienesTecnologicosPorEncargado:', error);
         res.status(500).json({ error: 'Error en el servidor' });
     }
 };
@@ -254,5 +307,7 @@ module.exports = {
     deleteBienTecnologico,
     obtenerBienesPorBloqueYArea,
     getBienesTecnologicosPorArea,
-    obtenerBienesPorBloque
+    obtenerBienesPorBloque,
+    getBienesTecnologicosPorEstado,
+    getBienesTecnologicosPorEncargado
 };

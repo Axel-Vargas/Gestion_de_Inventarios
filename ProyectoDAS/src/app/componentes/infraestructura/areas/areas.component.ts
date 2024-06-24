@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { AreaMobiliarioService } from '../../../services/area.mobiliario.service';
 import { Bloques2Service } from '../../../services/bloques2.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-areas',
@@ -27,7 +28,9 @@ export class AreasComponent {
   selectedRepresentatives: any[] = [];
   representatives: any[] = [];
 
-  constructor(private confirmationService: ConfirmationService, private areasService: AreaMobiliarioService, private bloquesService: Bloques2Service, private messageService: MessageService) { }
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService, private confirmationService: ConfirmationService, private areasService: AreaMobiliarioService, private bloquesService: Bloques2Service, private messageService: MessageService) { }
 
   matchModeOptions = [
     { label: 'Empieza con', value: 'startsWith' },
@@ -50,6 +53,10 @@ export class AreasComponent {
       { name: 'Cuarto Piso', code: 5 },
       { name: 'Quinto Piso', code: 6 },
     ];
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   listarAreas(): void {

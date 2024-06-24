@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProgramasService } from '../../services/programas.service';
+import { FormControl } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-programas',
@@ -19,7 +21,7 @@ export class ProgramasComponent {
   software = '';
   version = '';
   tipo_licencia = '';
-  fecha_adquisicion = '';
+  fecha_adquisicion: any;
   laboratorio = '';
   mensajeValidacionCedula: string = '';
 
@@ -31,7 +33,9 @@ export class ProgramasComponent {
   soloLetrasRegex = /^[a-zA-Z]*$/;
   soloNumerosRegex = /^[0-9]*$/;
 
-  constructor(private confirmationService: ConfirmationService, private programasService: ProgramasService, private messageService: MessageService) { }
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService, private confirmationService: ConfirmationService, private programasService: ProgramasService, private messageService: MessageService) { }
 
   matchModeOptions = [
     { label: 'Empieza con', value: 'startsWith' },
@@ -55,14 +59,15 @@ export class ProgramasComponent {
     ];
   }
 
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
+  }
+
   listarProgramas(): void {
     this.programasService.obtenerProgramas().subscribe(
       (response: any) => {
         if (response && response.programas) {
-          this.programas = response.programas.map((programa: any) => ({
-            ...programa,
-            fecha_adquisicion: this.formatDate(programa.fecha_adquisicion)
-          }));
+          this.programas = response.programas;
         } else {
           this.programas = [];
         }
@@ -77,8 +82,8 @@ export class ProgramasComponent {
     if (this.software == '') {
       this.mostrarMensaje("Ingrese el nombre del programa", false);
     } else {
-      const fechaAdquisicionDate = new Date(this.fecha_adquisicion);
-      this.programasService.insertarPrograma(this.software, this.version, this.selectLicencia.name, fechaAdquisicionDate, this.selectLaboratorio.name).subscribe(
+      //const fecha = new Date(this.fecha_adquisicion);
+      this.programasService.insertarPrograma(this.software, this.version, this.selectLicencia.name, this.fecha_adquisicion, this.selectLaboratorio.name).subscribe(
         (response) => {
           this.mostrarMensaje("Programa registrado con éxito", true);
           this.limpiarFormulario();
@@ -108,9 +113,9 @@ export class ProgramasComponent {
     if (this.software == '') {
       this.mostrarMensaje("Ingrese el nombre del programa", false);
     } else {
-      const fechaAdquisicionDate = new Date(this.fecha_adquisicion);
-      const fechaFormateada = `${fechaAdquisicionDate.getFullYear()}-${String(fechaAdquisicionDate.getDate()).padStart(2, '0')}-${String(fechaAdquisicionDate.getMonth() + 1).padStart(2, '0')}`;
-      this.programasService.actualizarPrograma(this.id, this.software, this.version, this.selectLicencia.name, fechaFormateada, this.selectLaboratorio.name).subscribe(
+      const fecha = new Date(this.fecha_adquisicion);
+      //const fechaFormateada = `${fechaAdquisicionDate.getFullYear()}-${String(fechaAdquisicionDate.getDate()).padStart(2, '0')}-${String(fechaAdquisicionDate.getMonth() + 1).padStart(2, '0')}`;
+      this.programasService.actualizarPrograma(this.id, this.software, this.version, this.selectLicencia.name,fecha, this.selectLaboratorio.name).subscribe(
         (response) => {
           this.mostrarMensaje("Programa actualizado con éxito", true);
           this.limpiarFormulario();
@@ -133,17 +138,19 @@ export class ProgramasComponent {
   }
 
   showDialogAgregar() {
+    this.limpiarFormulario();
     this.esEdicion = false;
     this.visible = true;
-    this.limpiarFormulario();
   }
 
   showDialogEditar(programa: any) {
+    const fecha = new Date(programa.fecha_adquisicion);
+
     this.esEdicion = true;
     this.software = programa.software;
     this.version = programa.version;
     this.selectLicencia = this.licencias.find(licencia => licencia.name === programa.tipo_licencia);
-    this.fecha_adquisicion = this.formatDate(programa.fecha_adquisicion);
+    this.fecha_adquisicion = fecha;
     this.selectLaboratorio = this.laboratorios.find(laboratorio => laboratorio.name === programa.laboratorio);
     this.id = programa.id_programa;
     this.visible = true;
@@ -190,8 +197,8 @@ export class ProgramasComponent {
   limpiarFormulario() {
     this.software = '';
     this.version = '';
-    this.tipo_licencia = '';
-    this.fecha_adquisicion = '';
-    this.laboratorio = '';
+    this.selectLicencia = null;
+    this.fecha_adquisicion = null;
+    this.selectLaboratorio = null;
   }
 }

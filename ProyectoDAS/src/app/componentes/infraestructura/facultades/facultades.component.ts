@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { FacultadesService } from '../../../services/facultades.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-facultades',
@@ -21,7 +22,9 @@ export class FacultadesComponent {
   soloLetrasRegex = /^[a-zA-Z]*$/;
   soloNumerosRegex = /^[0-9]*$/;
 
-  constructor(private confirmationService: ConfirmationService, private facultadesService: FacultadesService, private messageService: MessageService) { }
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService, private confirmationService: ConfirmationService, private facultadesService: FacultadesService, private messageService: MessageService) { }
 
   matchModeOptions = [
     { label: 'Empieza con', value: 'startsWith' },
@@ -33,6 +36,10 @@ export class FacultadesComponent {
 
   ngOnInit(): void {
     this.listarFacultades();
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   listarFacultades(): void {
