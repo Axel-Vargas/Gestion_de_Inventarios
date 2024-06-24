@@ -179,14 +179,12 @@ exports.authenticateUser = async (req, res) => {
       }
 
       if (results.length === 0) {
-        console.log('Usuario no encontrado');
         return res.status(401).json({ mensaje: 'Credenciales inválidas' });
       }
 
       const existingUser = results[0];
 
       if (!existingUser.contrasena) {
-        console.log('No se encontró la contraseña en la base de datos');
         return res.status(401).json({ mensaje: 'Credenciales inválidas' });
       }
 
@@ -195,11 +193,9 @@ exports.authenticateUser = async (req, res) => {
         const isMatch = await bcrypt.compare(contrasena, existingUser.contrasena);
 
         if (!isMatch) {
-          console.log('Contraseña incorrecta');
           return res.status(401).json({ mensaje: 'Credenciales inválidas' });
         }
 
-        console.log('Autenticación exitosa');
         res.status(200).json({usuario: existingUser.correo,contrasena: existingUser.contrasena,rol: existingUser.id_rol_per
         });
       } catch (error) {

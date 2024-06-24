@@ -1292,7 +1292,6 @@ export class ReportesComponent {
   }
 
   async descargarPDFEstadoRedes() {
-    console.log(this.selectedEstados.name);
     this.bienesTecnologicosService.getBienesTecnologicosPorEstado(this.selectedEstados.name).subscribe((tecnologicos) => {
       this.tecnologicosPorEstado = tecnologicos;
       this.bienesMobiliariosService.obtenerMobiliariosPorEstado(this.selectedEstados.name).subscribe((response: any) => {

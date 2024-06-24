@@ -23,6 +23,7 @@ import { ScannerService } from '../../../services/scanner.service';
 import { Dependencia } from '../../api/Dependencias';
 import { Button } from 'primeng/button';
 import { DependenciaService } from '../../../services/dependencia.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-tecnologicos',
@@ -85,7 +86,10 @@ export class TecnologicosComponent implements OnInit {
   marcas!: any[];
   scannedCode: string = '';
 
+  rolUsuario: number | null = null;
+
   constructor(
+    private authServices: AuthService,
     private tecnologicosService: BienestecnologicosService,
     private componente_service: componentesService,
     private areasService: AreasService,
@@ -124,11 +128,12 @@ export class TecnologicosComponent implements OnInit {
     ];
   }
 
-  
-
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
+  }
   
   ngOnInit() {
-    
+    this.obtenerRolUsuario();
     this.scannerService.scannedCode$.subscribe(code => {
       this.scannedCode = code;
       const scannerNumber = Number(this.scannedCode);
@@ -228,7 +233,11 @@ export class TecnologicosComponent implements OnInit {
 
   }
   
-  
+  showDialogAgregar() {
+    this.isEditMode = false;
+    this.display= true;
+    this.inventoryForm.reset();
+  }
   
   showQRCode(imageUrl: string, altText: string) {
     this.qrCodeImageUrl = imageUrl;
@@ -260,7 +269,6 @@ export class TecnologicosComponent implements OnInit {
 
   obtenerMarcas() {
     this.marcasService.getMarcasTecnologicos().subscribe((data: Marcas | Marcas[]) => {
-      console.log(data);
       if (Array.isArray(data)) {this.marca = data.filter((marcas) =>
               marcas.nom_marca !== undefined &&
               marcas.id !== undefined).map((marcas) => ({
@@ -277,7 +285,6 @@ export class TecnologicosComponent implements OnInit {
 
   cargarDependencias() {
     this.dependenciaService.getDependencias().subscribe((data: Dependencia | Dependencia[]) => {
-      console.log(data);
       if (Array.isArray(data)) {this.dependencia = data.filter((dependencias) =>
         dependencias.nombre_dep !== undefined &&
         dependencias.id_dep !== undefined).map((dependencias) => ({
@@ -404,7 +411,6 @@ agregarAtributo(): void {
   cargarProveedores() {
     this.proveedorservice.getProveedores().subscribe(
       (data: Proveedor | Proveedor[]) => {
-        console.log(data);
         if (Array.isArray(data)) {
           this.proveedor = data
             .filter(
@@ -468,7 +474,6 @@ agregarAtributo(): void {
           );
         });
         this.tecnologicos = bienesTecnologicos;
-        console.log(this.tecnologicos);
       });
     
   }
@@ -498,7 +503,6 @@ agregarAtributo(): void {
           );
         });
         this.tecnologicos = bienesTecnologicos;
-        console.log(this.tecnologicos);
       });
   }
 
@@ -591,7 +595,6 @@ agregarAtributo(): void {
 
   editarBienTecnologico(bien: any): void {
     this.selectedBienTecnologico = bien;
-    console.log(this.selectedBienTecnologico)
     this.isEditMode = true;
     this.display = true;
     const fecha = new Date(bien.fecha_adquisicion);
@@ -692,7 +695,6 @@ agregarAtributo(): void {
       formData.marca = this.componentForm.value.marca.name;
       formData.id_dependencia_per = this.componentForm.value.id_dependencia_per.code
 
-      console.log(this.componentForm.value);
       if (this.isEditModeComponentes) {
         this.componente_service.actualizarComponente(this.selectedComponente.id_componente,formData).subscribe({
           next: (response) => {
@@ -743,7 +745,6 @@ agregarAtributo(): void {
 
   openEditComponentModal(componente: any) {
     this.selectedComponente = componente;
-    console.log(this.selectedComponente)
     this.isEditModeComponentes = true;
     this.componentes = true;
 
@@ -773,6 +774,8 @@ agregarAtributo(): void {
     this.isEditModeComponentes = false;
     this.componentForm.reset();
   }
+
+
 
   eliminarComponente(id: number){
     this.confirmationService.confirm({

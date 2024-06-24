@@ -183,7 +183,6 @@ export class MobiliariosComponent {
   }
 
   registrarMobiliario() {
-    console.log(this.selectEstado);
     if (this.nombre == '' || this.marca == '' || this.modelo == '' ||
       this.num_serie == '' || this.material == '' || this.color == '' || this.fecha_adquisicion == '' || !this.selectEstado || this.localizacion == '' ||
       this.codigoUTA == '' || this.selectEncargado == '' || this.selectArea == '') {

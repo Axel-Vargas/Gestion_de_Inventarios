@@ -308,7 +308,6 @@ export class EncargadosComponent {
               }
               
             );
-            console.log(this.selectedEncargado.id_encargado);
           }
         }
       }  

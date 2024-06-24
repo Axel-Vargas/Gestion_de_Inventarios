@@ -9,7 +9,6 @@ const getTotalBienes = (req, res) => {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                console.log('Resultado de la consulta:', data);
                 res.json(data[0].total);
             }
         });
@@ -34,7 +33,6 @@ const getTotalBienes = (req, res) => {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                console.log('Resultado de la consulta:', data);
                 res.json(data[0].total );
             }
         });
@@ -54,7 +52,6 @@ const getTotalBienesMobiliarios = (req, res) => {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                console.log('Resultado de la consulta:', data);
                 res.json(data[0].total);
             }
         });
@@ -74,7 +71,6 @@ const getTotalRepotencias = (req, res) => {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                console.log('Resultado de la consulta:', data);
                 res.json(data[0].total);
             }
         });
@@ -93,7 +89,6 @@ const getTotalBienesTecnologicosBodega = (req, res) => {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                console.log('Resultado de la consulta:', data);
                 res.json(data[0].total);
             }
         });
@@ -111,7 +106,6 @@ const getTotalBienesTecnologicosNoFuncional = (req, res) => {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                console.log('Resultado de la consulta:', data);
                 res.json(data[0].total);
             }
         });
@@ -123,14 +117,12 @@ const getTotalBienesTecnologicosNoFuncional = (req, res) => {
 
 const getTotalAreas = (req, res) => {
     try {
-        console.log('Ejecutando getTotalAreas');
         const sql = 'SELECT COUNT(*) AS total FROM areas;';
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                console.log('Resultado de la consulta:', data);
                 res.json(data[0].total);
             }
         });
@@ -142,14 +134,12 @@ const getTotalAreas = (req, res) => {
 
 const getTotalProveedores = (req, res) => {
     try {
-        console.log('Ejecutando getTotalProveedores');
         const sql = 'SELECT COUNT(*) AS total FROM proveedores;';
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                console.log('Resultado de la consulta:', data);
                 res.json(data[0].total);
             }
         });
@@ -167,7 +157,6 @@ const getTotalUsuarios = (req, res) => {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                console.log('Resultado de la consulta:', data);
                 res.json(data[0].total);
             }
         });
@@ -198,7 +187,6 @@ const getBienesPorArea = (req, res) => {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                console.log('Resultado de la consulta:', data);
                 res.json(data);
             }
         });
@@ -230,7 +218,6 @@ const getRepotenciadosPorArea = (req, res) => {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                console.log('Resultado de la consulta:', data);
                 res.json(data);
             }
         });

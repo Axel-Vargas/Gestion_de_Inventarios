@@ -22,7 +22,6 @@ export class LoginComponent {
   login() {
     this.usuarioService.autenticarUsuario(this.username, this.password).subscribe(
       (response) => {
-        console.log('Usuario autenticado:', response);
         this.limpiarFormulario();
         this.route.navigate(['/panel']);
       },
