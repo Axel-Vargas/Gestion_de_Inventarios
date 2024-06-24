@@ -92,12 +92,14 @@ export class AreasComponent {
       }
     );
   }
+
   onFacultadChange(event: any): void {
     const selectedFacultad = event.value;
     if (selectedFacultad && selectedFacultad.nombre) {
       this.listarBloquesFacultad(selectedFacultad.nombre);
     }
   }
+  
   listarBloquesFacultad(nombre: string, callback?: () => void): void {
     this.bloquesService.getBloquesFacultad(nombre).subscribe(
       (response: any) => {

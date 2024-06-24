@@ -8,6 +8,7 @@ import { MarcasService } from '../../../services/marcas.service';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ProveedorService } from '../../../services/provedor.service';
 import { AuthService } from '../../../services/auth.service';
+import { Bloques2Service } from '../../../services/bloques2.service';
 
 @Component({
   selector: 'app-componenteslibres',
@@ -22,6 +23,8 @@ export class ComponenteslibresComponent implements OnInit {
   bien_tecnologico: any[] = [];
   displayDialog: boolean = false;
   componenteSeleccionado: Componentes | null = null;
+  selectedRepresentatives: any[] = [];
+  representatives: any[] = [];
 
   selectedComponente: Componentes = {
     id_componente: 0,
@@ -49,20 +52,49 @@ export class ComponenteslibresComponent implements OnInit {
     private marcasService: MarcasService,
     public dialogService: DialogService,
     private provedorService: ProveedorService,
+    private bloquesService: Bloques2Service
   ) { }
 
   obtenerRolUsuario(): void {
     this.rolUsuario = this.authServices.getUserRole();
   }
-
+  matchModeOptions = [
+    { label: 'Empieza con', value: 'startsWith' },
+    { label: 'Termina con', value: 'endsWith' },
+    { label: 'Contiene', value: 'contains' },
+    { label: 'Es igual a', value: 'equals' },
+    { label: 'No es igual a', value: 'notEquals' },
+  ];
+  
   ngOnInit(): void {
     this.getComponentes();
     this.getMarcas();
     this.getProveedores();
     this.getTecnologicos()
     this.obtenerRolUsuario();
+    this.listarBloquesComboBox()
   }
 
+  listarBloquesComboBox(): void {
+    this.bloquesService.obtenerBloques().subscribe(
+      (response: any) => {
+        if (response) {
+          this.representatives = Array.from(new Set(response.map((bloque: any) => bloque.nombre)))
+            .map(name => {
+              return {
+                name: name,
+                label: name
+              };
+            });
+        } else {
+          this.representatives = [];
+        }
+      },
+      (error) => {
+        console.error('Error al obtener bloques:', error);
+      }
+    );
+  }
   getTecnologicos(): void {
     this.componenteService.getbienesAsignar().subscribe(data => {
       this.bien_tecnologico = data.map((item: any) => ({

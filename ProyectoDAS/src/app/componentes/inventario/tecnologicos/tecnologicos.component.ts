@@ -132,6 +132,14 @@ export class TecnologicosComponent implements OnInit {
     this.rolUsuario = this.authServices.getUserRole();
   }
   
+  matchModeOptions = [
+    { label: 'Empieza con', value: 'startsWith' },
+    { label: 'Termina con', value: 'endsWith' },
+    { label: 'Contiene', value: 'contains' },
+    { label: 'Es igual a', value: 'equals' },
+    { label: 'No es igual a', value: 'notEquals' },
+  ];
+
   ngOnInit() {
     this.obtenerRolUsuario();
     this.scannerService.scannedCode$.subscribe(code => {
@@ -511,7 +519,10 @@ agregarAtributo(): void {
     this.cargarBienesTecnologicos()
     this.cargarBloques();
     setTimeout(() => (this.loading[index] = false), 1000);
+    this.categories = [];
+    this.area = []
   }
+
   abrirModalTecnologico(){
     this.inventoryForm.reset();
     this.display =  true

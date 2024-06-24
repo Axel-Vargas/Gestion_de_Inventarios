@@ -5,9 +5,11 @@
             <div class="flex mobiliarios justify-content-between flex-wrap mb-5">
                 <span class="flex mobiliarios align-items-center">Componentes Libres</span>
                 <div *ngIf="rolUsuario === 1" class="flex align-items-center">
+                  <!-- 
                   <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Componente</span>
                   <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
                     (mouseleave)="hideTooltip()" (click)="showDialogToAdd()"></button>
+                  -->
                 </div>
               </div>
 
@@ -112,14 +114,67 @@
             <p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" header="Asignar" icon="pi pi-exclamation-triangle"></p-confirmDialog>
               
             <!-- cargar los bienes-->
-            <p-dialog header="Bienes Tecnológicos" [(visible)]="displayDialog" [modal]="true" [style]="{ width: '75vw' }">
-                <p-table [value]="bien_tecnologico" responsiveLayout="scroll" [paginator]="true" [rows]="5" [responsive]="true">
+            <p-dialog  header="Bienes Tecnológicos" [(visible)]="displayDialog"
+             [modal]="true" [style]="{ width: '95vw' }">
+                <p-table #dt [value]="bien_tecnologico" responsiveLayout="scroll" 
+                [globalFilterFields]="['nombre', 'num_serie','codigoUTA']"
+                [paginator]="true" [rows]="5" [responsive]="true">
+                  <ng-template pTemplate="caption">
+                    <div class="flex">
+                      <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+                        <p-inputIcon>
+                          <i class="pi pi-search"></i>
+                        </p-inputIcon>
+                        <input pInputText type="text" (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                          placeholder="Buscar Bien" />
+                      </p-iconField>
+                    </div>
+                  </ng-template>
                   <ng-template pTemplate="header">
                     <tr>
-                      <th pSortableColumn="nombre">NOMBRE <p-sortIcon field="nombre"></p-sortIcon></th>
-                      <th pSortableColumn="estado">ESTADO <p-sortIcon field="estado"></p-sortIcon></th>
-                      <th pSortableColumn="nombre_bloque">BLOQUE <p-sortIcon field="nombre_bloque"></p-sortIcon></th>
-                      <th pSortableColumn="nombre_area">ÁREA <p-sortIcon field="nombre_area"></p-sortIcon></th>
+                      <th>
+                        <span class="flex mb-2">NOMBRE</span>
+                        <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                            field="nombre" placeholder="Buscar por nombre" ariaLabel="Filter Nombre" />
+                      </th>
+                      <th>
+                        <span class="flex mb-2">ESTADO</span>
+                        <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                            field="estado" placeholder="Buscar por nombre" ariaLabel="Filter Estado" />
+                      </th>
+                      <th>
+                        <span class="flex mb-2">BLOQUE</span>
+                        <p-columnFilter field="nombre_bloque" matchMode="in" [showMenu]="false">
+                            <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                <p-multiSelect [(ngModel)]="selectedRepresentatives" [options]="representatives"
+                                    placeholder="Buscar Bloque" (onChange)="filter($event.value)" optionLabel="name"
+                                    optionValue="name">
+                                    <ng-template let-option pTemplate="item">
+                                        <div class="inline-block vertical-align-middle">
+                                            <span class="ml-1 mt-1">
+                                                {{ option.name }}
+                                            </span>
+                                        </div>
+                                    </ng-template>
+                                </p-multiSelect>
+                            </ng-template>
+                        </p-columnFilter>
+                    </th>
+                    <th>
+                      <span class="flex mb-2">ÁREA</span>
+                      <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                          field="nombre_area" placeholder="Buscar por área" ariaLabel="Filter área" />
+                    </th>
+                    <th>
+                      <span class="flex mb-2">NUM. SERIE</span>
+                      <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                          field="num_serie" placeholder="Buscar por serie" ariaLabel="Filter serie" />
+                    </th>
+                    <th>
+                      <span class="flex mb-2">CODIGO UTA</span>
+                      <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                          field="codigoUTA" placeholder="Buscar por codigoUTA" ariaLabel="Filter uta" />
+                    </th>
                       <th style="width:4em"></th>
                     </tr>
                   </ng-template>
@@ -134,6 +189,9 @@
                       </td>
                       <td>{{ bien.nombre_bloque }}</td>
                       <td>{{ bien.nombre_area }}</td>
+                      
+                      <td>{{ bien.num_serie }}</td>
+                      <td>{{ bien.codigoUTA }}</td>
                       <td>
                         <button type="button" pButton icon="pi pi-send" (click)="selectBien(bien)"></button>
                       </td>
@@ -142,8 +200,6 @@
                 </p-table>
               </p-dialog>
               
-
-
         </div>
     </div>
 </div>

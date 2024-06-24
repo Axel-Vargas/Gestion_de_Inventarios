@@ -13,7 +13,10 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { DialogService } from 'primeng/dynamicdialog';
 import { ConfirmationService } from 'primeng/api';
-
+import {MultiSelectModule} from 'primeng/multiselect';
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
   declarations: [
@@ -29,7 +32,11 @@ import { ConfirmationService } from 'primeng/api';
     HttpClientModule,
     ToastModule,
     ConfirmDialogModule,
-    DropdownModule
+    DropdownModule,
+    MultiSelectModule,
+    IconFieldModule,
+    InputIconModule,
+    InputTextModule
   ],
   exports: [
     //ComponenteslibresComponent
