@@ -1,0 +1,154 @@
+
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="flex mobiliarios justify-content-between flex-wrap mb-5">
+                <span class="flex mobiliarios align-items-center">Componentes Libres</span>
+                <div class="flex align-items-center">
+                  <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Bien</span>
+                  <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
+                    (mouseleave)="hideTooltip()" (click)="showDialogToAdd()"></button>
+                </div>
+              </div>
+
+              <p-table [paginator]="true" [rowsPerPageOptions]="[10, 20, 30]" [scrollable]="true" scrollHeight="380px" [rows]="10" [value]="componentes" [customSort]="true" [tableStyle]="{'min-width': '60rem'}">
+                <ng-template pTemplate="header">
+                    <tr>
+                      <th>NOMBRE</th>
+                      <th>MARCA</th>
+                      <th>MODELO</th>
+                      <th>NUM. SERIE</th>
+                      <th>ESTADO</th>
+                      <th>REPOTENCIADO</th>
+                      <th>CÓDIGO UTA</th>
+                      <th>ACCIONES</th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-componente>
+                    <tr>
+                      <td>{{ componente.nombre }}</td>
+                      <td>{{ componente.marca }}</td>
+                      <td>{{ componente.modelo }}</td>
+                      <td>{{ componente.num_serie }}</td>
+                      <td>
+                            <span [class]="
+                            'product-badge status-' + componente.estado.toLowerCase()
+                            ">{{ componente.estado }}
+                             </span>
+                      </td>
+                      <td>{{ componente.repotenciado }}</td>
+                      <td>{{ componente.codigoUTA }}</td>
+                      <td class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
+                        <button type="button" class="p-button p-button-sm p-button-info" title="Editar" (click)="editComponente(componente)">
+                          <i class="pi pi-pencil"></i>
+                        </button>
+                        <button type="button" class="p-button p-button-sm p-button-danger" title="Eliminar" (click)="deleteComponente(componente.id_componente)">
+                          <i class="pi pi-trash"></i>
+                        </button>
+                        <button type="button" class="p-button p-button-sm p-button-danger" title="Eliminar" (click)="show(componente)">
+                            <i class="pi pi-arrow-right"></i>
+                          </button>
+                      </td>
+                    </tr>
+                  </ng-template>
+              </p-table>
+
+
+              <p-dialog header="{{ isEditing ? 'Editar' : 'Nuevo' }} Componente" [(visible)]="displayModal" [modal]="true" [style]="{ width: '50%' }">
+                <form (ngSubmit)="saveComponente()">
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="nombre">Nombre</label>
+                            <input  [(ngModel)]="selectedComponente.nombre" type="text"
+                                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+                        </div>
+                        <div class="field col">
+                            <label for="marca">Selecciona la Marca</label>
+                            <p-dropdown [(ngModel)]="selectedComponente.marca" [options]="marcas" name="marca" optionLabel="name" placeholder="Selecciona" filter="true" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                        </div>
+                    </div>
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="modelo">Modelo</label>
+                            <input [(ngModel)]="selectedComponente.modelo" type="text"
+                                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+                        </div>
+                        <div class="field col">
+                            <label for="num_serie">Número de serie</label>
+                            <input [(ngModel)]="selectedComponente.num_serie" type="text"
+                                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+                        </div>
+                    </div>
+            
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="repotenciado">Repotenciado</label>
+                            <p-dropdown [(ngModel)]="selectedComponente.repotenciado" [options]="repotenciadoOptions" name="repotenciado" optionLabel="name" placeholder="Selecciona" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                        </div>
+                        
+                        <div class="field col">
+                            <label for="id_proveedor_per">Proveedor</label>
+                            <p-dropdown inputId="dropdown" [(ngModel)]="selectedComponente.id_proveedor_per" name="id_proveedor_per" [autoDisplayFirst]="false" [options]="proveedores" optionLabel="name" placeholder="Selecciona" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="formgrid grid">
+                        <div class="field col">
+                            <label for="codigoUTA">Código UTA</label>
+                            <input [(ngModel)]="selectedComponente.codigoUTA" type="text"
+                                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full" />
+                        </div>
+                        <div class="field col">
+                            <label for="estado">Estado</label>
+                            <p-dropdown [(ngModel)]="selectedComponente.estado" [options]="estadoOptions" name="estado" optionLabel="name" placeholder="Selecciona" class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                        </div>
+                    </div>
+
+                  <p-footer class="flex justify-content-end gap-3">
+                    <button type="submit" pButton label="Guardar"></button>
+                    <button type="button" pButton label="Cancelar" (click)="displayModal = false" class="p-button-secondary"></button>
+                </p-footer>
+
+                </form>
+              </p-dialog>
+
+            <p-toast position="bottom-center" key="bc"></p-toast>
+            <p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" header="Asignar" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+              
+            <!-- cargar los bienes-->
+            <p-dialog header="Bienes Tecnológicos" [(visible)]="displayDialog" [modal]="true" [style]="{ width: '75vw' }">
+                <p-table [value]="bien_tecnologico" responsiveLayout="scroll" [paginator]="true" [rows]="5" [responsive]="true">
+                  <ng-template pTemplate="header">
+                    <tr>
+                      <th pSortableColumn="nombre">NOMBRE <p-sortIcon field="nombre"></p-sortIcon></th>
+                      <th pSortableColumn="estado">ESTADO <p-sortIcon field="estado"></p-sortIcon></th>
+                      <th pSortableColumn="nombre_bloque">BLOQUE <p-sortIcon field="nombre_bloque"></p-sortIcon></th>
+                      <th pSortableColumn="nombre_area">ÁREA <p-sortIcon field="nombre_area"></p-sortIcon></th>
+                      <th style="width:4em"></th>
+                    </tr>
+                  </ng-template>
+                  <ng-template pTemplate="body" let-bien>
+                    <tr>
+                      <td>{{ bien.nombre }}</td>
+                      <td>
+                        <span [class]="
+                            'product-badge status-' + bien.estado.toLowerCase()
+                            ">{{ bien.estado }}
+                        </span>
+                      </td>
+                      <td>{{ bien.nombre_bloque }}</td>
+                      <td>{{ bien.nombre_area }}</td>
+                      <td>
+                        <button type="button" pButton icon="pi pi-search" (click)="selectBien(bien)"></button>
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </p-dialog>
+              
+
+
+        </div>
+    </div>
+</div>

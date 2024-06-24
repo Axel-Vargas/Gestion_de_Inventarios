@@ -34,6 +34,7 @@ class Server {
         this.app.use('/api/marcas', require('../routes/marcasRoutes.js'));
         this.app.use('/api/historial', require('../routes/historialRoutes.js'));
         this.app.use('/api/inicio', require('../routes/inicioRoutes.js'));
+        this.app.use('/api/dependencia', require('../routes/dependenciasRoutes.js'));
          // Configuración para servir archivos estáticos
          this.app.use('/public', express.static(path.join(__dirname, '..', 'controllers', 'public')));
 

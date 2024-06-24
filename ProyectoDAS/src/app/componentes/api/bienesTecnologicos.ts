@@ -17,7 +17,6 @@ export interface bienes_Tecnologicos {
     codigoUTA?: string;
     mascara?: string;
     gateway?: string;
-    prestado?: string;
     image?: string;
     localizacion?: string;
     id_encargado_per?:number;
@@ -26,6 +25,8 @@ export interface bienes_Tecnologicos {
     id_area_per?: number;
     //id_encargado_per?:string;
     id_proveedor_per?: number;
+    id_dependencia_per?: number;
+    prestado?: string;
     componentes: Componentes[];
     material?: string;
     color?: string;

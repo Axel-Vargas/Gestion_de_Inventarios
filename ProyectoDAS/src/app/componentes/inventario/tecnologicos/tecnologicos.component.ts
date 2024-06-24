@@ -20,6 +20,8 @@ import { TipoTecnologico } from '../../api/tipoTecnologico';
 import { EncargadosService } from '../../../services/encargados.service';
 import { Encargados } from '../../api/Encargados';
 import { ScannerService } from '../../../services/scanner.service';
+import { DependenciaService } from '../../../services/dependencia.service';
+import { Dependencia } from '../../api/Dependencias';
 
 @Component({
   selector: 'app-tecnologicos',
@@ -49,6 +51,9 @@ export class TecnologicosComponent implements OnInit {
   estado: { name: string; code: number }[] = [];
   encargado: { name: string; code: number }[] = [];
   tipoTecnologico: { name: string; code: number; attributes:any }[] = [];
+
+  dependencia:{ name: string; code: number}[]=[]
+  prestado: { name: string; code: number }[] = [];
 
   //bloques!: Bloque[];
   //areas!: Area[];
@@ -92,10 +97,11 @@ export class TecnologicosComponent implements OnInit {
     private confirmationService: ConfirmationService,
     private tipoTecnologicoService:TipoTecnologicoService,
     private encargadosService:EncargadosService,
-    private scannerService: ScannerService
+    private scannerService: ScannerService,
+    private dependenciaService: DependenciaService,
   ) {
-    this.cargarBloques();
-    this.cargarProveedores();
+    //this.cargarBloques();
+    //this.cargarProveedores();
 
     this.estado = [
       { name: 'Funcional', code: 1 },
@@ -103,6 +109,11 @@ export class TecnologicosComponent implements OnInit {
     ];
 
     this.repotenciado = [
+      { name: 'SI', code: 1 },
+      { name: 'NO', code: 2 },
+    ];
+
+    this.prestado = [
       { name: 'SI', code: 1 },
       { name: 'NO', code: 2 },
     ];
@@ -122,6 +133,9 @@ export class TecnologicosComponent implements OnInit {
     this.obtenerMarcas();
     this.obtenerTipoTecnologico()
     this.obtenerEncargados()
+    this.cargarBloques();
+    this.cargarProveedores();
+    this.cargarDependencias()
 
     this.inventoryForm = new FormGroup({
       id_proveedor_per: new FormControl('', Validators.required),
@@ -137,6 +151,8 @@ export class TecnologicosComponent implements OnInit {
       marca: new FormControl(''),
       encargado: new FormControl(''),
       localizacion: new FormControl(''),
+      id_dependencia_per: new FormControl(''),
+      prestado: new FormControl(''),
     });
 
     this.componentForm = this.fb.group({
@@ -147,6 +163,7 @@ export class TecnologicosComponent implements OnInit {
       codigoUTA: ['', Validators.required],
       estado: ['', Validators.required],
       repotenciado: ['', Validators.required],
+      id_dependencia_per: new FormControl(''),
       id_proveedor_per: new FormControl('', Validators.required),
     });
   }
@@ -237,20 +254,37 @@ export class TecnologicosComponent implements OnInit {
   }
 
   obtenerMarcas() {
-    this.marcasService.getMarcas().subscribe((data: Marcas | Marcas[]) => {
-        console.log(data);
-        if (Array.isArray(data)) {this.marca = data.filter((marcas) =>
-                marcas.nom_marca !== undefined &&
-                marcas.id !== undefined).map((marcas) => ({
-                name: marcas.nom_marca!,
-                code: marcas.id!,}));
-        } else if (data.nom_marca !== undefined && data.id !== undefined) {
-          this.marca = [{ name: data.nom_marca!, code: data.id! }];
-        }
-      },(error) => {
-        console.error(error);
+    this.marcasService.getMarcasTecnologicos().subscribe((data: Marcas | Marcas[]) => {
+      console.log(data);
+      if (Array.isArray(data)) {this.marca = data.filter((marcas) =>
+              marcas.nom_marca !== undefined &&
+              marcas.id !== undefined).map((marcas) => ({
+              name: marcas.nom_marca!,
+              code: marcas.id!,}));
+      } else if (data.nom_marca !== undefined && data.id !== undefined) {
+        this.marca = [{ name: data.nom_marca!, code: data.id! }];
       }
-    );
+    },(error) => {
+      console.error(error);
+    }
+  );
+  }
+
+  cargarDependencias() {
+    this.dependenciaService.getDependencias().subscribe((data: Dependencia | Dependencia[]) => {
+      console.log(data);
+      if (Array.isArray(data)) {this.dependencia = data.filter((dependencias) =>
+        dependencias.nombre_dep !== undefined &&
+        dependencias.id_dep !== undefined).map((dependencias) => ({
+              name: dependencias.nombre_dep!,
+              code: dependencias.id_dep!,}));
+      } else if (data.nombre_dep !== undefined && data.id_dep !== undefined) {
+        this.dependencia = [{ name: data.nombre_dep!, code: data.id_dep! }];
+      }
+    },(error) => {
+      console.error(error);
+    }
+  );
   }
 
   obtenerTipoTecnologico() {
@@ -444,9 +478,12 @@ agregarAtributo(): void {
     const idProveedor = this.inventoryForm.value.id_proveedor_per.code;
     const idArea = this.inventoryForm.value.id_area_per.code;
     const estado = this.inventoryForm.value.estado.name.toUpperCase();
+    const prestado = this.inventoryForm.value.prestado.name.toUpperCase();
     const marca = this.inventoryForm.value.marca.name;
     const nombre = this.inventoryForm.value.nombre.name;
     const encargado = this.inventoryForm.value.encargado.code;
+    const dependencia = this.inventoryForm.value.id_dependencia_per.code;
+
     // Convertir atributos de string JSON a objeto, si no es un objeto ya.
     const atributosObj = typeof this.inventoryForm.value.atributos === 'string' ?
       JSON.parse(this.inventoryForm.value.atributos) : this.inventoryForm.value.atributos;
@@ -460,6 +497,8 @@ agregarAtributo(): void {
       codigoUTA: this.inventoryForm.value.codigoUTA.toUpperCase(),
       localizacion: this.inventoryForm.value.localizacion.toUpperCase(),
       nombre: nombre,
+      id_dependencia_per: dependencia,
+      prestado: prestado,
       id_encargado_per: encargado,
       atributos: atributosObj, // Asegurarse de que esto es un objeto
       id_area_per: idArea,
@@ -509,10 +548,9 @@ agregarAtributo(): void {
   }
   
 
- 
-
   editarBienTecnologico(bien: any): void {
     this.selectedBienTecnologico = bien;
+    console.log(this.selectedBienTecnologico)
     this.isEditMode = true;
     this.display = true;
     const fecha = new Date(bien.fecha_adquisicion);
@@ -522,38 +560,50 @@ agregarAtributo(): void {
     const marcaSeleccionado = this.marca.find((m) => m.name.toLowerCase().trim() === bien.marca.toLowerCase().trim());
     const nombre = this.tipoTecnologico.find((tb) => tb.name.toLowerCase().trim() === bien.nombre.toLowerCase().trim());
     const encargado = this.encargado.find((en) => en.code === bien.id_encargado_per);
-  
-    this.cargarAreas(bien.id_area_per).then(() => {
-      const areaSeleccionada = this.area.find((a) => a.code === bien.id_area_per);
-      if (areaSeleccionada) {
-        const bloqueAsociado = this.categories.find((bloque) => bloque.code === areaSeleccionada.code);
-        if (bloqueAsociado) {
-          this.inventoryForm.patchValue({
-            id_proveedor_per: proveedorSeleccionado || null,
-            id_area_per: areaSeleccionada || null,
-            id_tipo_per: tipoSeleccionado || null,
-            id_bloque_per: bloqueAsociado || null,
-            fecha_adquisicion: fecha,
-            estado: estadoSeleccionado || null,
-            num_serie: bien.num_serie,
-            nombre: nombre,
-            atributos: JSON.stringify(bien.atributos, null, 2),
-            modelo: bien.modelo,
-            codigoUTA: bien.codigoUTA,
-            marca: marcaSeleccionado,
-            encargado: encargado,
-            localizacion: bien.localizacion,
+    const dependencia = this.dependencia.find((de) => de.code === bien.id_dependencia_per);
+    const prestado = this.prestado.find((pr) => pr.name.toLowerCase().trim() === bien.prestado.toLowerCase().trim());
+
+    this.areasService.getArea(bien.id_area_per).subscribe(
+      (data: Area) => {
+        const id_bloque: number | undefined = data.id_bloque_per
+        if(id_bloque !== undefined){
+          this.cargarAreas(id_bloque).then(() => {
+            const areaSeleccionada = this.area.find((a) => a.code === bien.id_area_per);
+            if (areaSeleccionada) {
+              const bloqueAsociado = this.categories.find((bloque) => bloque.code === id_bloque);
+              if (bloqueAsociado) {
+                this.inventoryForm.patchValue({
+                  id_proveedor_per: proveedorSeleccionado || null,
+                  id_area_per: areaSeleccionada || null,
+                  id_tipo_per: tipoSeleccionado || null,
+                  id_bloque_per: bloqueAsociado || null,
+                  fecha_adquisicion: fecha,
+                  estado: estadoSeleccionado || null,
+                  num_serie: bien.num_serie,
+                  nombre: nombre,
+                  atributos: JSON.stringify(bien.atributos, null, 2),
+                  modelo: bien.modelo,
+                  codigoUTA: bien.codigoUTA,
+                  marca: marcaSeleccionado,
+                  encargado: encargado,
+                  id_dependencia_per: dependencia,
+                  prestado:prestado,
+                  localizacion: bien.localizacion,
+                });
+              } else {
+                console.error('Bloque no encontrado para el área ID:', bien.id_area_per);
+              }
+            } else {
+              console.error('Área no encontrada para el ID:', bien.id_area_per);
+            }
+          })
+          .catch((error) => {
+            console.error('Error al cargar y seleccionar el área:', error);
           });
-        } else {
-          console.error('Bloque no encontrado para el área ID:', bien.id_area_per);
         }
-      } else {
-        console.error('Área no encontrada para el ID:', bien.id_area_per);
-      }
-    })
-    .catch((error) => {
-      console.error('Error al cargar y seleccionar el área:', error);
-    });
+        
+      },
+    );
   }
   
   eliminar(id: number): void {
@@ -594,11 +644,13 @@ agregarAtributo(): void {
       }else{
         formData.id_bien_per = this.selectedComponente.id_bien_per;
       }
+
       formData.id_proveedor_per = this.componentForm.value.id_proveedor_per.code;
       formData.estado = this.componentForm.value.estado.name;
       formData.repotenciado = this.componentForm.value.repotenciado.name;
       formData.marca = this.componentForm.value.marca.name;
-     //const marca = this.inventoryForm.value.marca.name;
+      formData.id_dependencia_per = this.componentForm.value.id_dependencia_per.code
+
       console.log(this.componentForm.value);
       if (this.isEditModeComponentes) {
         this.componente_service.actualizarComponente(this.selectedComponente.id_componente,formData).subscribe({
@@ -656,7 +708,7 @@ agregarAtributo(): void {
 
     const proveedorSeleccionado = this.proveedor.find((p) => p.code === componente.id_proveedor_per);
     const marcaSeleccionado = this.marca.find((m) => m.name.toLowerCase().trim() === componente.marca.toLowerCase().trim());
-
+    const dependencia = this.dependencia.find((de) => de.code === componente.id_dependencia_per);
     const tipoSeleccionado = this.tipoBien.find((t) => t.code === componente.id_tipo_per);
     const estadoSeleccionado = this.estado.find((e) =>e.name.toLowerCase().trim() === componente.estado.toLowerCase().trim());
     const repotenciado = this.repotenciado.find((r) => r.name.toLowerCase().trim() ===componente.repotenciado.toLowerCase().trim());
@@ -670,6 +722,7 @@ agregarAtributo(): void {
       modelo: componente.modelo,
       codigoUTA: componente.codigoUTA,
       marca: marcaSeleccionado,
+      id_dependencia_per: dependencia
     });
   }
 

@@ -30,12 +30,15 @@ function generateQR(data) {
 const getBienesTecnologicos = (req, res) => {
     try {
         const sql = `
-        SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado, a.nombre as nombre_area
-        FROM bien_tecnologico bt
-        LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
-        LEFT JOIN areas a ON bt.id_area_per = a.id_area
-        WHERE bt.estado != 'BODEGA'
-      `;
+            SELECT 
+            bt.*,
+            CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado,
+            CONCAT(d.nombre_dep) AS nombre_dependencia
+            FROM bien_tecnologico bt
+            LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
+            LEFT JOIN dependencia d ON bt.id_dependencia_per = d.id_dep
+            WHERE bt.estado != 'BODEGA';
+        `;
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -130,13 +133,26 @@ const obtenerBienesPorBloqueYArea = (req, res) => {
 
     try {
         const sql = `
-            SELECT BT.*
-            FROM BLOQUES B
-            JOIN AREAS A ON B.ID_BLOQUE = A.ID_BLOQUE_PER
-            JOIN BIEN_TECNOLOGICO BT ON A.ID_AREA = BT.ID_AREA_PER
-            WHERE B.NOMBRE = ?
-            AND A.NOMBRE = ?
-            AND BT.ESTADO != "BODEGA";
+            SELECT 
+                BT.*, 
+                CONCAT(E.nombre, ' ', E.apellido) AS nombre_encargado,
+                CONCAT(D.nombre_dep) AS nombre_dependencia
+            FROM 
+                BLOQUES B
+            JOIN 
+                AREAS A ON B.ID_BLOQUE = A.ID_BLOQUE_PER
+            JOIN 
+                BIEN_TECNOLOGICO BT ON A.ID_AREA = BT.ID_AREA_PER
+            JOIN 
+                ENCARGADOS E ON BT.ID_ENCARGADO_PER = E.ID_ENCARGADO
+            JOIN 
+                DEPENDENCIA D ON BT.ID_DEPENDENCIA_PER = D.ID_DEP
+            WHERE 
+                B.NOMBRE = ?
+            AND 
+                A.NOMBRE = ?
+            AND 
+                BT.ESTADO != 'BODEGA';
         `;
         connection.query(sql, [nombreBloque, nombreArea], (err, data) => {
             if (err) {
@@ -154,11 +170,11 @@ const obtenerBienesPorBloqueYArea = (req, res) => {
 
 
 const createBienTecnologico = async (req, res) => {
-    const { nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per } = req.body;
+    const { nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, prestado, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per, id_dependencia_per } = req.body;
 
     try {
-        const sqlInsert = 'INSERT INTO Bien_Tecnologico (nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        connection.query(sqlInsert, [nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, JSON.stringify(atributos), id_area_per, id_proveedor_per, id_encargado_per], async (err, result) => {
+    const sqlInsert = 'INSERT INTO Bien_Tecnologico (nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA,prestado, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per, id_dependencia_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        connection.query(sqlInsert, [nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, prestado, localizacion, JSON.stringify(atributos), id_area_per, id_proveedor_per, id_encargado_per, id_dependencia_per], async (err, result) => {
 
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -211,10 +227,10 @@ const getBienTecnologicoById = (req, res) => {
 
 const updateBienTecnologico = (req, res) => {
     const { id } = req.params;
-    const { nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per } = req.body;
+    const {  nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, prestado, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per, id_dependencia_per } = req.body;
     try {
-        const sql = 'UPDATE Bien_Tecnologico SET nombre = ?, marca = ?, modelo = ?, num_serie = ?, fecha_adquisicion = ?, estado = ?, codigoUTA = ?, localizacion = ?, atributos = ?, id_area_per = ?, id_proveedor_per = ?, id_encargado_per = ? WHERE id_bien = ?';
-        connection.query(sql, [nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, JSON.stringify(atributos), id_area_per, id_proveedor_per, id_encargado_per, id], (err, data) => {
+        const sql = 'UPDATE Bien_Tecnologico SET nombre = ?, marca = ?, modelo = ?, num_serie = ?, fecha_adquisicion = ?, estado = ?, codigoUTA = ?, prestado = ?, localizacion = ?, atributos = ?, id_area_per = ?, id_proveedor_per = ?, id_encargado_per = ?, id_dependencia_per = ? WHERE id_bien = ?';
+        connection.query(sql, [nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA,prestado, localizacion, JSON.stringify(atributos), id_area_per, id_proveedor_per, id_encargado_per,id_dependencia_per, id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
