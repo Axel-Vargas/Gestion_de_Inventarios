@@ -278,9 +278,7 @@ export class MobiliariosComponent {
 
   handleInput(event: any) {
     const inputValue = event.target.value;
-    if (!this.soloLetrasRegex.test(inputValue)) {
-      event.target.value = inputValue.replace(/[^a-zA-Z\s]/g, '');
-    }
+    
   }
 
   showDialogAgregar() {
