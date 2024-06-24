@@ -35,7 +35,8 @@ export class MenuComponent implements OnInit {
                             {
                                 label: 'Encargados', icon: 'pi pi-user-plus', routerLink: ['/panel/personal/encargados']
                             }
-                        ]
+                        ],
+                        visible: this.userRole === 1,
                     },
                     {
                         label: 'Inventario', icon: 'pi pi-box',
