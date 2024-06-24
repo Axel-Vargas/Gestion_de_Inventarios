@@ -213,10 +213,17 @@
       </div>
 
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
+        <label for="dependencia" class="font-semibold w-6rem">Dependencia</label>
+        <p-dropdown [options]="dependencia" dataKey="id_dep" optionLabel="nombre_dep" placeholder="Seleccione dependencia"
+          autoWidth="false" [style]="{ width: '15.9rem' }" [(ngModel)]="selectDependencia"></p-dropdown>
+      </div>
+
+      <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="codigoUTA" class="font-semibold w-6rem">CodigoUTA</label>
         <input pInputText id="codigoUTA" class="flex-auto" autocomplete="off" [(ngModel)]="codigoUTA" maxlength="15" />
       </div>
     </div>
+
     <div class="flex justify-content-end gap-2">
       <p-button [label]="esEdicion ? 'Editar' : 'Guardar'"
         (click)="esEdicion ? editarMobiliario() : registrarMobiliario()" (click)="visible = false"

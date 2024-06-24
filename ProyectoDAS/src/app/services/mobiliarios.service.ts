@@ -29,16 +29,16 @@ export class MobiliariosService {
     return this.http.get<any[]>(`${this.API}/nombre/${nombre}`);
   }
 
-  insertarMobiliaria(nombre:string, marca:string, modelo:string, num_serie:string, material:string, color:string, fecha_adquisicion:Date, estado:string, localizacion:string, codigoUTA:string, id_encargado_per:string, id_area_per:string) {
-    return this.http.post(this.API,{ nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per})
+  insertarMobiliaria(nombre:string, marca:string, modelo:string, num_serie:string, material:string, color:string, fecha_adquisicion:Date, estado:string, localizacion:string, codigoUTA:string, id_encargado_per:string, id_area_per:string, id_dependencia_per:string) {
+    return this.http.post(this.API,{ nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per, id_dependencia_per})
 
   }
   eliminarMobiliario(id: string) {
     return this.http.delete(`${this.API}/${id}`);
   }
   
-  actualizarMobiliarios(id:string, nombre:string, marca:string, modelo:string, num_serie:string, material:string, color:string, fecha_adquisicion:Date, estado:string, localizacion:string, codigoUTA:string, id_encargado_per:string, id_area_per:string) {
-    return this.http.put(`${this.API}/${id}`,{ nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per})
+  actualizarMobiliarios(id:string, nombre:string, marca:string, modelo:string, num_serie:string, material:string, color:string, fecha_adquisicion:Date, estado:string, localizacion:string, codigoUTA:string, id_encargado_per:string, id_area_per:string, id_dependencia_per: string) {
+    return this.http.put(`${this.API}/${id}`,{ nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per, id_dependencia_per})
 
   }
 }

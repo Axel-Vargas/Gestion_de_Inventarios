@@ -3,6 +3,7 @@ import { MobiliariosService } from '../../../services/mobiliarios.service';
 import { AreaMobiliarioService } from '../../../services/area.mobiliario.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { EncargadosService } from '../../../services/encargados.service';
+import { DependenciaService } from '../../../services/dependencia.service';
 
 
 
@@ -17,6 +18,7 @@ export class MobiliariosComponent {
   muebles: any[] | undefined;
   encargados: any[] = [];
   areas: any[] = [];
+  dependencia: any[] = [];
   selectedCity: any;
   selectEncargado: any;
   selectArea: any;
@@ -39,6 +41,8 @@ export class MobiliariosComponent {
   codigoUTA = '';
   selectEncargados: any = null;
   selectAreas: any = null;
+  selectDependencia: any = null
+
   soloLetrasRegex = /^[a-zA-Z]*$/;
   representatives: any[] = [];
   representativesA: any[] = [];
@@ -46,7 +50,7 @@ export class MobiliariosComponent {
   selectedRepresentatives: any[] = [];
   selectedRepresentativesA: any[] = [];
 
-  constructor(private confirmationService: ConfirmationService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService, private messageService: MessageService) {}
+  constructor(private confirmationService: ConfirmationService,private dependenciaService: DependenciaService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService, private messageService: MessageService) {}
 
   id_bien = '';
   id_encargado_per = '';
@@ -67,6 +71,7 @@ export class MobiliariosComponent {
     this.listarAreasComboBox();
     this.listarEncargados();
     this.listarEncargadosComboBox();
+    this.listarDependencia()
 
     this.estados = [
       { name: 'FUNCIONAL', code: 1 },
@@ -119,6 +124,22 @@ export class MobiliariosComponent {
           this.areas = response;
         } else {
           this.areas = [];
+        }
+      },
+      (error) => {
+        console.error('Error al obtener areas:', error);
+      }
+    );
+  }
+  
+  listarDependencia(): void {
+    this.dependenciaService.getDependencias().subscribe(
+      (response: any) => {
+        console.log(response);
+        if (response) {
+          this.dependencia = response;
+        } else {
+          this.dependencia = [];
         }
       },
       (error) => {
@@ -190,7 +211,7 @@ export class MobiliariosComponent {
 
       this.mobiliariosService.insertarMobiliaria( this.nombre, this.marca, this.modelo,
         this.num_serie, this.material, this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion,
-        this.codigoUTA, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
+        this.codigoUTA, this.selectEncargado.id_encargado, this.selectArea.id_area, this.selectDependencia.id_dep).subscribe(
           (response) => {
             this.mostrarMensaje("Bien registrado con éxito", true);
             this.limpiarFormulario();
@@ -242,7 +263,7 @@ export class MobiliariosComponent {
       }
 
       this.mobiliariosService.actualizarMobiliarios(this.id,  this.nombre, this.marca, this.modelo, this.num_serie, this.material,
-        this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion, this.codigoUTA, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
+        this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion, this.codigoUTA, this.selectEncargado.id_encargado, this.selectArea.id_area, this.selectDependencia.id_dep).subscribe(
           (response) => {
             this.mostrarMensaje("Bien actualizo con éxito", true);
             this.visible = false;
@@ -282,6 +303,7 @@ export class MobiliariosComponent {
     this.codigoUTA = mobiliario.codigoUTA;
     this.selectEncargado = this.encargados.find(encargado => encargado.id_encargado === mobiliario.id_encargado_per);
     this.selectArea = this.areas.find(area => area.id_area === mobiliario.id_area_per);
+    this.selectDependencia = this.dependencia.find(dependencia => dependencia.id_dep === mobiliario.id_dependencia_per);
     this.id = mobiliario.id_bien;
     this.visible = true;
   }
