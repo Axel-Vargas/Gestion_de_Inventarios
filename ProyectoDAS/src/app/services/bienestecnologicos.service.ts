@@ -14,12 +14,10 @@ export class BienestecnologicosService {
     private myApyUrls2: string;
     private myApyUrls3: string;
     private myApyUrls4: string;
-
     constructor(private http: HttpClient) {
         this.myAppUrl = environment.endpoint;
         this.myApyUrl = 'api/bientecnologico';
         this.myApyUrls = 'api/bientecnologico/obtenerPorBloqueYArea';
-        this.myApyUrls3 = 'api/bientecnologico/obtenerPorBloque';
         this.myApyUrls2 = 'api/bientecnologico/area';
         this.myApyUrls3 = 'api/bientecnologico/estado';
         this.myApyUrls4 = 'api/bientecnologico/encargado';
@@ -33,12 +31,7 @@ export class BienestecnologicosService {
     const url = `${this.myAppUrl}${this.myApyUrls}/${bloque}/${area}`;
     return this.http.get<bienes_Tecnologicos[]>(url);
     }
-
-    getPorBloque(bloque: string): Observable<bienes_Tecnologicos[]> {
-        const url = `${this.myAppUrl}${this.myApyUrls3}/${bloque}`;
-        return this.http.get<bienes_Tecnologicos[]>(url);
-    }
-
+    
     getBienTecnologico(id: number): Observable<bienes_Tecnologicos> {
         return this.http.get<bienes_Tecnologicos>(`${this.myAppUrl}${this.myApyUrl}/${id}`);
     }

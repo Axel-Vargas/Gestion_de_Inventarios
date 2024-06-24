@@ -38,38 +38,36 @@ const getBienTecnologicoById = (req, res) => {
 };
 
 const createBienTecnologico = (req, res) => {
-    const { nom_tecnologico, atributos } = req.body;
+    const { nombre, atributos } = req.body;
     try {
         const sql = 'INSERT INTO tipo_tecnologicos (nom_tecnologico, atributos) VALUES (?, ?)';
-        connection.query(sql, [nom_tecnologico, JSON.stringify(atributos)], (err, result) => {
+        connection.query(sql, [nombre, JSON.stringify(atributos)], (err, result) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
-                res.status(201).json({ id: result.insertId, nom_tecnologico, atributos });
+                res.status(201).json({ id: result.insertId, nombre, atributos });
             }
         });
     } catch (error) {
-        console.error('Error en la función createBienTecnologico:', error);
+        console.error('Error en la función createTipoBienTecnologico:', error);
         res.status(500).json({ error: 'Error en el servidor' });
     }
 };
 
-
-
 const updateBienTecnologico = (req, res) => {
     const { id } = req.params;
-    const { nom_tecnologico, atributos } = req.body;
+    const { nombre, atributos } = req.body;
     try {
         const sql = 'UPDATE tipo_tecnologicos SET nom_tecnologico = ?, atributos = ? WHERE id = ?';
-        connection.query(sql, [nom_tecnologico, JSON.stringify(atributos), id], (err, result) => {
+        connection.query(sql, [nombre, JSON.stringify(atributos), id], (err, result) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else if (result.affectedRows === 0) {
                 res.status(404).json({ error: 'Bien tecnológico no encontrado' });
             } else {
-                res.json({ id, nom_tecnologico, atributos });
+                res.json({ id, nombre, atributos });
             }
         });
     } catch (error) {

@@ -48,12 +48,6 @@ export class MenuComponent implements OnInit {
                                 label: 'Bienes Mobiliarios', icon: 'pi pi-building-columns', routerLink: ['/panel/inventarios/mobiliarios'], get iconHtml() {
                                     return this.icon;
                                 }
-                            },
-                            {
-                                label: 'Tipos Tecnológicos', icon: 'pi pi-desktop', routerLink: ['/panel/inventarios/typeTechnological']
-                            },
-                            {
-                                label: 'Componentes Libres', icon: 'pi pi-align-center', routerLink: ['/panel/inventarios/componentes']
                             }
                         ]
                     },
