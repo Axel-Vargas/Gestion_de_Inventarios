@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { UsuariosService } from '../../../services/usuarios.service';
 import { RolesService } from '../../../services/roles.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -37,6 +38,8 @@ export class UsuariosComponent {
   confirmarContrasena: string = '';
   contrasenasCoinciden: boolean = false;
 
+  rolUsuario: number | null = null;
+
   matchModeOptions = [
     { label: 'Empieza con', value: 'startsWith' },
     { label: 'Termina con', value: 'endsWith' },
@@ -45,11 +48,15 @@ export class UsuariosComponent {
     { label: 'No es igual a', value: 'notEquals' },
   ];
 
-  constructor(private confirmationService: ConfirmationService, private usuariosService: UsuariosService, private rolService: RolesService, private messageService: MessageService) { }
+  constructor(private confirmationService: ConfirmationService, private usuariosService: UsuariosService, private rolService: RolesService, private messageService: MessageService, private authServices: AuthService) { }
 
   ngOnInit(): void {
     this.listarUsuarios();
     this.listarRoles();
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   listarUsuarios(): void {

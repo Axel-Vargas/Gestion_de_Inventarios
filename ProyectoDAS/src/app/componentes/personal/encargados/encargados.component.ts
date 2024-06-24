@@ -2,6 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService, SelectItem } from 'primeng/api';
 import { EncargadosService } from '../../../services/encargados.service';
 import { catchError, forkJoin } from 'rxjs';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-encargados',
@@ -38,7 +39,9 @@ export class EncargadosComponent {
   bienesDisponibles: any[] = [];
   draggedBien: any;
 
-  constructor(private confirmationService: ConfirmationService, private encargadosService: EncargadosService, private messageService: MessageService) { }
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService,private confirmationService: ConfirmationService, private encargadosService: EncargadosService, private messageService: MessageService) { }
 
   matchModeOptions = [
     { label: 'Empieza con', value: 'startsWith' },
@@ -52,6 +55,9 @@ export class EncargadosComponent {
     this.listarEncargados();
   }
 
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
+  }
 
   listarEncargados(): void {
     this.encargadosService.obtenerEncargados().subscribe(

@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProgramasService } from '../../services/programas.service';
 import { FormControl } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-programas',
@@ -32,7 +33,9 @@ export class ProgramasComponent {
   soloLetrasRegex = /^[a-zA-Z]*$/;
   soloNumerosRegex = /^[0-9]*$/;
 
-  constructor(private confirmationService: ConfirmationService, private programasService: ProgramasService, private messageService: MessageService) { }
+  rolUsuario: number | null = null;
+
+  constructor(private authServices: AuthService, private confirmationService: ConfirmationService, private programasService: ProgramasService, private messageService: MessageService) { }
 
   matchModeOptions = [
     { label: 'Empieza con', value: 'startsWith' },
@@ -54,6 +57,10 @@ export class ProgramasComponent {
       { name: 'Laboratorios de Computacion', code: 1 },
       { name: 'Laboratorios de Especializacion', code: 2 },
     ];
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   listarProgramas(): void {

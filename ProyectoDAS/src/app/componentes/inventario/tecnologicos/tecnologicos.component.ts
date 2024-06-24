@@ -20,6 +20,7 @@ import { TipoTecnologico } from '../../api/tipoTecnologico';
 import { EncargadosService } from '../../../services/encargados.service';
 import { Encargados } from '../../api/Encargados';
 import { ScannerService } from '../../../services/scanner.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-tecnologicos',
@@ -80,7 +81,10 @@ export class TecnologicosComponent implements OnInit {
   marcas!: any[];
   scannedCode: string = '';
 
+  rolUsuario: number | null = null;
+
   constructor(
+    private authServices: AuthService,
     private tecnologicosService: BienestecnologicosService,
     private componente_service: componentesService,
     private areasService: AreasService,
@@ -106,6 +110,10 @@ export class TecnologicosComponent implements OnInit {
       { name: 'SI', code: 1 },
       { name: 'NO', code: 2 },
     ];
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   ngOnInit() {
