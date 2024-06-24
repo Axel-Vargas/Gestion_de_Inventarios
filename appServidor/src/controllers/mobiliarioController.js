@@ -109,9 +109,9 @@ exports.getBienesPorEncargado = async (req, res) => {
 
 exports.addBienes = async (req, res) => {
   try {
-    const {bld_bca, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, valor_contable, id_encargado_per, id_area_per} = req.body;
+    const { nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA,  id_encargado_per, id_area_per} = req.body;
 
-      const insertQuery = `INSERT INTO bien_mobiliario (nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+      const insertQuery = `INSERT INTO bien_mobiliario (nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)`;
       connection.query(insertQuery, [nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per], (error, results) => {
         if (error) {
           return res.status(500).json({ mensaje: 'Error interno del servidor' });
@@ -174,7 +174,7 @@ exports.editBienes = async (req, res) => {
   exports.getBuscarBienPorId = async (req, res) => {
     try {
         const { id_bien } = req.params;
-        const selectQuery = `SELECT id_bien, nombre, marca, modelo, num_serie, material, color, fecha_adquisicion, estado, localizacion, codigoUTA, id_encargado_per, id_area_per FROM bien_mobiliario WHERE id_bien = ?`;
+        const selectQuery = `SELECT * FROM bien_mobiliario WHERE id_bien = ?`;
 
         connection.query(selectQuery, [id_bien], (error, results) => {
             if (error) {
