@@ -10,6 +10,12 @@ import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule } from '@angular/forms';
 import { DropdownModule } from 'primeng/dropdown';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TagModule } from 'primeng/tag';
+import { DialogModule } from 'primeng/dialog';
+import {MultiSelectModule} from 'primeng/multiselect';
 
 
 @NgModule({
@@ -25,7 +31,17 @@ import { DropdownModule } from 'primeng/dropdown';
     InputIconModule,
     InputTextModule,
     FormsModule,
-    DropdownModule
+    DropdownModule,
+    ToastModule,
+    FormsModule,
+    ConfirmDialogModule,
+    TagModule,
+    DialogModule,
+    MultiSelectModule
+  ],
+  providers:[
+    MessageService,
+    ConfirmationService
   ]
 })
 export class BloquesModule { }

@@ -1,3 +1,30 @@
 section{
     overflow: hidden !important;
 }
+
+.text-card{
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.large-icon .pi {
+    font-size: 4rem; 
+  }
+  
+#floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000; /* Asegúrate de que esté por encima de otros elementos */
+    width: 4.5rem; /* Tamaño del botón */
+    height: 4.5rem; /* Tamaño del botón */
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    #floating-button {
+        display: flex; 
+    }
+}

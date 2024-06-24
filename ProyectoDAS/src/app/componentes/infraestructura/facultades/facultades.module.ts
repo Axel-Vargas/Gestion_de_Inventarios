@@ -8,6 +8,12 @@ import { ButtonModule } from 'primeng/button';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputTextModule } from 'primeng/inputtext';
+import { ToastModule } from 'primeng/toast';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { FormsModule } from '@angular/forms';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TagModule } from 'primeng/tag';
+import { DialogModule } from 'primeng/dialog';
 
 
 @NgModule({
@@ -21,7 +27,16 @@ import { InputTextModule } from 'primeng/inputtext';
     ButtonModule,
     IconFieldModule,
     InputIconModule,
-    InputTextModule
+    InputTextModule,
+    ToastModule,
+    FormsModule,
+    ConfirmDialogModule,
+    TagModule,
+    DialogModule
+  ],
+  providers:[
+    MessageService,
+    ConfirmationService
   ]
 })
 export class FacultadesModule { }

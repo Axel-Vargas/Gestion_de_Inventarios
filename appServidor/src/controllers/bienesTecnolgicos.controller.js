@@ -26,9 +26,16 @@ function generateQR(data) {
         });
     });
 }
+
 const getBienesTecnologicos = (req, res) => {
     try {
-        const sql = 'SELECT * FROM bien_tecnologico WHERE estado != "BODEGA"';
+        const sql = `
+        SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado, a.nombre as nombre_area
+        FROM bien_tecnologico bt
+        LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bt.id_area_per = a.id_area
+        WHERE bt.estado != 'BODEGA'
+      `;
         connection.query(sql, (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -39,6 +46,81 @@ const getBienesTecnologicos = (req, res) => {
         });
     } catch (error) {
         console.error('Error en la función getBienesTecnologicos:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+};
+
+const getBienesTecnologicosPorArea = (req, res) => {
+    try {
+        const { id } = req.params;
+        const sql = `
+        SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado, a.nombre as nombre_area
+        FROM Bien_Tecnologico bt
+        LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bt.id_area_per = a.id_area
+        WHERE bt.id_area_per = ? AND bt.estado != 'BODEGA'
+      `;
+
+        connection.query(sql, [id], (err, data) => {
+            if (err) {
+                console.error('Error en la consulta SQL:', err);
+                res.status(500).json({ error: 'Error en el servidor' });
+            } else {
+                res.json(data);
+            }
+        });
+    } catch (error) {
+        console.error('Error en la función getBienesTecnologicosPorArea:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+};
+
+const getBienesTecnologicosPorEstado = (req, res) => {
+    try {
+        const { estado } = req.params;
+        const sql = `
+        SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado, a.nombre as nombre_area
+        FROM Bien_Tecnologico bt
+        LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bt.id_area_per = a.id_area
+        WHERE bt.estado = ?
+      `;
+
+        connection.query(sql, [estado], (err, data) => {
+            if (err) {
+                console.error('Error en la consulta SQL:', err);
+                res.status(500).json({ error: 'Error en el servidor' });
+            } else {
+                res.json(data);
+            }
+        });
+    } catch (error) {
+        console.error('Error en la función getBienesTecnologicosPorEstado:', error);
+        res.status(500).json({ error: 'Error en el servidor' });
+    }
+};
+
+const getBienesTecnologicosPorEncargado = (req, res) => {
+    try {
+        const { encargado } = req.params;
+        const sql = `
+        SELECT bt.*, CONCAT(e.nombre, ' ', e.apellido) AS nombre_encargado, a.nombre as nombre_area
+        FROM Bien_Tecnologico bt
+        LEFT JOIN encargados e ON bt.id_encargado_per = e.id_encargado
+        LEFT JOIN areas a ON bt.id_area_per = a.id_area
+        WHERE bt.id_encargado_per = ? AND bt.estado != 'BODEGA'
+      `;
+
+        connection.query(sql, [encargado], (err, data) => {
+            if (err) {
+                console.error('Error en la consulta SQL:', err);
+                res.status(500).json({ error: 'Error en el servidor' });
+            } else {
+                res.json(data);
+            }
+        });
+    } catch (error) {
+        console.error('Error en la función getBienesTecnologicosPorEncargado:', error);
         res.status(500).json({ error: 'Error en el servidor' });
     }
 };
@@ -72,22 +154,23 @@ const obtenerBienesPorBloqueYArea = (req, res) => {
 
 
 const createBienTecnologico = async (req, res) => {
-    const { nombre_bien, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, ip_tecnologico, atributos,  id_area_per, id_proveedor_per } = req.body;
+    const { nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per } = req.body;
+
     try {
-        // SQL para insertar sin el QR
-        const sqlInsert = 'INSERT INTO Bien_Tecnologico (nombre_bien, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, ip_tecnologico, atributos,  id_area_per, id_proveedor_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
-        connection.query(sqlInsert, [nombre_bien, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, ip_tecnologico, JSON.stringify(atributos),  id_area_per, id_proveedor_per], async (err, result) => {
+        const sqlInsert = 'INSERT INTO Bien_Tecnologico (nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+        connection.query(sqlInsert, [nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, JSON.stringify(atributos), id_area_per, id_proveedor_per, id_encargado_per], async (err, result) => {
+
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
             } else {
                 const idBienTec = result.insertId;
                 // Datos para el QR
-                const qrData = `id_bien_tec: ${idBienTec}`;
+                const qrData = `id_bien: ${idBienTec}`;
                 // Generar QR y obtener el path relativo
                 const imagePath = await generateQR(qrData);
                 // SQL para actualizar con path del QR
-                const sqlUpdate = 'UPDATE Bien_Tecnologico SET image = ? WHERE id_bien_tec = ?';
+                const sqlUpdate = 'UPDATE Bien_Tecnologico SET image = ? WHERE id_bien = ?';
                 connection.query(sqlUpdate, [imagePath, idBienTec], (err, data) => {
                     if (err) {
                         console.error('Error en la consulta SQL:', err);
@@ -107,7 +190,7 @@ const createBienTecnologico = async (req, res) => {
 const getBienTecnologicoById = (req, res) => {
     const { id } = req.params;
     try {
-        const sql = 'SELECT * FROM Bien_Tecnologico WHERE id_bien_tec = ?';
+        const sql = 'SELECT * FROM Bien_Tecnologico WHERE estado != "BODEGA" and id_bien = ?';
         connection.query(sql, [id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -128,10 +211,10 @@ const getBienTecnologicoById = (req, res) => {
 
 const updateBienTecnologico = (req, res) => {
     const { id } = req.params;
-    const { nombre_bien, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, ip_tecnologico, atributos,  id_area_per, id_proveedor_per } = req.body;
+    const { nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, atributos, id_area_per, id_proveedor_per, id_encargado_per } = req.body;
     try {
-        const sql = 'UPDATE Bien_Tecnologico SET nombre_bien = ?, marca = ?, modelo = ?, num_serie = ?, fecha_adquisicion = ?, estado = ?, codigoUTA = ?, localizacion = ?, ip_tecnologico = ?, atributos = ?,  id_area_per = ?, id_proveedor_per = ? WHERE id_bien_tec = ?';
-        connection.query(sql, [nombre_bien, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, ip_tecnologico, JSON.stringify(atributos), id_area_per, id_proveedor_per, id], (err, data) => {
+        const sql = 'UPDATE Bien_Tecnologico SET nombre = ?, marca = ?, modelo = ?, num_serie = ?, fecha_adquisicion = ?, estado = ?, codigoUTA = ?, localizacion = ?, atributos = ?, id_area_per = ?, id_proveedor_per = ?, id_encargado_per = ? WHERE id_bien = ?';
+        connection.query(sql, [nombre, marca, modelo, num_serie, fecha_adquisicion, estado, codigoUTA, localizacion, JSON.stringify(atributos), id_area_per, id_proveedor_per, id_encargado_per, id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
                 res.status(500).json({ error: 'Error en el servidor' });
@@ -145,10 +228,11 @@ const updateBienTecnologico = (req, res) => {
     }
 };
 
+
 const deleteBienTecnologico = (req, res) => {
     const { id } = req.params;
     try {
-        const sql = 'UPDATE Bien_Tecnologico SET estado = "BODEGA" WHERE id_bien_tec = ?';
+        const sql = 'UPDATE Bien_Tecnologico SET estado = "BODEGA" WHERE id_bien = ?';
         connection.query(sql, [id], (err, data) => {
             if (err) {
                 console.error('Error en la consulta SQL:', err);
@@ -173,5 +257,8 @@ module.exports = {
     getBienTecnologicoById,
     updateBienTecnologico,
     deleteBienTecnologico,
-    obtenerBienesPorBloqueYArea
+    obtenerBienesPorBloqueYArea,
+    getBienesTecnologicosPorArea,
+    getBienesTecnologicosPorEstado,
+    getBienesTecnologicosPorEncargado
 };

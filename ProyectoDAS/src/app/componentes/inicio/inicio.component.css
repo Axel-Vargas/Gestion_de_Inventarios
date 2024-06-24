@@ -6,7 +6,11 @@ span{
     font-size: 22px;
     font-weight: bold;
 }
-
+.chart-container {
+    position: relative;
+    height: 290px; /* Puedes ajustar la altura según tus necesidades */
+  }
+  
 #floating-button {
     position: fixed;
     bottom: 20px;

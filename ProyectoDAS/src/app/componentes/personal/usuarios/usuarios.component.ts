@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { UsuariosService } from '../../../services/usuarios.service';
 import { RolesService } from '../../../services/roles.service';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-usuarios',
@@ -37,6 +38,8 @@ export class UsuariosComponent {
   confirmarContrasena: string = '';
   contrasenasCoinciden: boolean = false;
 
+  rolUsuario: number | null = null;
+
   matchModeOptions = [
     { label: 'Empieza con', value: 'startsWith' },
     { label: 'Termina con', value: 'endsWith' },
@@ -45,11 +48,16 @@ export class UsuariosComponent {
     { label: 'No es igual a', value: 'notEquals' },
   ];
 
-  constructor(private confirmationService: ConfirmationService, private usuariosService: UsuariosService, private rolService: RolesService, private messageService: MessageService) { }
+  constructor(private confirmationService: ConfirmationService, private usuariosService: UsuariosService, private rolService: RolesService, private messageService: MessageService, private authServices: AuthService) { }
 
   ngOnInit(): void {
     this.listarUsuarios();
     this.listarRoles();
+    this.obtenerRolUsuario();
+  }
+
+  obtenerRolUsuario(): void {
+    this.rolUsuario = this.authServices.getUserRole();
   }
 
   listarUsuarios(): void {
@@ -98,7 +106,7 @@ export class UsuariosComponent {
     if (!this.selectedRole || this.cedula == '' || this.nombre == '' || this.apellido == '' || this.telefono == '' || this.correo == '' || this.contrasena == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      this.usuariosService.insertarUsuario(this.cedula, this.nombre, this.apellido, this.correo, this.telefono, this.contrasena, this.selectedRole.id_rol).subscribe(
+      this.usuariosService.insertarUsuario(this.cedula, this.nombre, this.apellido, this.correo, this.telefono, this.contrasena,1,this.selectedRole.id_rol).subscribe(
         (response) => {
           this.mostrarMensaje("Usuario registrado con éxito", true);
           this.limpiarFormulario();
@@ -179,10 +187,15 @@ validarCedula(cedula: string): boolean {
   return digitoEsperado === digitoVerificador;
 }
 
-validarCorreo() {
+validarCorreo(event: any) {
   const regexCorreo = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  const input = event.target;
+  
+  input.value = input.value.replace(/\s+/g, '');
 
-  if (regexCorreo.test(this.correo)) {
+  const correo = input.value;
+  
+  if (regexCorreo.test(correo) || correo === '') {
     this.mensajeValidacionCorreo = '';
   } else {
     this.mensajeValidacionCorreo = 'Correo inválido';
@@ -261,7 +274,7 @@ confirm(id: string) {
 handleInput(event: any) {
   const inputValue = event.target.value;
   if (!this.soloLetrasRegex.test(inputValue)) {
-    event.target.value = inputValue.replace(/[^a-zA-Z]/g, '');
+    event.target.value = inputValue.replace(/[^a-zA-Z\s]/g, '');
   }
 }
 

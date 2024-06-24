@@ -26,6 +26,11 @@ export class AuthService {
     return null;
   }
 
+  getUserRole(): number | null {
+    const user = this.getUser();
+    return user ? user.rol : null;
+  }
+
   setUser(user: any): void {
     if (typeof localStorage !== 'undefined') {
       localStorage.setItem(this.USER_KEY, JSON.stringify(user));

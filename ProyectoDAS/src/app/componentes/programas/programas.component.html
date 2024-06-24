@@ -1,48 +1,148 @@
-<div class="card-table mb-0">
-    <div class="flex flex-column mb-3">
-        <div>
-            <span class="flex mb-5">Programas</span>
-        </div>
-        <div class="flex justify-content-between flex-wrap">
-            <div class="floating-button flex align-items-center">
-                <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar programa</span>
-                <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()" (mouseleave)="hideTooltip()"></button>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="flex programas justify-content-between flex-wrap mb-5">
+                <span class="flex align-items-center">Softwares</span>
+                <div *ngIf="rolUsuario === 1" class="flex align-items-center">
+                    <span class="tooltip" [ngClass]="{'show': tooltipVisible}">Agregar Software</span>
+                    <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
+                        (mouseleave)="hideTooltip()" (click)="showDialogAgregar()"></button>
+                </div>
             </div>
-            <p-iconField class="rounded-icon-field" iconPosition="left">
-                <p-inputIcon styleClass="pi pi-search" />
-                <input type="text" pInputText placeholder="Buscar" />
-            </p-iconField>
+            <p-table #dt [value]="programas" dataKey="id_encargado" [rows]="5" [rowsPerPageOptions]="[5,10, 25, 50]"
+                [paginator]="true"
+                [globalFilterFields]="['software', 'version', 'tipo_licencia', 'fecha_adquisicion','laboratorio']"
+                [tableStyle]="{ 'min-width': '95rem' }">
+                <ng-template pTemplate="caption">
+                    <div class="flex">
+                        <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input pInputText type="text"
+                                (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                                placeholder="Buscar Software" />
+                        </p-iconField>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>
+                            <span class="flex mb-2">SOFTWARE</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="software" placeholder="Buscar por software" ariaLabel="Filter Software" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">VERSIÓN</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="version" placeholder="Buscar por version" ariaLabel="Filter Version" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">TIPO DE LICENCIA</span>
+                            <p-columnFilter field="tipo_licencia" matchMode="in" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                  <p-multiSelect [(ngModel)]="selectedRepresentativesLi" [options]="licencias"
+                                    placeholder="Buscar tipo de Licencia" (onChange)="filter($event.value)" optionLabel="name"
+                                    optionValue="name">
+                                    <ng-template let-option pTemplate="item">
+                                      <div class="inline-block vertical-align-middle">
+                                        <span class="ml-1 mt-1">
+                                          {{ option.name }}
+                                        </span>
+                                      </div>
+                                    </ng-template>
+                                  </p-multiSelect>
+                                </ng-template>
+                              </p-columnFilter>
+                        </th>
+                        <th>
+                            <span class="flex mb-2" style="width: 15rem;">FECHA DE AQUISICIÓN</span>
+                            <p-columnFilter class="mt-5" [matchModeOptions]="matchModeOptions" type="text"
+                                field="fecha_adquisicion" placeholder="Buscar por fecha" ariaLabel="Filter Fecha" />
+                        </th>
+                        <th>
+                            <span class="flex mb-2">TIPO DE LABORATORIO</span>
+                            <p-columnFilter field="laboratorio" matchMode="in" [showMenu]="false">
+                                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                                  <p-multiSelect [(ngModel)]="selectedRepresentativesL" [options]="laboratorios"
+                                    placeholder="Buscar tipo de Laboratorio" (onChange)="filter($event.value)" optionLabel="name"
+                                    optionValue="name">
+                                    <ng-template let-option pTemplate="item">
+                                      <div class="inline-block vertical-align-middle">
+                                        <span class="ml-1 mt-1">
+                                          {{ option.name }}
+                                        </span>
+                                      </div>
+                                    </ng-template>
+                                  </p-multiSelect>
+                                </ng-template>
+                              </p-columnFilter>
+                        </th>
+                        <th *ngIf="rolUsuario === 1"></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-programa>
+                    <tr>
+                        <td>{{ programa.software }}</td>
+                        <td>{{ programa.version }}</td>
+                        <td>{{ programa.tipo_licencia }}</td>
+                        <td>{{ programa.fecha_adquisicion | date : "yyyy-MM-dd"}}</td>
+                        <td>{{ programa.laboratorio }}</td>
+                        <td *ngIf="rolUsuario === 1" class="flex flex-row ">
+                            <button pButton (click)="showDialogEditar(programa)" pRipple type="button"
+                                icon="pi pi-pen-to-square"
+                                class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>
+                            <button pButton (click)="confirm(programa.id_programa)" pRipple type="button"
+                                icon="pi pi-trash"
+                                class="p-button p-component p-button-text p-button-trash flex align-items-center justify-content-center"></button>
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="5">No se encontraron programas.</td>
+                    </tr>
+                </ng-template>
+            </p-table>
         </div>
     </div>
-    <p-table [value]="[{}]" [tableStyle]="{ 'min-width': '100%' }">
-        <ng-template pTemplate="header" [paginator]="true" [rows]="9" responsiveLayout="scroll">
-            <tr>
-                <th>ID</th>
-                <th>Software</th>
-                <th>Versión</th>
-                <th>Fecha de Adquisición</th>
-                <th>Tipo de Licencia</th>
-                <th>Editar</th>
-                <th>Eliminar</th>
-            </tr>
-        </ng-template>
-        <ng-template pTemplate="body" let-rowData>
-            <tr>
-                <td style="width: 45%; min-width: 7rem;">1</td>
-                <td style="width: 45%; min-width: 15rem;">Microsoft Office 365</td>
-                <td style="width: 30%; min-width: 7rem;">v15.3</td>
-                <td style="width: 45%; min-width: 15rem;">01/01/2022</td>
-                <td style="width: 30%; min-width: 7rem;">Licenciado</td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-pen-to-square"
-                        class="p-button p-component p-button-text p-button-icon-only"></button>
-                </td>
-                <td style="width: 15%;">
-                    <button pButton pRipple type="button" icon="pi pi-trash"
-                        class="p-button p-component p-button-text p-button-trash"></button>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
 </div>
 
+<p-dialog [header]="esEdicion ? 'Editar Programa' : 'Agregar Programa'" [modal]="true" [(visible)]="visible" draggable="false"
+    [style]="{ width: '36rem', minWidth: '300px'}">
+    <div class="flex flex-wrap gap-3">
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="estado" class="font-semibold w-10rem">Tipo de Licencia</label>
+            <p-dropdown [options]="licencias" dataKey="code" optionLabel="name" placeholder="Seleccione una Licencia"
+                autoWidth="false" [style]="{ width: '15.9rem' }" [(ngModel)]="selectLicencia"></p-dropdown>
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="direccion" class="font-semibold w-10rem">Tipo de Laboratorio</label>
+            <p-dropdown [options]="laboratorios" dataKey="code" optionLabel="name" placeholder="Seleccione un Laboratorio"
+                autoWidth="false" [style]="{ width: '15.9rem' }" [(ngModel)]="selectLaboratorio"></p-dropdown>
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="software" class="font-semibold w-6rem">Software</label>
+            <input pInputText id="software" class="flex-auto" autocomplete="off" [(ngModel)]="software" maxlength="20"
+                (input)="handleInput($event)" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="version" class="font-semibold w-6rem">Version</label>
+            <input pInputText id="version" autocomplete="off" [(ngModel)]="version" maxlength="10" />
+        </div>
+        <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%;">
+            <label for="telefono" class="font-semibold w-11rem">Fecha de Adquisición</label>
+            <p-calendar [style]="{ width: '15.9rem' }" id="fecha_adquisicion" inputId="fecha_adquisicion" appendTo="body" [(ngModel)]="fecha_adquisicion" [showIcon]="true"
+            [showOnFocus]="true" dateFormat="yy-mm-dd" placeholder="Seleccione una fecha">
+          </p-calendar>
+        </div>
+
+    </div>
+    <div class="flex justify-content-end gap-2">
+        <p-button [label]="esEdicion ? 'Editar' : 'Guardar'"
+            (click)="esEdicion ? editarPrograma() : registrarPrograma()" (click)="visible = false"
+            [rounded]="true"></p-button>
+    </div>
+</p-dialog>
+<p-toast position="bottom-right"></p-toast>
+<p-confirmDialog header="Confirmación" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>

@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LayoutService } from '../service/app.layout.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-menu',
@@ -8,9 +10,12 @@ import { LayoutService } from '../service/app.layout.service';
 })
 export class MenuComponent implements OnInit {
     model: any[] = [];
-    constructor(public layoutService: LayoutService) { }
+    userRole: number | null = null;
+
+    constructor(public layoutService: LayoutService, public authService: AuthService, private router: Router) { }
 
     ngOnInit() {
+        this.userRole = this.authService.getUserRole();
         this.model = [
             {
                 label: 'Home',
@@ -30,7 +35,8 @@ export class MenuComponent implements OnInit {
                             {
                                 label: 'Encargados', icon: 'pi pi-user-plus', routerLink: ['/panel/personal/encargados']
                             }
-                        ]
+                        ],
+                        visible: this.userRole === 1,
                     },
                     {
                         label: 'Inventario', icon: 'pi pi-box',
@@ -61,26 +67,25 @@ export class MenuComponent implements OnInit {
                             }
                         ]
                     },
-                    { label: 'Programas', icon: 'pi pi-microsoft', routerLink: ['/panel/programas'] },
-                    { label: 'Proveedores', icon: 'pi pi-truck', routerLink: ['/panel/proveedores'] },
-                    { label: 'Historial', icon: 'pi pi-history', routerLink: ['/panel/historial'] },
+                    { label: 'Softwares', icon: 'pi pi-microsoft', routerLink: ['/panel/programas']},
+                    { label: 'Proveedores', icon: 'pi pi-truck', routerLink: ['/panel/proveedores']},
+                    { label: 'Marcas', icon: 'pi pi-android', routerLink: ['/panel/marcas']},
+                    { label: 'Reportes', icon: 'pi pi-file', routerLink: ['/panel/reportes']},
+                ]
+            },
+            {
+                label: 'Cerrar sesión',
+                items: [
                     {
-                        label: 'Reportes', icon: 'pi pi-file',
-                        items: [
-                            {
-                                label: 'Reporte General',
-                                icon: 'pi pi-file-pdf',
-                                routerLink: ['/auth/error']
-                            },
-                            {
-                                label: 'Reporte por Laboratorios',
-                                icon: 'pi pi-file-pdf',
-                                routerLink: ['/auth/access']
-                            }
-                        ]
-                    },
+                        label: 'Cerrar sesión', icon: 'pi pi-sign-out', command: () => this.logout()
+                    }
                 ]
             }
         ];
+    }
+
+    logout() {
+        this.authService.removeUser();
+        this.router.navigate(['']);
     }
 }

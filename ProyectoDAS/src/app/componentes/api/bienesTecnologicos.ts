@@ -5,21 +5,28 @@ interface Estado {
     value: string;
 }
 export interface bienes_Tecnologicos {
-    id_bien_tec?: number;
-    nombre_bien?: string;
+    id_bien?: number;
+    nombre?: string;
     atributos?: any;
     marca?: string;
     modelo?: string;
     num_serie?: string;
     fecha_adquisicion?: Date;
     //repotenciado?: Repotenciado;
-    estado?: Estado;
+    estado?: string;
     codigoUTA?: string;
+    mascara?: string;
+    gateway?: string;
+    prestado?: string;
     image?: string;
     localizacion?: string;
-    ip_tecnologico?: string;
-    id_tipo_per?: number;
+    id_encargado_per?:number;
+    nombre_area?: string;
+    nombre_encargado?: string;
     id_area_per?: number;
+    //id_encargado_per?:string;
     id_proveedor_per?: number;
     componentes: Componentes[];
+    material?: string;
+    color?: string;
 }

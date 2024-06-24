@@ -1,0 +1,88 @@
+<div class="grid">
+  <div class="col-12">
+    <div class="card">
+      <div class="flex marcas justify-content-between flex-wrap mb-5">
+        <span class="flex marcas align-items-center">Marcas</span>
+        <div *ngIf="rolUsuario === 1" class="flex align-items-center">
+          <span class="tooltip" [ngClass]="{ show: tooltipVisible }">Agregar Marca</span>
+          <button pButton icon="pi pi-plus" class="p-button-rounded p-2.5 text-l" (mouseenter)="showTooltip()"
+            (mouseleave)="hideTooltip()" (click)="showDialog()"></button>
+        </div>
+      </div>
+      <p-table #dt [value]="marcas" [paginator]="true" [rowsPerPageOptions]="[10, 20, 30]" [scrollable]="true"
+        scrollHeight="380px" [rows]="10" [customSort]="true" [tableStyle]="{'min-width': '60rem'}" [globalFilterFields]="['nom_marca','tipo_marca']">
+        <ng-template pTemplate="caption">
+          <div class="flex justify-content-between flex-column sm:flex-row" style="gap: 6px">
+              <p-iconField iconPosition="left" class="ml-auto rounded-icon-field">
+                  <p-inputIcon>
+                      <i class="pi pi-search"></i>
+                  </p-inputIcon>
+                  <input pInputText type="text"
+                      (input)="dt.filterGlobal($any($event.target).value, 'contains')"
+                      placeholder="Buscar Marca" />
+              </p-iconField>
+
+          </div>
+      </ng-template>
+        <ng-template pTemplate="header" let-columns>
+          <tr>
+            <th>NOMBRE</th>
+            <th>TIPO</th>
+            <th *ngIf="rolUsuario === 1"></th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-marca let-columns="columns">
+          <tr>
+            <td>{{ marca.nom_marca }}</td>
+            <td>{{ marca.tipo_marca }}</td>
+            <td *ngIf="rolUsuario === 1" class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
+              <button type="button" (click)="editMarca(marca)" class="p-button p-button-sm p-button-info"
+                title="Editar">
+                <i class="pi pi-pencil"></i>
+              </button>
+              <button type="button" (click)="eliminarMarca(marca.id)" class="p-button p-button-sm p-button-danger"
+                title="Eliminar">
+                <i class="pi pi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+      <p-dialog [header]="isEditMode ? 'Editar Marca' : 'Agregar Marca'" draggable="false" [(visible)]="displayDialog"
+        [modal]="true" [responsive]="true" [style]="{ 'width': '400px' }">
+        <ng-template pTemplate="content">
+          <form #marcaForm="ngForm" (ngSubmit)="guardarMarca()">
+            <div class="formgrid grid">
+              <div class="field col">
+                <label for="nom_marca">Nombre</label>
+                <input type="text" id="nom_marca" name="nom_marca" [(ngModel)]="marca.nom_marca" required
+                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary w-full">
+
+              </div>
+            </div>
+            <div class="formgrid grid">
+              <div class="field col">
+                <div class="flex align-items-left gap-3 mb-3 flex-column">
+                  <label for="tipo_marca">Tipo</label>
+                  <p-dropdown [options]="tiposMarcas" name="tipo_marca" [(ngModel)]="marca.tipo_marca"
+                    optionLabel="label" optionValue="value" placeholder="Seleccione"
+                    class="focus:border-primary fixed-width-dropdown"></p-dropdown>
+                </div>
+
+              </div>
+            </div>
+            <p-footer class="flex justify-content-end gap-3">
+              <button type="button" pButton icon="pi pi-times" label="Cancelar" (click)="hideDialog()"
+                class="p-button-secondary"></button>
+              <button type="submit" pButton icon="pi pi-check" label="Guardar" class="p-button-primary"></button>
+            </p-footer>
+          </form>
+        </ng-template>
+      </p-dialog>
+
+      <p-toast position="bottom-center" key="bc"></p-toast>
+      <p-confirmDialog [breakpoints]="{'960px': '75vw', '640px': '100vw'}" [style]="{width: '50vw'}" header="Eliminar"
+        icon="pi pi-exclamation-triangle"></p-confirmDialog>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,178 @@
-<p>Proveedores</p>
-<qrcode [qrdata]="'http://localhost:4200/proveedores'" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
-<p>Usuarios</p>
-<qrcode [qrdata]="'http://localhost:4200/usuarios'" [width]="200" [errorCorrectionLevel]="'M'"></qrcode>
+<div class="grid">
+    <div class="col-12">
+        <div class="card">
+            <div class="flex reportes justify-content-between flex-wrap mb-5">
+                <span class="flex align-items-center">Reportes</span>
+            </div>
+            <div class="flex flex-row flex-wrap mb-3">
+                <span class="flex align-items-center justify-content-center m-2">Seleccione el departamento: </span>
+                <p-dropdown class="flex align-items-center justify-content-center" [options]="departamentos"
+                    dataKey="code" optionLabel="name" placeholder="Seleccione el Departamento" autoWidth="false"
+                    [style]="{'width':'15.9rem'}" [(ngModel)]="selectedDepartamento"
+                    (onChange)="onDepartamentoChange($event)"></p-dropdown>
+            </div>
+
+            <p-table [value]="reportes" [rows]="5" [rowsPerPageOptions]="[5,10, 25, 50]"
+                [tableStyle]="{ 'min-width': '45rem' }">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th><span class="flex mb-2">TIPO DE REPORTE</span></th>
+                        <th><span class="flex mb-2">DESCRIPCION</span></th>
+                        <th></th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-reporte>
+                    <tr>
+                        <td>{{ reporte.tipo }}</td>
+                        <td>{{ reporte.descripcion }}</td>
+                        <td class="flex flex-row justify-content-center gap-2">
+                            <ng-container
+                                *ngIf="selectedDepartamento && selectedDepartamento.name === 'DITIC'; else UPEActions">
+                                <button *ngIf="reporte.tipo === 'Reporte Completo'" pButton pRipple type="button"
+                                    icon="pi pi-file-pdf" (click)="mostrarDialogoPDFDITIC(reporte.code, reporte.tipo)"
+                                    class="p-button p-component p-button-text p-button-lg flex align-items-center justify-content-center"
+                                    style="color:red"></button>
+
+                                <button *ngIf="reporte.tipo === 'Reporte Completo'" pButton pRipple type="button"
+                                    icon="pi pi-file-excel"
+                                    (click)="mostrarDialogoEXCELDITIC(reporte.code, reporte.tipo)"
+                                    class="p-button p-component p-button-text flex p-button-lg align-items-center justify-content-center"
+                                    style="color:green"></button>
+
+                                <p-button *ngIf="reporte.tipo === 'Reporte por Áreas' || reporte.tipo === 'Reporte QR'"
+                                    label="Seleccionar" (click)="mostrarDialogoPDFDITIC(reporte.code, reporte.tipo)"
+                                    [rounded]="true"></p-button>
+                            </ng-container>
+                            <ng-template #UPEActions>
+                                <ng-container
+                                    *ngIf="selectedDepartamento && selectedDepartamento.name === 'UPE'; else REDESActions">
+                                    <button *ngIf="reporte.tipo !== 'Reporte por Áreas'" pButton pRipple type="button"
+                                        icon="pi pi-file-pdf" (click)="mostrarDialogoPDFUPE(reporte.code, reporte.tipo)"
+                                        class="p-button p-component p-button-text p-button-lg flex align-items-center justify-content-center"
+                                        style="color:red"></button>
+
+                                    <button *ngIf="reporte.tipo !== 'Reporte por Áreas'" pButton pRipple type="button"
+                                        icon="pi pi-file-excel"
+                                        (click)="mostrarDialogoEXCELUPE(reporte.code, reporte.tipo)"
+                                        class="p-button p-component p-button-text flex p-button-lg align-items-center justify-content-center"
+                                        style="color:green"></button>
+
+                                    <p-button *ngIf="reporte.tipo === 'Reporte por Áreas'" label="Seleccionar"
+                                        (click)="mostrarDialogoPDFUPE(reporte.code, reporte.tipo)"
+                                        [rounded]="true"></p-button>
+                                </ng-container>
+                                <ng-template #REDESActions>
+                                    <ng-container>
+                                        <button *ngIf="reporte.tipo === 'Reporte por Bienes Prestados'" pButton pRipple
+                                            type="button" icon="pi pi-file-pdf"
+                                            (click)="mostrarDialogoPDFREDES(reporte.code, reporte.tipo)"
+                                            class="p-button p-component p-button-text p-button-lg flex align-items-center justify-content-center"
+                                            style="color:red"></button>
+
+                                        <button *ngIf="reporte.tipo === 'Reporte por Bienes Prestados'" pButton pRipple
+                                            type="button" icon="pi pi-file-excel"
+                                            (click)="mostrarDialogoExcelREDES(reporte.code, reporte.tipo)"
+                                            class="p-button p-component p-button-text flex p-button-lg align-items-center justify-content-center"
+                                            style="color:green"></button>
+
+                                        <p-button label="Seleccionar" *ngIf="reporte.tipo === 'Reporte Completo por Áreas' || reporte.tipo === 'Reporte Completo por Estado' || reporte.tipo === 'Reporte Completo por Encargado'"
+                                            (click)="mostrarDialogoPDFREDES(reporte.code, reporte.tipo)"
+                                            [rounded]="true"></p-button>
+                                    </ng-container>
+                                </ng-template>
+                            </ng-template>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+<p-dialog header="Reporte por Área" [modal]="true" [(visible)]="visible" [style]="{ width: '26rem' }">
+    <div class="flex justify-content-between">
+        <div class="flex align-content-start justify-content-center gap-3 mb-3">
+            <p-dropdown [options]="areas" [(ngModel)]="selectedArea" dataKey="id_area" appendTo="body"
+                optionLabel="nombre" placeholder="Seleccione un área"></p-dropdown>
+        </div>
+        <div class="flex flex-row flex-wrap align-content-start justify-content-center">
+            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarPDFPorAreaDITIC()"
+                class="p-button p-component p-button-text p-button-lg flex align-content-start justify-content-center"
+                [disabled]="!selectedArea" style="color:red"></button>
+            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarExcelPorAreaDITIC()"
+                class="p-button p-component p-button-text p-button-lg flex align-content-start justify-content-center"
+                [disabled]="!selectedArea" style="color:green"></button>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Reporte por Área" [modal]="true" [(visible)]="areaVisible" [style]="{ width: '26rem' }">
+    <div class="flex justify-content-between">
+        <div class="flex align-content-start justify-content-center gap-3 mb-3">
+            <p-dropdown [options]="areas" [(ngModel)]="selectedAreaRedes" dataKey="id_area" appendTo="body"
+                optionLabel="nombre" placeholder="Seleccione un área"></p-dropdown>
+        </div>
+        <div class="flex flex-row flex-wrap align-content-start justify-content-center">
+            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarPDFAreasRedes()"
+                class="p-button p-component p-button-text p-button-lg flex align-content-start justify-content-center"
+                [disabled]="!selectedAreaRedes" style="color:red"></button>
+            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarExcelAreasRedes()"
+                class="p-button p-component p-button-text p-button-lg flex align-content-start justify-content-center"
+                [disabled]="!selectedAreaRedes" style="color:green"></button>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Reporte por Estado" [modal]="true" [(visible)]="estadoVisible" [style]="{ width: '26rem' }">
+    <div class="flex justify-content-between">
+        <div class="flex align-content-start justify-content-center gap-3 mb-3">
+            <p-dropdown [options]="estados" [(ngModel)]="selectedEstados" dataKey="code" appendTo="body"
+                optionLabel="name" placeholder="Seleccione un estado"></p-dropdown>
+        </div>
+        <div class="flex flex-row flex-wrap align-content-start justify-content-center">
+            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarPDFEstadoRedes()"
+                class="p-button p-component p-button-text p-button-lg flex align-content-start justify-content-center"
+                [disabled]="!selectedEstados" style="color:red"></button>
+            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarExcelEstadoRedes()"
+                class="p-button p-component p-button-text p-button-lg flex align-content-start justify-content-center"
+                [disabled]="!selectedEstados" style="color:green"></button>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Reporte por Encargado" [modal]="true" [(visible)]="encargadoVisible" [style]="{ width: '26rem' }">
+    <div class="flex justify-content-between">
+        <div class="flex align-content-start justify-content-center gap-3 mb-3">
+            <p-dropdown [options]="encargados" [(ngModel)]="selectedEncargado" dataKey="id_encargado" appendTo="body"
+                optionLabel="nombre_encargado" placeholder="Seleccione encargado"></p-dropdown>
+        </div>
+        <div class="flex flex-row flex-wrap align-content-start justify-content-center">
+            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarPDFEncargadoRedes()"
+                class="p-button p-component p-button-text p-button-lg flex align-content-start justify-content-center"
+                [disabled]="!selectedEncargado" style="color:red"></button>
+            <button pButton pRipple type="button" icon="pi pi-file-pdf" (click)="descargarExcelEncargadoRedes()"
+                class="p-button p-component p-button-text p-button-lg flex align-content-start justify-content-center"
+                [disabled]="!selectedEncargado" style="color:green"></button>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Tarjetas QR" [modal]="true" [(visible)]="qrVisible" [style]="{ width: '28rem' }">
+    <div class="flex justify-content-between">
+        <div class="flex align-content-start justify-content-center gap-3 mb-3">
+            <p-dropdown [options]="areas" [(ngModel)]="selectedAreaQR" dataKey="id_area" appendTo="body"
+                optionLabel="nombre" placeholder="Seleccione un área"></p-dropdown>
+        </div>
+        <div class="flex flex-row flex-wrap align-content-start justify-content-center">
+            <p-button label="Generar QR" (click)="descargarQRDitic()" [rounded]="true"></p-button>
+        </div>
+    </div>
+</p-dialog>
+<p-dialog header="Reporte por Bienes Prestados" [modal]="true" [(visible)]="fechaVisible" [style]="{ width: '28rem' }">
+    <div class="flex justify-content-between">
+        <div class="flex align-content-start justify-content-center gap-3 mb-3">
+            <p-dropdown [options]="areas" [(ngModel)]="selectedAreaQR" dataKey="id_area" appendTo="body"
+                optionLabel="nombre" placeholder="Seleccione un área"></p-dropdown>
+        </div>
+        <div class="flex flex-row flex-wrap align-content-start justify-content-center">
+            <p-button label="Generar QR" (click)="descargarQRDitic()" [rounded]="true"></p-button>
+        </div>
+    </div>
+</p-dialog>
+<p-toast position="bottom-right"></p-toast>
+<p-confirmDialog header="Confirmación" icon="pi pi-exclamation-triangle" width="425"></p-confirmDialog>
