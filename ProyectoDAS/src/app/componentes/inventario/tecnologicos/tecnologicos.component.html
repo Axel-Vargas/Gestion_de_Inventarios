@@ -97,13 +97,13 @@
                         <td>{{ product.codigoUTA }}</td>
                         <td>{{ product.localizacion }}</td>
                         <td class="hidden-column">{{product.id_area_per}}</td>
-                        <td *ngIf="rolUsuario === 1" class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
-                            <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"
-                                (onClick)="editarBienTecnologico(product)"></p-button>
-                            <p-button type="button" icon="pi pi-trash" class="p-button-rounded"
-                                (onClick)="eliminar(product.id_bien)"></p-button>
-                            <p-button type="button" icon="pi pi-arrow-down" class="p-button-rounded"
-                                (click)="abrirModalComponente(product)"></p-button>
+                        <td *ngIf="rolUsuario === 1" class="flex flex-row">
+                            <p-button pButton type="button" pRipple [outlined]="true" icon="pi pi-pen-to-square" (onClick)="editarBienTecnologico(product)"
+                              class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></p-button>
+                            <p-button pButton type="button" pRipple [outlined]="true" icon="pi pi-trash" (onClick)="eliminar(product.id_bien)" 
+                              class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></p-button>
+                            <p-button pButton type="button" pRipple [outlined]="true" icon="pi pi-arrow-down" (click)="abrirModalComponente(product)"
+                              class="p-button p-component p-button-text  flex align-items-center justify-content-center"></p-button>
                         </td>
                     </tr>
                 </ng-template>
@@ -167,7 +167,8 @@
                             </span>
                         </td>
                         <td>{{ order.nombre_dependencia }}</td>
-                        <td *ngIf="rolUsuario === 1" class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
+                        <td *ngIf="rolUsuario === 1" class="flex flex-row align-items-center sm:flex-col"
+                            style="gap: 8px">
                             <p-button type="button" icon="pi pi-pen-to-square" class="p-button-rounded"
                                 (click)="openEditComponentModal(order)"></p-button>
                             <p-button type="button" icon="pi pi-trash" class="p-button-rounded"

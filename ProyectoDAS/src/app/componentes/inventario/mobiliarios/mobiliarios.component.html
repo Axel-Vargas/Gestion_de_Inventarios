@@ -126,9 +126,9 @@
             <td>{{ mobiliario.estado }}</td>
             <td>{{ mobiliario.localizacion }}</td>
             <td>{{ mobiliario.codigoUTA }}</td>
-            <td>{{ mobiliario.nombre_encargado }}</td>
+            <td>{{ mobiliario.encargado_nombre }}</td>
             <td>{{ mobiliario.nombre_area }}</td>
-            <td *ngIf="rolUsuario === 1" class="flex flex-row ">
+            <td *ngIf="rolUsuario === 1" class="flex flex-row">
               <button pButton (click)="showDialogEditar(mobiliario)" pRipple type="button" icon="pi pi-pen-to-square"
                 class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"></button>
               <button pButton (click)="confirm(mobiliario.id_bien)" pRipple type="button" icon="pi pi-trash"
@@ -150,7 +150,7 @@
     <div class="flex flex-wrap justify-content-between ap-3">
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="encargados" class="font-semibold w-6rem">Encargado</label>
-        <p-dropdown [options]="encargados" dataKey="id_encargado" optionLabel="nombre"
+        <p-dropdown [options]="encargados" dataKey="id_encargado" optionLabel="nombre_encargado"
           placeholder="Seleccione un Encargado" autoWidth="false" [style]="{ width: '15.9rem' }"
           [(ngModel)]="selectEncargado"></p-dropdown>
       </div>
@@ -161,36 +161,36 @@
       </div>
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="nombre " class="font-semibold w-6rem">Nombre </label>
-        <input pInputText id="nombre " class="flex-auto" autocomplete="off" [(ngModel)]="nombre" maxlength="25"
+        <input pInputText id="nombre " class="flex-auto" autocomplete="off" [(ngModel)]="nombre" placeholder="Ingrese el nombre" maxlength="25"
           (input)="handleInput($event)" />
       </div>
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for=" marca" class="font-semibold w-6rem"> Marca</label>
-        <input pInputText id=" marca" class="flex-auto" autocomplete="off" [(ngModel)]="marca" maxlength="20"
+        <input pInputText id=" marca" class="flex-auto" autocomplete="off" [(ngModel)]="marca" placeholder="Ingrese la marca" maxlength="20"
           (input)="handleInput($event)" />
       </div>
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="modelo" class="font-semibold w-6rem">Modelo</label>
-        <input pInputText id="modelo" class="flex-auto" autocomplete="off" [(ngModel)]="modelo" maxlength="20"
-          (input)="handleInput($event)" />
+        <input pInputText id="modelo" class="flex-auto" autocomplete="off" [(ngModel)]="modelo" placeholder="Ingrese el modelo" maxlength="20" />
       </div>
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="num_serie" class="font-semibold w-6rem">Num_serie</label>
-        <input pInputText id="num_serie" class="flex-auto" autocomplete="off" [(ngModel)]="num_serie" maxlength="20" />
+        <input pInputText id="num_serie" class="flex-auto" autocomplete="off" [(ngModel)]="num_serie" placeholder="Ingrese la serie" maxlength="20" />
       </div>
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
-        <label for="material" class="font-semibold w-6rem">Material</label>
-        <input pInputText id="material" class="flex-auto" autocomplete="off" [(ngModel)]="material" maxlength="15"
-          (input)="handleInput($event)" />
+        <label for="encargados" class="font-semibold w-6rem">Material</label>
+        <p-dropdown appendTo="body" [options]="materiales" dataKey="code" optionLabel="name"
+          placeholder="Seleccione un Material" autoWidth="false" [style]="{ width: '15.9rem' }"
+          [(ngModel)]="selectMaterial"></p-dropdown>
       </div>
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for=" color" class="font-semibold w-6rem">Color</label>
-        <input pInputText id=" color" class="flex-auto" autocomplete="off" [(ngModel)]="color" maxlength="15"
+        <input pInputText id=" color" class="flex-auto" autocomplete="off" [(ngModel)]="color" placeholder="Ingrese el color" maxlength="15"
           (input)="handleInput($event)" />
       </div>
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="fecha_adquisicion" class="font-semibold w-6rem">Fecha_de_Adquisición</label>
-        <p-calendar id="fecha_adquisicion" inputId="fecha_adquisicion" [(ngModel)]="fecha_adquisicion" [showIcon]="true"
+        <p-calendar appendTo="body" id="fecha_adquisicion" inputId="fecha_adquisicion" [(ngModel)]="fecha_adquisicion" [showIcon]="true"
           [showOnFocus]="true" dateFormat="dd/mm/yy" placeholder="Seleccione una fecha">
         </p-calendar>
       </div>
@@ -201,13 +201,13 @@
       </div>
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="localizacion" class="font-semibold w-6rem">Localizacion</label>
-        <input pInputText id="localizacion" class="flex-auto" autocomplete="off" [(ngModel)]="localizacion"
+        <input pInputText id="localizacion" class="flex-auto" autocomplete="off" [(ngModel)]="localizacion" placeholder="Ingrese la localización"
           maxlength="20" (input)="handleInput($event)" />
       </div>
 
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="codigoUTA" class="font-semibold w-6rem">CodigoUTA</label>
-        <input pInputText id="codigoUTA" class="flex-auto" autocomplete="off" [(ngModel)]="codigoUTA" maxlength="15" />
+        <input pInputText id="codigoUTA" class="flex-auto" autocomplete="off" [(ngModel)]="codigoUTA" placeholder="Ingrese el código UTA" maxlength="15" />
       </div>
     </div>
     <div class="flex justify-content-end gap-2">
