@@ -50,10 +50,10 @@ export class MenuComponent implements OnInit {
                                 }
                             },
                             {
-                                label: 'Tipos Tecnológicos', icon: 'pi pi-desktop', routerLink: ['/panel/inventarios/typeTechnological']
+                                label: 'Atributos Tecnológicos', icon: 'pi pi-list', routerLink: ['/panel/inventarios/typeTechnological']
                             },
                             {
-                                label: 'Componentes Libres', icon: 'pi pi-align-center', routerLink: ['/panel/inventarios/componentes']
+                                label: 'Componentes Libres', icon: 'pi pi-microchip', routerLink: ['/panel/inventarios/componentes']
                             }
                         ]
                     },

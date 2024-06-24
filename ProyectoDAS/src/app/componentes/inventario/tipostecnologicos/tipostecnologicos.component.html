@@ -14,10 +14,10 @@
         [rows]="10" [value]="tiposTecnologicos" [customSort]="true" [tableStyle]="{'min-width': '60rem'}">
         <ng-template pTemplate="header">
           <tr>
-            <th pSortableColumn="nom_tecnologico" style="width:20%">NOMBRE TECNOLÓGICO<p-sortIcon
+            <th pSortableColumn="nom_tecnologico">NOMBRE TECNOLÓGICO<p-sortIcon
                 field="nom_tecnologico"></p-sortIcon></th>
-            <th pSortableColumn="atributos" style="width:20%">ATRIBUTOS <p-sortIcon field="atributos"></p-sortIcon></th>
-            <th *ngIf="rolUsuario === 1" style="width:20%">OPCIONES</th>
+            <th pSortableColumn="atributos" >ATRIBUTOS<p-sortIcon field="atributos"></p-sortIcon></th>
+            <th *ngIf="rolUsuario === 1"></th>
           </tr>
         </ng-template>
         <ng-template pTemplate="body" let-tipo>
@@ -28,14 +28,15 @@
                 <li *ngFor="let key of getAtributosKeys(tipo.atributos)">{{ key }}</li>
               </ul>
             </td>
-            <td *ngIf="rolUsuario === 1" class="flex flex-row align-items-center sm:flex-col" style="gap: 8px">
-              <button type="button" (click)="editTipoTecnologico(tipo)" class="p-button p-button-sm p-button-info"
+            <td *ngIf="rolUsuario === 1" class="flex flex-row"
+              style="gap: 8px">
+              <button pButton type="button" pRipple (click)="editTipoTecnologico(tipo)" icon="pi pi-pen-to-square"
+                class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"
                 title="Editar">
-                <i class="pi pi-pencil"></i>
               </button>
-              <button type="button" (click)="deleteTipoTecnologico(tipo.id)"
-                class="p-button p-button-sm p-button-danger" title="Eliminar">
-                <i class="pi pi-trash"></i>
+              <button pButton type="button" pRipple (click)="deleteTipoTecnologico(tipo.id)" icon="pi pi-trash"
+                class="p-button p-component p-button-text p-button-icon-only flex align-items-center justify-content-center"
+                title="Eliminar">
               </button>
             </td>
           </tr>

@@ -17,9 +17,11 @@ export class MobiliariosComponent {
   mobiliarios: any = [];
   muebles: any[] | undefined;
   encargados: any[] = [];
+  materiales: any[] = [];
   areas: any[] = [];
   selectedCity: any;
   selectEncargado: any;
+  selectMaterial: any;
   selectArea: any;
   selectEstado: any;
 
@@ -72,6 +74,13 @@ export class MobiliariosComponent {
     this.listarEncargadosComboBox();
     this.obtenerRolUsuario();
 
+    this.materiales = [
+      { name: 'Plastico', code: 1 },
+      { name: 'Madera', code: 2 },
+      { name: 'Metal', code: 3 },
+      { name: 'Cristal', code: 4 },
+    ];
+
     this.estados = [
       { name: 'FUNCIONAL', code: 1 },
       { name: 'NO FUNCIONAL', code: 2 },
@@ -86,7 +95,10 @@ export class MobiliariosComponent {
     this.encargadosService.obtenerEncargados().subscribe(
       (response: any) => {
         if (response) {
-          this.encargados = response;
+          this.encargados = response.map((encargado: any) => ({
+            ...encargado,
+            nombre_encargado: `${encargado.nombre} ${encargado.apellido}`
+          }));
         } else {
           this.encargados = [];
         }
@@ -100,8 +112,8 @@ export class MobiliariosComponent {
   listarEncargadosComboBox(): void {
     this.encargadosService.obtenerEncargados().subscribe(
       (response: any) => {
-        if (response && response.encargados) {
-          this.representatives = Array.from(new Set(response.encargados.map((encargado: any) => encargado.nombre)))
+        if (response && response) {
+          this.representatives = Array.from(new Set(response.map((encargado: any) => encargado.nombre)))
             .map(name => {
               return {
                 name: name,
@@ -170,7 +182,10 @@ export class MobiliariosComponent {
         if (response && response.mobiliarios) {
           this.mobiliarios = response.mobiliarios.map((mobiliario: any) => ({
             ...mobiliario,
-            fecha_adquisicion: this.formatDate(mobiliario.fecha_adquisicion)
+            fecha_adquisicion: this.formatDate(mobiliario.fecha_adquisicion),
+            encargado_nombre: mobiliario.nombre_encargado && mobiliario.apellido_encargado 
+            ? `${mobiliario.nombre_encargado} ${mobiliario.apellido_encargado}` 
+            : 'N/A'
           }));
         } else {
           this.mobiliarios = [];
@@ -184,7 +199,7 @@ export class MobiliariosComponent {
 
   registrarMobiliario() {
     if (this.nombre == '' || this.marca == '' || this.modelo == '' ||
-      this.num_serie == '' || this.material == '' || this.color == '' || this.fecha_adquisicion == '' || !this.selectEstado || this.localizacion == '' ||
+      this.num_serie == '' || this.selectMaterial == '' || this.color == '' || this.fecha_adquisicion == '' || !this.selectEstado || this.localizacion == '' ||
       this.codigoUTA == '' || this.selectEncargado == '' || this.selectArea == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
@@ -196,7 +211,7 @@ export class MobiliariosComponent {
       }
 
       this.mobiliariosService.insertarMobiliaria( this.nombre, this.marca, this.modelo,
-        this.num_serie, this.material, this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion,
+        this.num_serie, this.selectMaterial.name, this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion,
         this.codigoUTA, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
           (response) => {
             this.mostrarMensaje("Bien registrado con éxito", true);
@@ -248,7 +263,7 @@ export class MobiliariosComponent {
         return;
       }
 
-      this.mobiliariosService.actualizarMobiliarios(this.id,  this.nombre, this.marca, this.modelo, this.num_serie, this.material,
+      this.mobiliariosService.actualizarMobiliarios(this.id,  this.nombre, this.selectMaterial.name, this.modelo, this.num_serie, this.material,
         this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion, this.codigoUTA, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
           (response) => {
             this.mostrarMensaje("Bien actualizo con éxito", true);
@@ -279,6 +294,7 @@ export class MobiliariosComponent {
     this.esEdicion = true;
     this.nombre = mobiliario.nombre;
     this.marca = mobiliario.marca;
+    this.selectMaterial = this.materiales.find(material => material.name === mobiliario.material);
     this.modelo = mobiliario.modelo;
     this.num_serie = mobiliario.num_serie;
     this.material = mobiliario.material;
@@ -320,6 +336,8 @@ export class MobiliariosComponent {
     this.id_bien = '';
     this.nombre = '';
     this.marca = '';
+    this.selectMaterial = null;
+    this.selectEstado = null;
     this.modelo = '';
     this.num_serie = '';
     this.material = '';
