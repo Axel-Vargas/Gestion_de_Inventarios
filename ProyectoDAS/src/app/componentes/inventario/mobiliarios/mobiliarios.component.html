@@ -122,7 +122,7 @@
             <td>{{ mobiliario.num_serie }}</td>
             <td>{{ mobiliario.material }}</td>
             <td>{{ mobiliario.color }}</td>
-            <td>{{ mobiliario.fecha_adquisicion }}</td>
+            <td>{{ mobiliario.fecha_adquisicion | date : "yyyy-MM-dd"}}</td>
             <td>{{ mobiliario.estado }}</td>
             <td>{{ mobiliario.localizacion }}</td>
             <td>{{ mobiliario.codigoUTA }}</td>
@@ -166,8 +166,8 @@
       </div>
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for=" marca" class="font-semibold w-6rem"> Marca</label>
-        <input pInputText id=" marca" class="flex-auto" autocomplete="off" [(ngModel)]="marca" placeholder="Ingrese la marca" maxlength="20"
-          (input)="handleInput($event)" />
+        <p-dropdown [options]="marcas" dataKey="id" optionLabel="nom_marca" placeholder="Seleccione una Marca"
+        autoWidth="false" [style]="{ width: '15.9rem' }" [(ngModel)]="selectMarca"></p-dropdown>
       </div>
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="modelo" class="font-semibold w-6rem">Modelo</label>
@@ -191,7 +191,7 @@
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
         <label for="fecha_adquisicion" class="font-semibold w-6rem">Fecha_de_Adquisición</label>
         <p-calendar appendTo="body" id="fecha_adquisicion" inputId="fecha_adquisicion" [(ngModel)]="fecha_adquisicion" [showIcon]="true"
-          [showOnFocus]="true" dateFormat="dd/mm/yy" placeholder="Seleccione una fecha">
+          [showOnFocus]="true" dateFormat="yy-mm-dd" placeholder="Seleccione una fecha">
         </p-calendar>
       </div>
       <div class="flex align-items-left gap-3 mb-3 flex-column" style="max-width: 50%">
@@ -217,7 +217,5 @@
     </div>
   </p-dialog>
 
-
-
-  <p-toast>p-toast position="bottom-right"></p-toast>
+  <p-toast position="bottom-right"></p-toast>
   <p-confirmDialog header="Confirmation" icon="fa fa-question-circle" width="425"></p-confirmDialog>

@@ -4,6 +4,7 @@ import { AreaMobiliarioService } from '../../../services/area.mobiliario.service
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { EncargadosService } from '../../../services/encargados.service';
 import { AuthService } from '../../../services/auth.service';
+import { MarcasService } from '../../../services/marcas.service';
 
 
 
@@ -18,10 +19,12 @@ export class MobiliariosComponent {
   muebles: any[] | undefined;
   encargados: any[] = [];
   materiales: any[] = [];
+  marcas: any[] = [];
   areas: any[] = [];
   selectedCity: any;
   selectEncargado: any;
   selectMaterial: any;
+  selectMarca: any;
   selectArea: any;
   selectEstado: any;
 
@@ -37,7 +40,7 @@ export class MobiliariosComponent {
   num_serie = '';
   material = '';
   color = '';
-  fecha_adquisicion = '';
+  fecha_adquisicion: any;
   localizacion = '';
   codigoUTA = '';
   selectEncargados: any = null;
@@ -51,7 +54,7 @@ export class MobiliariosComponent {
 
   rolUsuario: number | null = null;
 
-  constructor(private authServices: AuthService,private confirmationService: ConfirmationService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService, private messageService: MessageService) {}
+  constructor(private marcasServices: MarcasService,private authServices: AuthService,private confirmationService: ConfirmationService, private mobiliariosService: MobiliariosService, private encargadosService: EncargadosService, private areasService: AreaMobiliarioService, private messageService: MessageService) {}
 
   id_bien = '';
   id_encargado_per = '';
@@ -69,6 +72,7 @@ export class MobiliariosComponent {
   ngOnInit() {
     this.listarMobiliario();
     this.listarAreas();
+    this.listarMarcas();
     this.listarAreasComboBox();
     this.listarEncargados();
     this.listarEncargadosComboBox();
@@ -89,6 +93,21 @@ export class MobiliariosComponent {
 
   obtenerRolUsuario(): void {
     this.rolUsuario = this.authServices.getUserRole();
+  }
+
+  listarMarcas(): void {
+    this.marcasServices.getMarcasMobiliarios().subscribe(
+      (response: any) => {
+        if (response) {
+          this.marcas = response;
+        } else {
+          this.marcas = [];
+        }
+      },
+      (error) => {
+        console.error('Error al obtener marcas:', error);
+      }
+    );
   }
 
   listarEncargados(): void {
@@ -168,21 +187,12 @@ export class MobiliariosComponent {
     );
   }
 
-  formatDate(dateString: string): string {
-    const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}/${month}/${year}`;
-  }
-
   listarMobiliario(): void {
     this.mobiliariosService.obtenerMobiliarios().subscribe(
       (response: any) => {
         if (response && response.mobiliarios) {
           this.mobiliarios = response.mobiliarios.map((mobiliario: any) => ({
             ...mobiliario,
-            fecha_adquisicion: this.formatDate(mobiliario.fecha_adquisicion),
             encargado_nombre: mobiliario.nombre_encargado && mobiliario.apellido_encargado 
             ? `${mobiliario.nombre_encargado} ${mobiliario.apellido_encargado}` 
             : 'N/A'
@@ -198,20 +208,13 @@ export class MobiliariosComponent {
   }
 
   registrarMobiliario() {
-    if (this.nombre == '' || this.marca == '' || this.modelo == '' ||
+    if (this.nombre == '' || this.selectMarca == '' || this.modelo == '' ||
       this.num_serie == '' || this.selectMaterial == '' || this.color == '' || this.fecha_adquisicion == '' || !this.selectEstado || this.localizacion == '' ||
       this.codigoUTA == '' || this.selectEncargado == '' || this.selectArea == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      const fechaAdquisicionDate = new Date(this.fecha_adquisicion);
-
-      if (isNaN(fechaAdquisicionDate.getTime())) {
-        this.mostrarMensaje("Datos numéricos o de fecha inválidos", false);
-        return;
-      }
-
-      this.mobiliariosService.insertarMobiliaria( this.nombre, this.marca, this.modelo,
-        this.num_serie, this.selectMaterial.name, this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion,
+      this.mobiliariosService.insertarMobiliaria( this.nombre, this.selectMarca.nom_marca, this.modelo,
+        this.num_serie, this.selectMaterial.name, this.color, this.fecha_adquisicion, this.selectEstado.name, this.localizacion,
         this.codigoUTA, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
           (response) => {
             this.mostrarMensaje("Bien registrado con éxito", true);
@@ -251,20 +254,13 @@ export class MobiliariosComponent {
   }
 
   editarMobiliario() {
-    if (this.nombre == '' || this.marca == '' || this.modelo == '' ||
+    if (this.nombre == '' || this.selectMarca == '' || this.modelo == '' ||
       this.num_serie == '' || this.material == '' || this.color == '' || this.fecha_adquisicion == '' || !this.estados || this.localizacion == '' ||
       this.codigoUTA == '' || this.selectEncargado == '' || this.selectArea == '') {
       this.mostrarMensaje("Complete todos los campos", false);
     } else {
-      const fechaAdquisicionDate = new Date(this.fecha_adquisicion);
-
-      if (isNaN(fechaAdquisicionDate.getTime())) {
-        this.mostrarMensaje("Datos numéricos o de fecha inválidos", false);
-        return;
-      }
-
-      this.mobiliariosService.actualizarMobiliarios(this.id,  this.nombre, this.selectMaterial.name, this.modelo, this.num_serie, this.material,
-        this.color, fechaAdquisicionDate, this.selectEstado.name, this.localizacion, this.codigoUTA, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
+      const fecha = new Date(this.fecha_adquisicion);
+      this.mobiliariosService.actualizarMobiliarios(this.id,  this.nombre, this.selectMarca.nom_marca, this.modelo, this.num_serie, this.selectMaterial.name, this.color, fecha, this.selectEstado.name, this.localizacion, this.codigoUTA, this.selectEncargado.id_encargado, this.selectArea.id_area).subscribe(
           (response) => {
             this.mostrarMensaje("Bien actualizo con éxito", true);
             this.visible = false;
@@ -291,15 +287,17 @@ export class MobiliariosComponent {
   }
 
   showDialogEditar(mobiliario: any) {
+    const fecha = new Date(mobiliario.fecha_adquisicion);
+
     this.esEdicion = true;
     this.nombre = mobiliario.nombre;
-    this.marca = mobiliario.marca;
+    this.selectMarca = this.marcas.find(marca => marca.nom_marca === mobiliario.marca);
     this.selectMaterial = this.materiales.find(material => material.name === mobiliario.material);
     this.modelo = mobiliario.modelo;
     this.num_serie = mobiliario.num_serie;
     this.material = mobiliario.material;
     this.color = mobiliario.color;
-    this.fecha_adquisicion = this.formatDate(mobiliario.fecha_adquisicion);
+    this.fecha_adquisicion = fecha;
     this.selectEstado = this.estados.find(estado => estado.name === mobiliario.estado);
     this.localizacion = mobiliario.localizacion;
     this.codigoUTA = mobiliario.codigoUTA;
@@ -335,14 +333,14 @@ export class MobiliariosComponent {
   limpiarFormulario() {
     this.id_bien = '';
     this.nombre = '';
-    this.marca = '';
+    this.selectMarca = null;
     this.selectMaterial = null;
     this.selectEstado = null;
     this.modelo = '';
     this.num_serie = '';
     this.material = '';
     this.color = '';
-    this.fecha_adquisicion = '';
+    this.fecha_adquisicion = null;
     this.localizacion = '';
     this.codigoUTA = '';
     this.selectEncargado = null;

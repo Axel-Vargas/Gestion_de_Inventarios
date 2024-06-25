@@ -37,7 +37,7 @@ exports.geMarcasTecnologicos = async (req, res) => {
 
 exports.geMarcasMobiliarios = async (req, res) => {
   try {
-    const sql = 'SELECT * FROM marcas WHERE tipo_marca = "MOBILIARIOS"';
+    const sql = 'SELECT * FROM marcas WHERE tipo_marca = "MOBILIARIO"';
     connection.query(sql, (err, data) => {
         if (err) {
             console.error('Error en la consulta SQL:', err);
