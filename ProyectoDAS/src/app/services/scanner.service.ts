@@ -17,4 +17,9 @@ export class ScannerService {
   setScannedCode(code: string) {
     this.scannedCodeSubject.next(code);
   }
+
+  clearScannedCode() {
+    this.scannedCodeSubject.next('');
+}
+
 }

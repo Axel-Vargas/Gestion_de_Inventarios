@@ -1,4 +1,4 @@
-import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { BienestecnologicosService } from '../../../services/bienestecnologicos.service';
 import { bienes_Tecnologicos } from '../../api/bienesTecnologicos';
@@ -32,7 +32,7 @@ import { AuthService } from '../../../services/auth.service';
   providers: [DialogService],
 })
 
-export class TecnologicosComponent implements OnInit {
+export class TecnologicosComponent implements OnInit, OnDestroy {
   tooltipVisible: boolean = false;
   visible: boolean = false;
   productDialog!: boolean;
@@ -139,6 +139,9 @@ export class TecnologicosComponent implements OnInit {
     { label: 'Es igual a', value: 'equals' },
     { label: 'No es igual a', value: 'notEquals' },
   ];
+  ngOnDestroy() {
+    this.scannerService.clearScannedCode(); // Limpiar scannedCode al salir del componente
+  }
 
   ngOnInit() {
     this.obtenerRolUsuario();
@@ -148,9 +151,12 @@ export class TecnologicosComponent implements OnInit {
       if (!this.scannedCode) {
           this.cargarBienesTecnologicos();
       } else {
-          this.cargarBienesTecnologicosPorId(scannerNumber);
+        this.cargarBienesTecnologicosPorId(scannerNumber);
+       // this.scannerService.clearScannedCode();
       }
   });
+
+  
 
     this.inventoryForm = new FormGroup({
       id_proveedor_per: new FormControl('', Validators.required),
@@ -238,7 +244,7 @@ export class TecnologicosComponent implements OnInit {
       });
       this.tecnologicos = arrayBienesTecnologicos;
     });
-
+    
   }
   
   showDialogAgregar() {
@@ -608,6 +614,7 @@ agregarAtributo(): void {
     this.selectedBienTecnologico = bien;
     this.isEditMode = true;
     this.display = true;
+    
     const fecha = new Date(bien.fecha_adquisicion);
     const proveedorSeleccionado = this.proveedor.find((p) => p.code === bien.id_proveedor_per);
     const tipoSeleccionado = this.tipoBien.find((t) => t.code === bien.id_tipo_per);
