@@ -24,7 +24,7 @@ Una serie de ejemplos paso a paso que te dice lo que debes ejecutar para tener u
 
 1. Clona el repositorio:
 
-git clone
+git clone https://github.com/QuantumSoft2024/Proyecto_DAS.git
 
 
 2. Instala las dependencias del backend:
@@ -36,7 +36,7 @@ npm install
 3. Configura la base de datos MySQL:
 
 
-CREATE DATABASE inventarios;
+CREATE DATABASE proyectodas;
 
 
 4. Configura las variables de entorno del backend:
@@ -114,8 +114,8 @@ Usamos [SemVer](http://semver.org/) para el versionado. Para todas las versiones
 
 Menciona a todos aquellos que ayudaron a levantar el proyecto desde sus inicios:
 
-* **Nombre del Autor Principal** - *Trabajo Inicial* - [nombreusuario](https://github.com/nombreusuario)
-* **Colaborador(a)** - *Documentación* - [nombreusuario](#nombreusuario)
+* **Colaborador(a)** - *Documentación* - [Angel Caiza](#Angelcaiza)
+* 
 
 También puedes mirar la lista de todos los [contribuyentes](https://github.com/tu/proyecto/contributors) quienes han participado en este proyecto.
 
