@@ -7,6 +7,9 @@ El Proyecto de Gestión de Inventarios de la Universidad Técnica de Ambato es u
 ### CRUD de Personal
 Permite crear, leer, actualizar y eliminar usuarios y encargados de bienes tecnológicos, asegurando que solo el personal autorizado gestione los activos.
 
+### CRUD de Bienes
+Permite crear, leer, actualizar y eliminar bienes tecnológicos y mobiliarios en el inventario, asegurando un control preciso de los activos.
+
 ### Implementación de Búsqueda
 Incluye una búsqueda general y búsqueda por campos específicos, facilitando la localización rápida de bienes y usuarios.
 
@@ -15,9 +18,6 @@ Facilita la transferencia de bienes de un encargado a otro de manera eficiente, 
 
 ### Cambio de Contraseña
 Permite a los usuarios cambiar su contraseña para mantener la seguridad de sus cuentas.
-
-### CRUD de Bienes
-Permite crear, leer, actualizar y eliminar bienes tecnológicos y mobiliarios en el inventario, asegurando un control preciso de los activos.
 
 ### Generación de Reportes
 Crea reportes detallados con especificaciones de cada bien y genera códigos QR para facilitar el acceso y la gestión de la información.
