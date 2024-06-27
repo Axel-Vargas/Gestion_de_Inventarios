@@ -106,16 +106,15 @@ Por favor, lee el [CONTRIBUTING.md](https://gist.github.com/villanuevand/xxxxxx)
 
 Puedes encontrar mucho más sobre cómo utilizar este proyecto en nuestra [Wiki](https://github.com/tu/proyecto/wiki).
 
-## Versionado 📌
-
-Usamos [SemVer](http://semver.org/) para el versionado. Para todas las versiones disponibles, mira los [tags en este repositorio](https://github.com/tu/proyecto/tags).
 
 ## Autores ✒️
 
 Menciona a todos aquellos que ayudaron a levantar el proyecto desde sus inicios:
 
-* **Colaborador(a)** - *Documentación* - [Angel Caiza](#Angelcaiza)
-* 
+* **Colaborador** - *Documentación* - [Axel Vargas](#)
+* **Colaborador** - *Documentación* - [Diego Pincha](#)
+* **Colaborador(a)** - *Documentación* - [David Flores](#davidf110102)
+* **Colaborador** - *Documentación* - [Angel Caiza](#Angelcaiza)
 
 También puedes mirar la lista de todos los [contribuyentes](https://github.com/tu/proyecto/contributors) quienes han participado en este proyecto.
 
