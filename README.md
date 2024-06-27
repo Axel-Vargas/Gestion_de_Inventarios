@@ -1,37 +1,37 @@
-# Proyecto de Gestión de Inventarios
+# 📦 Proyecto de Gestión de Inventarios
 
 El Proyecto de Gestión de Inventarios de la Universidad Técnica de Ambato es una solución integral diseñada para optimizar la administración de bienes tecnológicos y mobiliarios. El sistema permite un control detallado y eficiente de todos los activos, facilitando tareas como la asignación, seguimiento, y mantenimiento de inventarios. Con funcionalidades avanzadas como generación de reportes, escaneo de códigos QR, y una interfaz intuitiva, este proyecto busca mejorar significativamente la gestión de recursos dentro de la universidad.
 
-## Funcionalidades Principales
+## 🔑 Funcionalidades Principales
 
-### CRUD de Personal
-Permite crear, leer, actualizar y eliminar usuarios y encargados de bienes tecnológicos, asegurando que solo el personal autorizado gestione los activos.
-
-### CRUD de Bienes
+### 📋 CRUD de Bienes
 Permite crear, leer, actualizar y eliminar bienes tecnológicos y mobiliarios en el inventario, asegurando un control preciso de los activos.
 
-### Implementación de Búsqueda
+### 👥 CRUD de Personal
+Permite crear, leer, actualizar y eliminar usuarios y encargados de bienes tecnológicos, asegurando que solo el personal autorizado gestione los activos.
+
+### 🔍 Implementación de Búsqueda
 Incluye una búsqueda general y búsqueda por campos específicos, facilitando la localización rápida de bienes y usuarios.
 
-### Traspaso de Bienes
+### 🔄 Traspaso de Bienes
 Facilita la transferencia de bienes de un encargado a otro de manera eficiente, manteniendo un registro claro de la ubicación de los activos.
 
-### Cambio de Contraseña
+### 🔒 Cambio de Contraseña
 Permite a los usuarios cambiar su contraseña para mantener la seguridad de sus cuentas.
 
-### Generación de Reportes
+### 📊 Generación de Reportes
 Crea reportes detallados con especificaciones de cada bien y genera códigos QR para facilitar el acceso y la gestión de la información.
 
-### Asignación de Componentes
+### 🛠️ Asignación de Componentes
 Permite asignar componentes a bienes tecnológicos y repotenciarlos según sea necesario, manteniendo un registro actualizado de las mejoras realizadas.
 
-### Gestión de Infraestructura
+### 🏫 Gestión de Infraestructura
 Administra facultades, bloques y áreas, organizando mejor los bienes dentro del campus para una gestión más eficiente.
 
-### Creación de Atributos Específicos
+### 📝 Creación de Atributos Específicos
 Permite definir y agregar atributos personalizados para distintos tipos de bienes, adaptándose a las necesidades específicas de cada categoría de inventario.
 
-### Escaneo de Códigos QR
+### 📱 Escaneo de Códigos QR
 Genera y escanea códigos QR para cada bien, permitiendo un acceso rápido y fácil a la información y la actualización del inventario mediante dispositivos móviles.
 
 
