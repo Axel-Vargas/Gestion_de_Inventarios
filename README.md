@@ -114,11 +114,10 @@ Usamos [SemVer](http://semver.org/) para el versionado. Para todas las versiones
 
 Menciona a todos aquellos que ayudaron a levantar el proyecto desde sus inicios:
 
-* **Nombre del Autor Principal** - *Trabajo Inicial* - [nombreusuario](https://github.com/nombreusuario)
 * **Colaborador(a)** - [David Flores](#nombreusuario)
-* * **Colaborador(a)** - [Diego Pincha](#nombreusuario)
-* * **Colaborador(a)** - [Angel Caiza](#nombreusuario)
-* * **Colaborador(a)** - [Axel Vargas](#nombreusuario)
+* **Colaborador(a)** - [Diego Pincha](#nombreusuario)
+* **Colaborador(a)** - [Angel Caiza](#nombreusuario)
+* **Colaborador(a)** - [Axel Vargas](#nombreusuario)
 
 También puedes mirar la lista de todos los [contribuyentes](https://github.com/tu/proyecto/contributors) quienes han participado en este proyecto.
 
